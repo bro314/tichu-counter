@@ -1,0 +1,58 @@
+/* Global resets — MUI CssBaseline handles most of this,
+   but we add a few extras for mobile feel */
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent pull-to-refresh on mobile */
+body {
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Allow text selection in input fields */
+input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Safe area padding for notched devices (iPhone X+, Android cutouts) */
+#root {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Capacitor status bar overlay — ensure content doesn't go under it */
+body.capacitor {
+  --ion-safe-area-top: env(safe-area-inset-top);
+  --ion-safe-area-bottom: env(safe-area-inset-bottom);
+}
+
+/* Prevent text size adjust on orientation change */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Smooth scrolling for round history and game lists */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Remove default focus outlines on touch (keep for keyboard nav) */
+@media (pointer: coarse) {
+  *:focus {
+    outline: none;
+  }
+}

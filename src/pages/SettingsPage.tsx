@@ -1,0 +1,385 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Switch from "@mui/material/Switch";
+import LanguageIcon from "@mui/icons-material/Language";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
+import PersonIcon from "@mui/icons-material/Person";
+import LogoutIcon from "@mui/icons-material/Logout";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Card from "@mui/material/Card";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogActions from "@mui/material/DialogActions";
+import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { useThemeMode } from "../contexts/ThemeContext";
+import { useAuth } from "../contexts/AuthContext";
+import { AVATAR_EMOJIS } from "../constants";
+import * as sx from "../styles/commonStyles";
+import { shape } from "../styles/tokens";
+
+const SettingsPage = () => {
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const { mode, setMode } = useThemeMode();
+  const { profile, updateProfile, signOut, deleteAccount } = useAuth();
+
+  const [avatarDialogOpen, setAvatarDialogOpen] = useState(false);
+  const [nameDialogOpen, setNameDialogOpen] = useState(false);
+  const [editName, setEditName] = useState(profile?.displayName || "");
+
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setMenuAnchor(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchor(null);
+  };
+
+  const handleDeleteConfirmOpen = () => {
+    handleMenuClose();
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirmClose = () => {
+    setDeleteDialogOpen(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      setDeleteDialogOpen(false);
+      navigate("/", { replace: true });
+      await deleteAccount();
+    } catch (err) {
+      console.error("Failed to delete account:", err);
+    }
+  };
+
+  const handleLanguageChange = async (lang: string) => {
+    i18n.changeLanguage(lang);
+    localStorage.setItem("language", lang);
+    await updateProfile({ language: lang });
+  };
+
+  const handleThemeToggle = async () => {
+    const newMode = mode === "dark" ? "light" : "dark";
+    setMode(newMode);
+    await updateProfile({ theme: newMode });
+  };
+
+  const handleAvatarSelect = async (emoji: string) => {
+    await updateProfile({ avatar: emoji });
+    setAvatarDialogOpen(false);
+  };
+
+  const handleNameSave = async () => {
+    if (editName.trim()) {
+      await updateProfile({ displayName: editName.trim() });
+    }
+    setNameDialogOpen(false);
+  };
+
+  const handleSignOut = async () => {
+    navigate("/", { replace: true });
+    await signOut();
+  };
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        width: "100%",
+        boxSizing: "border-box",
+        px: 2,
+        pt: 2,
+        overflowY: "auto",
+      }}
+    >
+      <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>
+        {t("settings.title")}
+      </Typography>
+
+      <Card
+        variant="outlined"
+        sx={{
+          mb: 2,
+          borderRadius: `${shape.borderRadius}px`,
+          borderColor: "divider",
+          boxShadow: (theme) =>
+            theme.palette.mode === "dark"
+              ? "none"
+              : "0 2px 8px rgba(0,0,0,0.04)",
+        }}
+      >
+        <List>
+          {/* Avatar */}
+          <ListItem
+            sx={{ cursor: "pointer" }}
+            onClick={() => setAvatarDialogOpen(true)}
+          >
+            <ListItemIcon>
+              <EmojiEmotionsIcon />
+            </ListItemIcon>
+            <ListItemText primary={t("settings.avatar")} />
+            <Typography variant="h5">{profile?.avatar || "🐉"}</Typography>
+          </ListItem>
+
+          {/* Display Name */}
+          <ListItem
+            sx={{ cursor: "pointer" }}
+            onClick={() => {
+              setEditName(profile?.displayName || "");
+              setNameDialogOpen(true);
+            }}
+          >
+            <ListItemIcon>
+              <PersonIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={t("settings.displayName")}
+              secondary={profile?.displayName || "Player"}
+            />
+          </ListItem>
+        </List>
+      </Card>
+
+      <Card
+        variant="outlined"
+        sx={{
+          mb: 2,
+          borderRadius: `${shape.borderRadius}px`,
+          borderColor: "divider",
+          boxShadow: (theme) =>
+            theme.palette.mode === "dark"
+              ? "none"
+              : "0 2px 8px rgba(0,0,0,0.04)",
+        }}
+      >
+        <List>
+          {/* Language */}
+          <ListItem>
+            <ListItemIcon>
+              <LanguageIcon />
+            </ListItemIcon>
+            <ListItemText primary={t("settings.language")} />
+            <Select
+              id="language-select"
+              value={i18n.language}
+              onChange={(e) => handleLanguageChange(e.target.value)}
+              size="small"
+              variant="outlined"
+              sx={{ minWidth: 100 }}
+            >
+              <MenuItem value="en">English</MenuItem>
+              <MenuItem value="de">Deutsch</MenuItem>
+            </Select>
+          </ListItem>
+
+          {/* Theme */}
+          <ListItem>
+            <ListItemIcon>
+              <DarkModeIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={t("settings.theme")}
+              secondary={
+                mode === "dark"
+                  ? t("settings.darkTheme")
+                  : t("settings.lightTheme")
+              }
+            />
+            <Switch
+              id="theme-toggle"
+              checked={mode === "dark"}
+              onChange={handleThemeToggle}
+            />
+          </ListItem>
+        </List>
+      </Card>
+
+      <Box sx={{ mt: "auto", pb: 2, display: "flex", gap: 1.5, alignItems: "center" }}>
+        <Button
+          id="sign-out-btn"
+          variant="outlined"
+          color="error"
+          fullWidth
+          startIcon={<LogoutIcon />}
+          onClick={handleSignOut}
+          sx={{ py: 1.2, height: "48px" }}
+        >
+          {t("settings.signOut")}
+        </Button>
+        <IconButton
+          id="settings-options-menu-btn"
+          onClick={handleMenuOpen}
+          sx={{
+            bgcolor: "action.hover",
+            border: 1,
+            borderColor: "divider",
+            borderRadius: `${shape.buttonRadius}px`,
+            p: 1.5,
+            height: "48px",
+            width: "48px",
+            flexShrink: 0,
+            transition: "all 0.15s ease",
+            "&:hover": {
+              bgcolor: "action.selected",
+            },
+          }}
+        >
+          <MoreVertIcon />
+        </IconButton>
+      </Box>
+
+      {/* Settings Options Menu */}
+      <Menu
+        id="settings-options-menu"
+        anchorEl={menuAnchor}
+        open={Boolean(menuAnchor)}
+        onClose={handleMenuClose}
+        transformOrigin={{ vertical: "bottom", horizontal: "right" }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <MenuItem
+          id="delete-account-menu-item"
+          onClick={handleDeleteConfirmOpen}
+          sx={{ color: "error.main", fontWeight: 600 }}
+        >
+          {t("settings.deleteAccount")}
+        </MenuItem>
+      </Menu>
+
+      {/* Delete Account Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteConfirmClose}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>{t("settings.deleteAccountConfirmTitle")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {t("settings.deleteAccountConfirmMessage")}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button
+            id="cancel-delete-account-btn"
+            onClick={handleDeleteConfirmClose}
+            variant="outlined"
+            color="inherit"
+          >
+            {t("common.cancel")}
+          </Button>
+          <Button
+            id="confirm-delete-account-btn"
+            onClick={handleDeleteAccount}
+            variant="contained"
+            color="error"
+          >
+            {t("common.delete")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Avatar picker dialog */}
+      <Dialog
+        open={avatarDialogOpen}
+        onClose={() => setAvatarDialogOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>{t("onboarding.chooseAvatar")}</DialogTitle>
+        <DialogContent sx={{ pt: 1 }}>
+          <TextField
+            id="custom-emoji-input"
+            label={t("settings.customEmoji")}
+            value={
+              AVATAR_EMOJIS.includes(profile?.avatar || "")
+                ? ""
+                : profile?.avatar || ""
+            }
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val) {
+                const chars = Array.from(val.trim());
+                const lastChar = chars[chars.length - 1];
+                if (lastChar) handleAvatarSelect(lastChar);
+              } else {
+                handleAvatarSelect("");
+              }
+            }}
+            fullWidth
+            size="small"
+            placeholder={t("settings.customEmojiPlaceholder")}
+            sx={{ mt: 1, mb: 3 }}
+          />
+          <Box sx={sx.avatarGrid}>
+            {AVATAR_EMOJIS.map((emoji) => (
+              <Box
+                key={emoji}
+                onClick={() => handleAvatarSelect(emoji)}
+                sx={sx.avatarItemLarge(profile?.avatar === emoji)}
+              >
+                {emoji}
+              </Box>
+            ))}
+          </Box>
+        </DialogContent>
+      </Dialog>
+
+      {/* Display name edit dialog */}
+      <Dialog
+        open={nameDialogOpen}
+        onClose={() => setNameDialogOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>{t("settings.displayName")}</DialogTitle>
+        <DialogContent>
+          <TextField
+            id="edit-display-name-input"
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            fullWidth
+            autoFocus
+            sx={{ mt: 1 }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleNameSave();
+            }}
+          />
+          <Button
+            id="save-name-btn"
+            variant="contained"
+            fullWidth
+            onClick={handleNameSave}
+            sx={{ mt: 2 }}
+          >
+            {t("common.save")}
+          </Button>
+        </DialogContent>
+      </Dialog>
+    </Box>
+  );
+};
+
+export default SettingsPage;

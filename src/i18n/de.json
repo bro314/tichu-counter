@@ -1,0 +1,108 @@
+{
+  "app": {
+    "name": "Tichu Counter"
+  },
+  "nav": {
+    "home": "Start",
+    "game": "Spiel",
+    "settings": "Einstellungen"
+  },
+  "home": {
+    "title": "Spiele",
+    "newGame": "Neues Spiel starten",
+    "noGames": "Noch keine Spiele. Starte dein erstes Spiel!",
+    "active": "Aktiv",
+    "finished": "Beendet",
+    "won": "Gewonnen",
+    "lost": "Verloren",
+    "vs": "vs",
+    "points": "Pkt",
+    "deleteGame": "Spiel löschen",
+    "deleteConfirm": "Möchtest du dieses Spiel wirklich löschen?",
+    "deleteConfirmTitle": "Spiel löschen"
+  },
+  "game": {
+    "title": "Spiel",
+    "round": "Runde",
+    "addRound": "Runde hinzufügen",
+    "team1": "Team 1",
+    "team2": "Team 2",
+    "tichu": "Tichu",
+    "grandTichu": "GT",
+    "first": "1.",
+    "cardPoints": "Kartenpunkte",
+    "oneTwoVictory": "1-2 Doppelsieg",
+    "none": "Keiner",
+    "totalScore": "Gesamt",
+    "gameOver": "Spiel beendet!",
+    "winner": "{{team}} gewinnt!",
+    "roundHistory": "Runden",
+    "noRounds": "Noch keine Runden gespielt",
+    "selectGame": "Wähle ein Spiel vom Startbildschirm",
+    "gameNotFound": "Spiel nicht gefunden",
+    "noteLabel": "Notiz",
+    "validationFirstRequired": "Bitte markiere, wer zuerst fertig war, wenn Tichu oder Grand Tichu angesagt wurde.",
+    "roundAdded": "Runde hinzugefügt",
+    "roundDeleted": "Runde gelöscht",
+    "roundUpdated": "Runde aktualisiert",
+    "errorAddRound": "Runde konnte nicht hinzugefügt werden",
+    "errorDeleteRound": "Runde konnte nicht gelöscht werden",
+    "errorLoadGame": "Spiel konnte nicht geladen werden"
+  },
+  "newGame": {
+    "title": "Neues Spiel",
+    "player": "Spieler {{n}}",
+    "playerPlaceholder": "Gastname eingeben oder Benutzer wählen",
+    "you": "Du",
+    "start": "Spiel starten",
+    "cancel": "Abbrechen",
+    "errorDuplicatePlayer": "Jeder Spieler darf nur einmal ausgewählt werden."
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": "Sprache",
+    "theme": "Design",
+    "lightTheme": "Hell",
+    "darkTheme": "Dunkel",
+    "avatar": "Avatar",
+    "displayName": "Anzeigename",
+    "signOut": "Abmelden",
+    "customEmoji": "Eigenes Emoji / Zeichen",
+    "customEmojiPlaceholder": "Oder eigenes Emoji/Zeichen eingeben...",
+    "deleteAccount": "Konto löschen",
+    "deleteAccountConfirmTitle": "Konto löschen",
+    "deleteAccountConfirmMessage": "Bist du sicher, dass du dein Konto löschen möchtest? Diese Aktion ist dauerhaft und kann nicht rückgängig gemacht werden."
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signUp": "Konto erstellen",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "googleSignIn": "Mit Google anmelden",
+    "appleSignIn": "Mit Apple anmelden",
+    "orDivider": "oder",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Schon ein Konto?",
+    "errorPasswordMismatch": "Passwörter stimmen nicht überein",
+    "errorPasswordTooShort": "Passwort muss mindestens 6 Zeichen lang sein",
+    "errorAuthFailed": "Anmeldung fehlgeschlagen",
+    "errorGoogleFailed": "Google-Anmeldung fehlgeschlagen"
+  },
+  "onboarding": {
+    "welcome": "Willkommen bei Tichu Counter!",
+    "setupProfile": "Profil einrichten",
+    "chooseAvatar": "Wähle einen Avatar",
+    "chooseLanguage": "Wähle deine Sprache",
+    "chooseTheme": "Wähle dein Design",
+    "continue": "Weiter",
+    "finish": "Los geht's!"
+  },
+  "common": {
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "confirm": "Bestätigen",
+    "undo": "Rückgängig",
+    "save": "Speichern"
+  }
+}
