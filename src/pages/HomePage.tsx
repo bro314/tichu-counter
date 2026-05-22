@@ -183,7 +183,7 @@ const HomePage = () => {
               const getPlayerDetails = (slot: PlayerSlot) => {
                 const isCurrentUser = slot.uid === user?.uid;
                 let displayName = slot.guestName || "Player";
-                let avatar = "👤"; // Default guest avatar
+                let avatar = "🐰"; // Default guest avatar
 
                 if (isCurrentUser && profile) {
                   displayName = profile.displayName;
@@ -192,7 +192,7 @@ const HomePage = () => {
                   const cached = playerProfileMap.get(slot.uid);
                   if (cached) {
                     displayName = cached.displayName;
-                    avatar = cached.avatar || "👤";
+                    avatar = cached.avatar || "🐰";
                   }
                 }
                 return { displayName, avatar };

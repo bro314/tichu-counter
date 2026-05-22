@@ -35,3 +35,6 @@ ios/App/App/capacitor.config.json
 *.keystore
 .env
 .env.*
+
+# Firebase cache directory
+.firebase/

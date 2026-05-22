@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global helper: Check if user is logged in
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper: Check if the logged-in user is the owner of the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Helper: Check if user is the creator or a player in a game
+    function isGameParticipant(gameData) {
+      return isAuthenticated() && (
+        gameData.createdBy == request.auth.uid || 
+        (gameData.playerUids != null && request.auth.uid in gameData.playerUids)
+      );
+    }
+
+    // 1. Users collection:
+    // - Any logged-in player can search/read player list to start a game.
+    // - Only the owner can edit, create, or delete their profile.
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId);
+    }
+
+    // 2. Games collection:
+    // - Any logged-in user can create a game, provided they mark themselves as creator.
+    // - Only the creator or participants in the game can read, delete or edit it.
+    match /games/{gameId} {
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow read: if isGameParticipant(resource.data);
+      allow update: if isGameParticipant(resource.data);
+      allow delete: if isGameParticipant(resource.data);
+
+      // 3. Rounds nested subcollection:
+      // - Only game participants can read, add, or edit rounds in this game.
+      match /rounds/{roundId} {
+        allow read, write: if isGameParticipant(get(/databases/$(database)/documents/games/$(gameId)).data);
+      }
+    }
+  }
+}

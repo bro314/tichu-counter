@@ -9,29 +9,29 @@
 export const colors = {
   // Team colors
   team1: {
-    main: '#1a73e8',
-    light: '#4a9af5',
-    dark: '#0d47a1',
+    main: '#1B4F72',
+    light: '#4A89B0',
+    dark: '#113248',
     // Dark mode variants
-    dm: { main: '#64b5f6', light: '#90caf9', dark: '#1a73e8' },
+    dm: { main: '#5dade2', light: '#85c1e9', dark: '#1B4F72' },
   },
   team2: {
-    main: '#e8453c',
-    light: '#ff6f61',
-    dark: '#b71c1c',
-    dm: { main: '#ff6f61', light: '#ff9a8b', dark: '#e8453c' },
+    main: '#EC1C24',
+    light: '#F1948A',
+    dark: '#7B1113',
+    dm: { main: '#ff6f61', light: '#ff9a8b', dark: '#EC1C24' },
   },
 
   // Backgrounds
   bg: {
-    light: { default: '#f5f5f5', paper: '#ffffff' },
-    dark: { default: '#121212', paper: '#1e1e1e' },
+    light: { default: '#F9F6F0', paper: '#FFF8E1' },
+    dark: { default: '#121212', paper: '#1A1A1A' },
   },
 
   // Desktop frame styling
   desktopBg: {
-    light: '#f0f2f5',
-    dark: '#0d1117',
+    light: '#EFEBE4',
+    dark: '#121212',
   },
   desktopBorder: {
     light: 'rgba(0, 0, 0, 0.06)',
@@ -39,7 +39,7 @@ export const colors = {
   },
 
   // Status bar (used by Capacitor)
-  statusBar: '#0d1117',
+  statusBar: '#1A1A1A',
 } as const;
 
 // ─── Typography ───────────────────────────────────────────────

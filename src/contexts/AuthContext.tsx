@@ -8,9 +8,12 @@ import {
   GoogleAuthProvider,
   signOut as firebaseSignOut,
   deleteUser,
+  signInWithCredential,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, Timestamp, deleteDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
+import { Capacitor } from '@capacitor/core';
+import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
 
 export interface UserProfile {
   displayName: string;
@@ -76,8 +79,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInWithGoogle = async () => {
-    const cred = await signInWithPopup(auth, googleProvider);
-    return cred.user;
+    if (Capacitor.isNativePlatform()) {
+      await GoogleSignIn.initialize({
+        clientId: '1017263787450-rqf7n7h7g740tiqqj3936psd7pd16p25.apps.googleusercontent.com',
+      });
+      const result = await GoogleSignIn.signIn();
+      if (!result.idToken) {
+        throw new Error('Google Sign-In failed: No ID token returned');
+      }
+      const credential = GoogleAuthProvider.credential(result.idToken);
+      const cred = await signInWithCredential(auth, credential);
+      return cred.user;
+    } else {
+      const cred = await signInWithPopup(auth, googleProvider);
+      return cred.user;
+    }
   };
 
   const signOut = async () => {
@@ -104,14 +120,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const deleteAccount = async () => {
     if (!user) throw new Error('Not authenticated');
     const ref = doc(db, 'users', user.uid);
+    const userProfile = profile;
+
     try {
       await deleteDoc(ref);
     } catch (err) {
       console.warn('Failed to delete Firestore document:', err);
     }
-    await deleteUser(user);
-    setProfile(null);
-    localStorage.clear();
+
+    try {
+      await deleteUser(user);
+      setProfile(null);
+      localStorage.clear();
+    } catch (err) {
+      if (userProfile) {
+        try {
+          await setDoc(ref, userProfile);
+        } catch (restoreErr) {
+          console.error('Failed to restore Firestore document:', restoreErr);
+        }
+      }
+      throw err;
+    }
   };
 
   const hasCompletedOnboarding = profile !== null;

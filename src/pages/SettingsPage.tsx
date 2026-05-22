@@ -26,6 +26,8 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import { useThemeMode } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
 import { AVATAR_EMOJIS } from "../constants";
@@ -44,6 +46,9 @@ const SettingsPage = () => {
 
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setMenuAnchor(event.currentTarget);
@@ -65,10 +70,16 @@ const SettingsPage = () => {
   const handleDeleteAccount = async () => {
     try {
       setDeleteDialogOpen(false);
-      navigate("/", { replace: true });
       await deleteAccount();
-    } catch (err) {
+      navigate("/", { replace: true });
+    } catch (err: any) {
       console.error("Failed to delete account:", err);
+      if (err?.code === "auth/requires-recent-login" || err?.message?.includes("recent")) {
+        setErrorMessage(t("settings.deleteAccountReauth"));
+      } else {
+        setErrorMessage(err?.message || t("auth.errorAuthFailed"));
+      }
+      setErrorSnackbarOpen(true);
     }
   };
 
@@ -378,6 +389,23 @@ const SettingsPage = () => {
           </Button>
         </DialogContent>
       </Dialog>
+
+      {/* Error Snackbar */}
+      <Snackbar
+        open={errorSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setErrorSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setErrorSnackbarOpen(false)}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%", borderRadius: `${shape.buttonRadius}px` }}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

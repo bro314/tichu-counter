@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Tichu Counter"
+    "name": "Dragon's Count"
   },
   "nav": {
     "home": "Start",
@@ -71,7 +71,8 @@
     "customEmojiPlaceholder": "Oder eigenes Emoji/Zeichen eingeben...",
     "deleteAccount": "Konto löschen",
     "deleteAccountConfirmTitle": "Konto löschen",
-    "deleteAccountConfirmMessage": "Bist du sicher, dass du dein Konto löschen möchtest? Diese Aktion ist dauerhaft und kann nicht rückgängig gemacht werden."
+    "deleteAccountConfirmMessage": "Bist du sicher, dass du dein Konto löschen möchtest? Diese Aktion ist dauerhaft und kann nicht rückgängig gemacht werden.",
+    "deleteAccountReauth": "Aus Sicherheitsgründen musst du dich vor Kurzem angemeldet haben, um dein Konto zu löschen. Bitte melde dich ab und wieder an, und versuche es erneut."
   },
   "auth": {
     "signIn": "Anmelden",
@@ -90,7 +91,7 @@
     "errorGoogleFailed": "Google-Anmeldung fehlgeschlagen"
   },
   "onboarding": {
-    "welcome": "Willkommen bei Tichu Counter!",
+    "welcome": "Willkommen bei Dragon's Count!",
     "setupProfile": "Profil einrichten",
     "chooseAvatar": "Wähle einen Avatar",
     "chooseLanguage": "Wähle deine Sprache",
@@ -103,6 +104,7 @@
     "delete": "Löschen",
     "confirm": "Bestätigen",
     "undo": "Rückgängig",
-    "save": "Speichern"
+    "save": "Speichern",
+    "deleted": "Gelöscht"
   }
 }

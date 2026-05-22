@@ -4,31 +4,31 @@
  * Import these instead of repeating inline sx props.
  * When the design changes, update here — all consumers update.
  */
-import type { SxProps, Theme } from '@mui/material/styles';
-import { fonts, shadows, shape, colors } from './tokens';
+import type { SxProps, Theme } from "@mui/material/styles";
+import { fonts, shadows, shape, colors } from "./tokens";
 
 // ─── Layout ───────────────────────────────────────────────────
 
 /** Full-height flex column (used by page roots) */
 export const pageRoot: SxProps<Theme> = {
-  display: 'flex',
-  flexDirection: 'column',
-  height: '100%',
-  overflow: 'auto',
+  display: "flex",
+  flexDirection: "column",
+  height: "100%",
+  overflow: "auto",
 };
 
 /** Centered content (loading spinners, empty states) */
 export const centered: SxProps<Theme> = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '100%',
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "100%",
 };
 
 /** Standard scrollable list container */
 export const scrollableList: SxProps<Theme> = {
-  display: 'flex',
-  flexDirection: 'column',
+  display: "flex",
+  flexDirection: "column",
   gap: 1,
   pb: 2,
 };
@@ -54,34 +54,36 @@ export const ctaContainer: SxProps<Theme> = {
 
 /** Score header wrapper (game page top section) */
 export const scoreHeader: SxProps<Theme> = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   gap: 1,
   py: 2,
   px: 1,
-  bgcolor: 'background.paper',
+  bgcolor: "background.paper",
   borderBottom: 1,
-  borderColor: 'divider',
+  borderColor: "divider",
 };
 
 /** Team name label in score header */
-export const teamLabel = (_color: 'primary' | 'secondary'): SxProps<Theme> => ({
+export const teamLabel = (_color: "primary" | "secondary"): SxProps<Theme> => ({
   fontWeight: fonts.weight.semibold,
   fontSize: fonts.size.sm,
-  color: 'text.secondary',
+  color: "text.secondary",
 });
 
 /** Large score number */
-export const scoreNumber = (_color: 'primary' | 'secondary'): SxProps<Theme> => ({
+export const scoreNumber = (
+  _color: "primary" | "secondary",
+): SxProps<Theme> => ({
   fontWeight: fonts.weight.extrabold,
-  color: 'text.primary',
+  color: "text.primary",
 });
 
 /** Colon separator between scores */
 export const scoreSeparator: SxProps<Theme> = {
   fontWeight: fonts.weight.regular - 100, // 300
-  color: 'text.secondary',
+  color: "text.secondary",
 };
 
 // ─── Round history ────────────────────────────────────────────
@@ -97,7 +99,9 @@ export const historyChip: SxProps<Theme> = {
 };
 
 /** Round score text */
-export const roundScore = (_color: "primary" | "secondary"): SxProps<Theme> => ({
+export const roundScore = (
+  _color: "primary" | "secondary",
+): SxProps<Theme> => ({
   fontWeight: fonts.weight.bold,
   color: "text.primary",
   fontSize: "1.05rem",
@@ -106,7 +110,7 @@ export const roundScore = (_color: "primary" | "secondary"): SxProps<Theme> => (
 /** Timestamp / metadata text */
 export const metaText: SxProps<Theme> = {
   fontSize: fonts.size.xs,
-  color: 'text.disabled',
+  color: "text.disabled",
 };
 
 // ─── Round editor ─────────────────────────────────────────────
@@ -114,7 +118,7 @@ export const metaText: SxProps<Theme> = {
 /** Player card in round editor */
 export const playerCard = (_isTeam1: boolean): SxProps<Theme> => ({
   p: 1.5,
-  bgcolor: 'background.paper',
+  bgcolor: "background.paper",
 });
 
 /** Player name in editor card */
@@ -128,8 +132,8 @@ export const playerName: SxProps<Theme> = {
 export const editorChip: SxProps<Theme> = {
   fontSize: fonts.size.chip,
   height: 26,
-  '&.MuiChip-outlined': {
-    bgcolor: 'background.paper',
+  "&.MuiChip-outlined": {
+    bgcolor: "background.paper",
   },
 };
 
@@ -138,8 +142,8 @@ export const victoryChip: SxProps<Theme> = {
   height: 32,
   fontSize: fonts.size.editorChip,
   fontWeight: fonts.weight.semibold,
-  '&.MuiChip-outlined': {
-    bgcolor: 'background.paper',
+  "&.MuiChip-outlined": {
+    bgcolor: "background.paper",
   },
 };
 
@@ -148,7 +152,7 @@ export const previewCard: SxProps<Theme> = {
   px: 2,
   py: 1.5,
   mb: 2,
-  bgcolor: 'action.hover',
+  bgcolor: "action.hover",
 };
 
 // ─── Delete button ────────────────────────────────────────────
@@ -157,7 +161,7 @@ export const previewCard: SxProps<Theme> = {
 export const deleteButton: SxProps<Theme> = {
   ml: 0.5,
   opacity: 0.4,
-  '&:hover': { opacity: 1 },
+  "&:hover": { opacity: 1 },
   p: 1,
 };
 
@@ -165,34 +169,38 @@ export const deleteButton: SxProps<Theme> = {
 
 /** Scrollable avatar grid container */
 export const avatarGridContainer: SxProps<Theme> = {
-  maxHeight: 180,
-  overflow: 'auto',
+  overflow: "auto",
   mb: 3,
   border: 1,
-  borderColor: 'divider',
-  borderRadius: 2,
+  borderColor: "divider",
+  borderRadius: `${shape.borderRadius}px`,
   p: 1,
+  msOverflowStyle: "none",
+  scrollbarWidth: "none",
+  "&::-webkit-scrollbar": {
+    display: "none",
+  },
 };
 
 /** Avatar grid layout */
 export const avatarGrid: SxProps<Theme> = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(6, 1fr)',
+  display: "grid",
+  gridTemplateColumns: "repeat(6, 1fr)",
   gap: 1,
 };
 
 /** Individual avatar item */
 export const avatarItem = (selected: boolean): SxProps<Theme> => ({
   fontSize: fonts.size.avatarSmall,
-  textAlign: 'center',
+  textAlign: "center",
   py: 0.8,
   borderRadius: 2,
-  cursor: 'pointer',
+  cursor: "pointer",
   border: 2,
-  borderColor: selected ? 'primary.main' : 'transparent',
-  bgcolor: selected ? 'action.selected' : 'transparent',
-  transition: 'all 0.15s ease',
-  '&:hover': { bgcolor: 'action.hover' },
+  borderColor: selected ? "primary.main" : "transparent",
+  bgcolor: selected ? "action.selected" : "transparent",
+  transition: "all 0.15s ease",
+  "&:hover": { bgcolor: "action.hover" },
 });
 
 /** Avatar item in settings dialog (slightly larger) */
@@ -204,31 +212,39 @@ export const avatarItemLarge = (selected: boolean): SxProps<Theme> => ({
 
 /** Outer desktop page framing background */
 export const desktopOuter: SxProps<Theme> = {
-  width: '100%',
-  height: '100%',
-  bgcolor: (theme) => theme.palette.mode === 'dark' ? colors.desktopBg.dark : colors.desktopBg.light,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  width: "100%",
+  height: "100%",
+  bgcolor: (theme) =>
+    theme.palette.mode === "dark"
+      ? colors.desktopBg.dark
+      : colors.desktopBg.light,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 };
 
 /** Responsive app frame container for centered phone feel */
 export const appFrame: SxProps<Theme> = {
-  display: 'flex',
-  flexDirection: 'column',
-  height: '100%',
-  width: '100%',
+  display: "flex",
+  flexDirection: "column",
+  height: "100%",
+  width: "100%",
   maxWidth: 480,
-  mx: 'auto',
-  bgcolor: 'background.default',
-  borderLeft: 'none',
-  borderRight: 'none',
-  boxShadow: 'none',
-  position: 'relative',
-  '@media (min-width: 480px)': {
-    borderLeft: (theme) => `1px solid ${theme.palette.mode === 'dark' ? colors.desktopBorder.dark : colors.desktopBorder.light}`,
-    borderRight: (theme) => `1px solid ${theme.palette.mode === 'dark' ? colors.desktopBorder.dark : colors.desktopBorder.light}`,
-    boxShadow: (theme) => theme.palette.mode === 'dark' ? shadows.desktopFrame.dark : shadows.desktopFrame.light,
+  mx: "auto",
+  bgcolor: "background.default",
+  borderLeft: "none",
+  borderRight: "none",
+  boxShadow: "none",
+  position: "relative",
+  "@media (min-width: 480px)": {
+    borderLeft: (theme) =>
+      `1px solid ${theme.palette.mode === "dark" ? colors.desktopBorder.dark : colors.desktopBorder.light}`,
+    borderRight: (theme) =>
+      `1px solid ${theme.palette.mode === "dark" ? colors.desktopBorder.dark : colors.desktopBorder.light}`,
+    boxShadow: (theme) =>
+      theme.palette.mode === "dark"
+        ? shadows.desktopFrame.dark
+        : shadows.desktopFrame.light,
   },
 };
 
@@ -238,16 +254,16 @@ export const dynamicHeader = (showShadow: boolean): SxProps<Theme> => ({
   pt: 2,
   pb: 1.5,
   flexShrink: 0,
-  bgcolor: 'background.default',
+  bgcolor: "background.default",
   borderBottom: 1,
-  borderColor: 'divider',
+  borderColor: "divider",
   boxShadow: showShadow
     ? (theme) =>
-        theme.palette.mode === 'dark'
-          ? '0 8px 24px rgba(0, 0, 0, 0.8)'
-          : '0 8px 20px rgba(0, 0, 0, 0.24)'
-    : 'none',
-  position: 'relative',
+        theme.palette.mode === "dark"
+          ? "0 8px 24px rgba(0, 0, 0, 0.8)"
+          : "0 8px 20px rgba(0, 0, 0, 0.24)"
+    : "none",
+  position: "relative",
   zIndex: 1,
 });
 
@@ -256,18 +272,18 @@ export const dynamicBottomBar = (showShadow: boolean): SxProps<Theme> => ({
   px: 2,
   pb: 2,
   pt: 1.5,
-  display: 'flex',
+  display: "flex",
   gap: 1.5,
-  alignItems: 'center',
-  bgcolor: 'background.default',
+  alignItems: "center",
+  bgcolor: "background.default",
   borderTop: 1,
-  borderColor: 'divider',
+  borderColor: "divider",
   boxShadow: showShadow
     ? (theme) =>
-        theme.palette.mode === 'dark'
-          ? '0 -8px 24px rgba(0, 0, 0, 0.8)'
-          : '0 -8px 20px rgba(0, 0, 0, 0.24)'
-    : 'none',
-  position: 'relative',
+        theme.palette.mode === "dark"
+          ? "0 -8px 24px rgba(0, 0, 0, 0.8)"
+          : "0 -8px 20px rgba(0, 0, 0, 0.24)"
+    : "none",
+  position: "relative",
   zIndex: 1,
 });

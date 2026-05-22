@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1017263787450",
+    "project_id": "tichu-counter-2c9ff",
+    "storage_bucket": "tichu-counter-2c9ff.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1017263787450:android:bfdcd6da9110315be5a183",
+        "android_client_info": {
+          "package_name": "app.tichuCounter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1017263787450-rqf7n7h7g740tiqqj3936psd7pd16p25.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmHoAta3ET4e56kZFwfVSffoq8NRGBVOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1017263787450-rqf7n7h7g740tiqqj3936psd7pd16p25.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

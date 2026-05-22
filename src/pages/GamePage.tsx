@@ -218,7 +218,7 @@ const GamePage = () => {
     (slot: PlayerSlot) => {
       const isCurrentUser = slot.uid === user?.uid;
       let displayName = slot.guestName || "Player";
-      let avatar = "👤"; // Default guest avatar
+      let avatar = "🐰"; // Default guest avatar
 
       if (isCurrentUser && profile) {
         displayName = profile.displayName;
@@ -227,12 +227,15 @@ const GamePage = () => {
         const cached = playerProfiles.get(slot.uid);
         if (cached) {
           displayName = cached.displayName;
-          avatar = cached.avatar || "👤";
+          avatar = cached.avatar || "🐰";
+        } else {
+          displayName = t("common.deleted");
+          avatar = "👻";
         }
       }
       return { displayName, avatar };
     },
-    [user, profile, playerProfiles],
+    [user, profile, playerProfiles, t],
   );
 
   const loadGame = useCallback(async () => {
