@@ -1,4 +1,4 @@
-# Tichu Counter
+# Dragon's Count (Tichu Log)
 
 A premium, cross-platform mobile and web application for tracking scores in the card game **Tichu**.
 

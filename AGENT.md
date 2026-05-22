@@ -1,7 +1,7 @@
-# Tichu Counter - Context for Coding Agents
+# Dragon's Count - Context for Coding Agents
 
 ## Project Overview
-This project is a web and mobile application (using Capacitor) designed to keep score for the card game **Tichu**.
+This project is a web and mobile application (using Capacitor) designed to keep score for the card game **Tichu**, rebranded as **Dragon's Count** (with subtitle *Tichu Log*).
 It tracks games, rounds, and scores for two teams of two players.
 
 ## Tech Stack
@@ -14,10 +14,29 @@ It tracks games, rounds, and scores for two teams of two players.
 
 ## Architecture & Styling Conventions
 - **Styling**: We use MUI's `sx` prop with centralized style objects defined in `src/styles/commonStyles.ts` and `src/styles/tokens.ts`.
+- **Theme Color Palette**:
+  - **Team 1 (Slate Blue)**: `#1B4F72` (dm: `#5dade2`)
+  - **Team 2 (Red)**: Crimson `#EC1C24` (dm: `#ff6f61`)
+  - **Light mode background**: Warm Cream `#F9F6F0` (Default), Soft Cream `#FFF8E1` (Cards/Sheets)
+  - **Dark mode background**: Charcoal Black `#121212` (Default), Dark Charcoal `#1A1A1A` (Cards/Sheets)
 - **Aesthetics**: The application aims for a highly premium, dynamic, and polished design. Avoid standard plain colors; use gradients, dark modes, subtle box-shadows, and `border-radius` defined in tokens.
 - **Component Layout**:
   - `Box`, `Typography`, `Card`, `List`, `ListItem` are heavily used.
   - Page wrappers typically use `Box` with `boxSizing: 'border-box'`, `width: '100%'`, and `height: '100%'` to prevent overflow in the responsive mobile frame.
+
+## Rebranding & Logo Integration
+- **App Name**: *"Dragon's Count"* in all user-visible text. *"Tichu Log"* is retained as a subtitle in legal or minor screens if appropriate.
+- **Logo Graphic**: Rendered as a high-resolution graphic in `AuthPage.tsx` using `logoImg`. Do not place redundant typography title labels (*"Dragon's Count"* or *"Tichu Log"*) underneath the logo component, as the logo graphic already integrates this calligraphy.
+- **Visual Assets**:
+  - **Favicon**: Circular dragon-eye crop at `public/favicon.png` and `public/favicon-32x32.png`.
+  - **Main Logo**: Brand logo with calligraphy text at `src/assets/logo.png` and `public/logo.png`.
+  - **App Icon**: Tight square crop at `src/assets/app-icon.png` and `public/app-icon.png` (halo-free, subtitle-text-free). Used for web favicons and native platforms (`AppIcon-512@2x.png` for iOS, and mipmaps for Android).
+  - **Feature Graphic**: Play Store feature graphic at `public/play_store_feature_graphic.png` (1024x500 px).
+
+## Account Deletion & Security
+- **Data Policy**: Account deletion deletes the user document from the `users` table and the authenticated user from Firebase Auth, but leaves all active/completed games intact. This prevents disruptive deletion cascades for other game participants. The policy is explicitly displayed on the account deletion page.
+- **Transaction Safety**: When deleting an account, if the Firebase Auth deletion fails, the Firestore user document is restored to prevent orphaned and unresolvable user records.
+- **Contact Email**: The official support contact email address is `pibro.apps@gmail.com` and must be used on the static Privacy Policy (`privacy.html`) and Deletion Portal (`delete-account.html`) pages.
 
 ## Recent UX & Feature Implementations
 Future agents should be aware of these recent requirements and changes to maintain consistency:
@@ -43,5 +62,7 @@ Future agents should be aware of these recent requirements and changes to mainta
 ## Common Workflows
 - **Running Locally**: `npm run dev`
 - **Building Mobile**: `npm run mob` (which runs `vite build` and `npx cap sync`)
+- **Deploying Live (Firebase)**: `npm run deploy` (deploys to hosting: `tichu-counter-2c9ff.web.app`)
 
 Always maintain the premium feel, use defined tokens in `commonStyles.ts`, and respect the responsive mobile-first constraints (e.g., `maxWidth: 480` on the app frame).
+
