@@ -7,10 +7,20 @@ export interface RegisteredPlayer {
   avatar: string;
 }
 
+let cachedPlayers: RegisteredPlayer[] | null = null;
+let cachedIsTest: boolean | null = null;
+
 /** Fetch all registered user profiles for player selection */
-export async function fetchAllPlayers(shouldFetchTestPlayers: boolean = false): Promise<RegisteredPlayer[]> {
+export async function fetchAllPlayers(
+  shouldFetchTestPlayers: boolean = false,
+  forceRefresh: boolean = false
+): Promise<RegisteredPlayer[]> {
+  if (!forceRefresh && cachedPlayers !== null && cachedIsTest === shouldFetchTestPlayers) {
+    return cachedPlayers;
+  }
+
   const snapshot = await getDocs(collection(db, 'users'));
-  return snapshot.docs
+  const players = snapshot.docs
     .filter((d) => {
       const isTest = !!d.data().isTestUser;
       return isTest === shouldFetchTestPlayers;
@@ -20,4 +30,8 @@ export async function fetchAllPlayers(shouldFetchTestPlayers: boolean = false): 
       displayName: (d.data().displayName as string) || 'Player',
       avatar: (d.data().avatar as string) || '🐉',
     }));
+
+  cachedPlayers = players;
+  cachedIsTest = shouldFetchTestPlayers;
+  return players;
 }

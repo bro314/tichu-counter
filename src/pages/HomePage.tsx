@@ -79,11 +79,32 @@ const HomePage = () => {
       setScores(scoreMap);
 
       // Fetch player profiles for name resolution
-      const allPlayers = await fetchAllPlayers(profile?.isTestUser ?? false);
-      const profileMap = new Map<string, PlayerNameResolver>();
+      let allPlayers = await fetchAllPlayers(profile?.isTestUser ?? false);
+      let profileMap = new Map<string, PlayerNameResolver>();
       for (const p of allPlayers) {
         profileMap.set(p.uid, { displayName: p.displayName, avatar: p.avatar });
       }
+
+      // Check if we need to force refetch because some player in the games list is missing
+      let hasMissingPlayer = false;
+      for (const game of gameList) {
+        for (const slot of game.players) {
+          if (slot.uid && slot.uid !== user.uid && !profileMap.has(slot.uid)) {
+            hasMissingPlayer = true;
+            break;
+          }
+        }
+        if (hasMissingPlayer) break;
+      }
+
+      if (hasMissingPlayer) {
+        allPlayers = await fetchAllPlayers(profile?.isTestUser ?? false, true);
+        profileMap = new Map<string, PlayerNameResolver>();
+        for (const p of allPlayers) {
+          profileMap.set(p.uid, { displayName: p.displayName, avatar: p.avatar });
+        }
+      }
+
       setPlayerProfileMap(profileMap);
     } catch (err) {
       console.error("Failed to load games:", err);

@@ -51,7 +51,7 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
   // Fetch registered players when dialog opens
   useEffect(() => {
     if (open) {
-      fetchAllPlayers(profile?.isTestUser ?? false).then(setRegisteredPlayers).catch(console.error);
+      fetchAllPlayers(profile?.isTestUser ?? false, true).then(setRegisteredPlayers).catch(console.error);
       setError(null);
     }
   }, [open, profile?.isTestUser]);

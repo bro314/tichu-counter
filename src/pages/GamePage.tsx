@@ -247,14 +247,35 @@ const GamePage = () => {
       setRounds(r);
       // Fetch profiles for registered players in this game
       if (g) {
-        const allPlayers = await fetchAllPlayers(profile?.isTestUser ?? false);
-        const profileMap = new Map<string, PlayerNameResolver>();
+        let allPlayers = await fetchAllPlayers(profile?.isTestUser ?? false);
+        let profileMap = new Map<string, PlayerNameResolver>();
         for (const p of allPlayers) {
           profileMap.set(p.uid, {
             displayName: p.displayName,
             avatar: p.avatar,
           });
         }
+
+        // Check if there is any missing player profile in this game
+        let hasMissingPlayer = false;
+        for (const slot of g.players) {
+          if (slot.uid && slot.uid !== user?.uid && !profileMap.has(slot.uid)) {
+            hasMissingPlayer = true;
+            break;
+          }
+        }
+
+        if (hasMissingPlayer) {
+          allPlayers = await fetchAllPlayers(profile?.isTestUser ?? false, true);
+          profileMap = new Map<string, PlayerNameResolver>();
+          for (const p of allPlayers) {
+            profileMap.set(p.uid, {
+              displayName: p.displayName,
+              avatar: p.avatar,
+            });
+          }
+        }
+
         setPlayerProfiles(profileMap);
       }
     } catch (err) {
@@ -267,7 +288,7 @@ const GamePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [id, t, profile]);
+  }, [id, t, user, profile]);
 
   useEffect(() => {
     loadGame();
