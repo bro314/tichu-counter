@@ -10,6 +10,7 @@ import CardContent from "@mui/material/CardContent";
 import CircularProgress from "@mui/material/CircularProgress";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import LockIcon from "@mui/icons-material/Lock";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import { useAuth } from "../contexts/AuthContext";
 import { createGame, fetchUserGames } from "../services/gameService";
 import { fetchRounds } from "../services/gameService";
@@ -109,10 +110,11 @@ const HomePage = () => {
   const handleCreateGame = async (
     players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
     isPrivate?: boolean,
+    tag?: string,
   ) => {
     if (!user) return;
     try {
-      const gameId = await createGame(user.uid, players, isPrivate);
+      const gameId = await createGame(user.uid, players, isPrivate, tag);
       setDialogOpen(false);
       navigate(`/game/${gameId}`);
     } catch (err) {
@@ -359,6 +361,40 @@ const HomePage = () => {
                                 }}
                               >
                                 {t("game.private")}
+                              </Typography>
+                            </Box>
+                          )}
+                          {game.tag && (
+                            <Box
+                              sx={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 0.25,
+                                bgcolor: (theme) =>
+                                  theme.palette.mode === "dark"
+                                    ? "rgba(147, 51, 234, 0.15)"
+                                    : "rgba(147, 51, 234, 0.08)",
+                                px: 0.75,
+                                py: 0.25,
+                                borderRadius: "4px",
+                                color: (theme) =>
+                                  theme.palette.mode === "dark"
+                                    ? "rgb(216, 180, 254)"
+                                    : "rgb(126, 34, 206)",
+                              }}
+                            >
+                              <LocalOfferIcon sx={{ fontSize: "0.75rem" }} />
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  fontSize: "0.65rem",
+                                  fontWeight: 800,
+                                  textTransform: "uppercase",
+                                  letterSpacing: 0.5,
+                                  lineHeight: 1,
+                                }}
+                              >
+                                {game.tag}
                               </Typography>
                             </Box>
                           )}

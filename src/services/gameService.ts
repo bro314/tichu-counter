@@ -24,6 +24,7 @@ function docToGame(id: string, data: Record<string, unknown>): Game {
     players: data.players as [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
     playerUids: (data.playerUids as string[]) || undefined,
     isPrivate: data.isPrivate as boolean | undefined,
+    tag: data.tag as string | undefined,
   };
 }
 
@@ -48,6 +49,7 @@ export async function createGame(
   createdBy: string,
   players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
   isPrivate?: boolean,
+  tag?: string,
 ): Promise<string> {
   const playerUids = players
     .map((p) => p.uid)
@@ -60,6 +62,7 @@ export async function createGame(
     players,
     playerUids,
     isPrivate: isPrivate || false,
+    tag: tag?.trim() || null,
   });
   return docRef.id;
 }

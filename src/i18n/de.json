@@ -48,7 +48,8 @@
     "errorAddRound": "Runde konnte nicht hinzugefügt werden",
     "errorDeleteRound": "Runde konnte nicht gelöscht werden",
     "errorLoadGame": "Spiel konnte nicht geladen werden",
-    "private": "Privat"
+    "private": "Privat",
+    "tag": "Event / Label"
   },
   "newGame": {
     "title": "Neues Spiel",
@@ -59,7 +60,9 @@
     "cancel": "Abbrechen",
     "errorDuplicatePlayer": "Jeder Spieler darf nur einmal ausgewählt werden.",
     "isPrivate": "Spiel privat machen",
-    "isPrivateHelp": "Private Spiele sind nur für Spielteilnehmer sichtbar. Nicht-private Spiele sind für alle Benutzer sichtbar."
+    "isPrivateHelp": "Private Spiele sind nur für Spielteilnehmer sichtbar. Nicht-private Spiele sind für alle Benutzer sichtbar.",
+    "tagLabel": "Spiel-Label (z.B. Turnier)",
+    "tagPlaceholder": "Optionales Event oder Label"
   },
   "settings": {
     "title": "Einstellungen",

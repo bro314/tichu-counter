@@ -27,6 +27,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import EditIcon from "@mui/icons-material/Edit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import LockIcon from "@mui/icons-material/Lock";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import { useAuth } from "../contexts/AuthContext";
 import {
   fetchGame,
@@ -91,9 +92,10 @@ function NoGameFallback() {
   const handleCreateGame = async (
     players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
     isPrivate?: boolean,
+    tag?: string,
   ) => {
     if (!user) return;
-    const gameId = await createGame(user.uid, players, isPrivate);
+    const gameId = await createGame(user.uid, players, isPrivate, tag);
     localStorage.setItem("lastGameId", gameId);
     navigate(`/game/${gameId}`, { replace: true });
   };
@@ -792,6 +794,40 @@ const GamePage = () => {
                         }}
                       >
                         {t("game.private")}
+                      </Typography>
+                    </Box>
+                  )}
+                  {game.tag && (
+                    <Box
+                      sx={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 0.25,
+                        bgcolor: (theme) =>
+                          theme.palette.mode === "dark"
+                            ? "rgba(147, 51, 234, 0.15)"
+                            : "rgba(147, 51, 234, 0.08)",
+                        px: 0.75,
+                        py: 0.25,
+                        borderRadius: "4px",
+                        color: (theme) =>
+                          theme.palette.mode === "dark"
+                            ? "rgb(216, 180, 254)"
+                            : "rgb(126, 34, 206)",
+                      }}
+                    >
+                      <LocalOfferIcon sx={{ fontSize: "0.75rem" }} />
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontSize: "0.65rem",
+                          fontWeight: 800,
+                          textTransform: "uppercase",
+                          letterSpacing: 0.5,
+                          lineHeight: 1,
+                        }}
+                      >
+                        {game.tag}
                       </Typography>
                     </Box>
                   )}

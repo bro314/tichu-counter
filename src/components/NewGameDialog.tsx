@@ -30,6 +30,7 @@ interface NewGameDialogProps {
   onCreateGame: (
     players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
     isPrivate?: boolean,
+    tag?: string,
   ) => void;
 }
 
@@ -53,6 +54,7 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
   const [player4, setPlayer4] = useState<PlayerSelection>(null);
   const [player4Input, setPlayer4Input] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
+  const [tag, setTag] = useState("");
 
   // Fetch registered players when dialog opens
   useEffect(() => {
@@ -60,6 +62,7 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
       fetchAllPlayers(profile?.isTestUser ?? false).then(setRegisteredPlayers).catch(console.error);
       setError(null);
       setIsPrivate(false);
+      setTag("");
     }
   }, [open, profile?.isTestUser]);
 
@@ -121,7 +124,7 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
     }
 
     setError(null);
-    onCreateGame([p1, p2, p3, p4], isPrivate);
+    onCreateGame([p1, p2, p3, p4], isPrivate, tag.trim());
     // Reset
     setPlayer2(null);
     setPlayer2Input("");
@@ -306,6 +309,22 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
               {t("newGame.isPrivateHelp")}
             </FormHelperText>
           </FormControl>
+
+          {/* Game Tag / Label */}
+          <TextField
+            label={t("newGame.tagLabel")}
+            placeholder={t("newGame.tagPlaceholder")}
+            value={tag}
+            onChange={(e) => {
+              if (e.target.value.length <= 12) {
+                setTag(e.target.value);
+              }
+            }}
+            helperText={`${tag.length}/12`}
+            size="small"
+            fullWidth
+            sx={{ mt: 1 }}
+          />
         </Box>
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2 }}>

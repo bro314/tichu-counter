@@ -14,6 +14,7 @@ export interface Game {
   players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot];
   playerUids?: string[];
   isPrivate?: boolean;
+  tag?: string;
 }
 
 /** A single round of scoring */

@@ -48,7 +48,8 @@
     "errorAddRound": "Failed to add round",
     "errorDeleteRound": "Failed to delete round",
     "errorLoadGame": "Failed to load game",
-    "private": "Private"
+    "private": "Private",
+    "tag": "Event / Tag"
   },
   "newGame": {
     "title": "New Game",
@@ -59,7 +60,9 @@
     "cancel": "Cancel",
     "errorDuplicatePlayer": "Each player can only be selected once.",
     "isPrivate": "Make game private",
-    "isPrivateHelp": "Private games are only visible to game participants. Non-private games are visible to all users."
+    "isPrivateHelp": "Private games are only visible to game participants. Non-private games are visible to all users.",
+    "tagLabel": "Game Tag (e.g. Tournament)",
+    "tagPlaceholder": "Optional event or tag"
   },
   "settings": {
     "title": "Settings",
