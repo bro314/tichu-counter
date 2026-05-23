@@ -4,7 +4,7 @@ import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDSQ_cobJxvxY1dPhTgOjq31LUlZ9cwyZA',
-  authDomain: 'tichu-counter-2c9ff.firebaseapp.com',
+  authDomain: 'dragons-count.de',
   projectId: 'tichu-counter-2c9ff',
   storageBucket: 'tichu-counter-2c9ff.firebasestorage.app',
   messagingSenderId: '1017263787450',
