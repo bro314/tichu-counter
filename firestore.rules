@@ -20,6 +20,16 @@ service cloud.firestore {
       );
     }
 
+    // Helper: Check if user can read the game (participant or authenticated and non-private)
+    function canReadGame(gameData) {
+      return isGameParticipant(gameData) || (isAuthenticated() && gameData.get('isPrivate', false) == false);
+    }
+
+    // Helper: Check if user can write to the game (must be a participant)
+    function canWriteGame(gameData) {
+      return isGameParticipant(gameData);
+    }
+
     // 1. Users collection:
     // - Any logged-in player can search/read player list to start a game.
     // - Only the owner can edit, create, or delete their profile.
@@ -30,17 +40,18 @@ service cloud.firestore {
 
     // 2. Games collection:
     // - Any logged-in user can create a game, provided they mark themselves as creator.
-    // - Only the creator or participants in the game can read, delete or edit it.
+    // - Only game participants can write/edit/delete. All authenticated users can read if non-private.
     match /games/{gameId} {
       allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
-      allow read: if isGameParticipant(resource.data);
-      allow update: if isGameParticipant(resource.data);
-      allow delete: if isGameParticipant(resource.data);
+      allow read: if canReadGame(resource.data);
+      allow update: if canWriteGame(resource.data);
+      allow delete: if canWriteGame(resource.data);
 
       // 3. Rounds nested subcollection:
-      // - Only game participants can read, add, or edit rounds in this game.
+      // - Only game participants can write/add/edit. All authenticated users can read if game is non-private.
       match /rounds/{roundId} {
-        allow read, write: if isGameParticipant(get(/databases/$(database)/documents/games/$(gameId)).data);
+        allow read: if canReadGame(get(/databases/$(database)/documents/games/$(gameId)).data);
+        allow write: if canWriteGame(get(/databases/$(database)/documents/games/$(gameId)).data);
       }
     }
   }

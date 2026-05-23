@@ -23,6 +23,7 @@ function docToGame(id: string, data: Record<string, unknown>): Game {
     status: data.status as 'active' | 'finished',
     players: data.players as [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
     playerUids: (data.playerUids as string[]) || undefined,
+    isPrivate: data.isPrivate as boolean | undefined,
   };
 }
 
@@ -46,6 +47,7 @@ function docToRound(id: string, data: Record<string, unknown>): Round {
 export async function createGame(
   createdBy: string,
   players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
+  isPrivate?: boolean,
 ): Promise<string> {
   const playerUids = players
     .map((p) => p.uid)
@@ -57,6 +59,7 @@ export async function createGame(
     status: 'active',
     players,
     playerUids,
+    isPrivate: isPrivate || false,
   });
   return docRef.id;
 }

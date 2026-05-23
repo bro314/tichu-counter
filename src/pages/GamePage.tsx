@@ -26,6 +26,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import EditIcon from "@mui/icons-material/Edit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import LockIcon from "@mui/icons-material/Lock";
 import { useAuth } from "../contexts/AuthContext";
 import {
   fetchGame,
@@ -89,9 +90,10 @@ function NoGameFallback() {
 
   const handleCreateGame = async (
     players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
+    isPrivate?: boolean,
   ) => {
     if (!user) return;
-    const gameId = await createGame(user.uid, players);
+    const gameId = await createGame(user.uid, players, isPrivate);
     localStorage.setItem("lastGameId", gameId);
     navigate(`/game/${gameId}`, { replace: true });
   };
@@ -750,17 +752,50 @@ const GamePage = () => {
                   mb: 1.5,
                 }}
               >
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: 0.5,
-                    color: getLabelColor(),
-                  }}
-                >
-                  {getLabelText()}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: 0.5,
+                      color: getLabelColor(),
+                    }}
+                  >
+                    {getLabelText()}
+                  </Typography>
+                  {game.isPrivate && (
+                    <Box
+                      sx={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 0.25,
+                        bgcolor: (theme) =>
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.08)"
+                            : "rgba(0, 0, 0, 0.05)",
+                        px: 0.75,
+                        py: 0.25,
+                        borderRadius: "4px",
+                        color: "text.secondary",
+                      }}
+                    >
+                      <LockIcon sx={{ fontSize: "0.75rem" }} />
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontSize: "0.65rem",
+                          fontWeight: 800,
+                          textTransform: "uppercase",
+                          letterSpacing: 0.5,
+                          lineHeight: 1,
+                        }}
+                      >
+                        {t("game.private")}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                   <Typography variant="caption" color="text.secondary">
                     {fmtDate(game.createdAt)}

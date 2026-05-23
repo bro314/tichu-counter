@@ -10,6 +10,10 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import Alert from "@mui/material/Alert";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import FormHelperText from "@mui/material/FormHelperText";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchAllPlayers } from "../services/playerService";
 import type { RegisteredPlayer } from "../services/playerService";
@@ -25,6 +29,7 @@ interface NewGameDialogProps {
   onClose: () => void;
   onCreateGame: (
     players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
+    isPrivate?: boolean,
   ) => void;
 }
 
@@ -47,12 +52,14 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
   const [player3Input, setPlayer3Input] = useState("");
   const [player4, setPlayer4] = useState<PlayerSelection>(null);
   const [player4Input, setPlayer4Input] = useState("");
+  const [isPrivate, setIsPrivate] = useState(false);
 
   // Fetch registered players when dialog opens
   useEffect(() => {
     if (open) {
       fetchAllPlayers(profile?.isTestUser ?? false).then(setRegisteredPlayers).catch(console.error);
       setError(null);
+      setIsPrivate(false);
     }
   }, [open, profile?.isTestUser]);
 
@@ -114,7 +121,7 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
     }
 
     setError(null);
-    onCreateGame([p1, p2, p3, p4]);
+    onCreateGame([p1, p2, p3, p4], isPrivate);
     // Reset
     setPlayer2(null);
     setPlayer2Input("");
@@ -277,6 +284,28 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
             setPlayer4,
             setPlayer4Input,
           )}
+
+          {/* Privacy setting */}
+          <FormControl component="fieldset" variant="standard" sx={{ mt: 1 }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={isPrivate}
+                  onChange={(e) => setIsPrivate(e.target.checked)}
+                  name="isPrivate"
+                  color="primary"
+                />
+              }
+              label={
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {t("newGame.isPrivate")}
+                </Typography>
+              }
+            />
+            <FormHelperText sx={{ mt: 0, ml: 4 }}>
+              {t("newGame.isPrivateHelp")}
+            </FormHelperText>
+          </FormControl>
         </Box>
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2 }}>

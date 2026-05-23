@@ -13,6 +13,7 @@ export interface Game {
   /** Player 1 is always the creator. Team 1 = P1+P2, Team 2 = P3+P4 */
   players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot];
   playerUids?: string[];
+  isPrivate?: boolean;
 }
 
 /** A single round of scoring */

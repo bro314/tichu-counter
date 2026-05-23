@@ -47,7 +47,8 @@
     "roundUpdated": "Round updated",
     "errorAddRound": "Failed to add round",
     "errorDeleteRound": "Failed to delete round",
-    "errorLoadGame": "Failed to load game"
+    "errorLoadGame": "Failed to load game",
+    "private": "Private"
   },
   "newGame": {
     "title": "New Game",
@@ -56,7 +57,9 @@
     "you": "You",
     "start": "Start Game",
     "cancel": "Cancel",
-    "errorDuplicatePlayer": "Each player can only be selected once."
+    "errorDuplicatePlayer": "Each player can only be selected once.",
+    "isPrivate": "Make game private",
+    "isPrivateHelp": "Private games are only visible to game participants. Non-private games are visible to all users."
   },
   "settings": {
     "title": "Settings",

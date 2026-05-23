@@ -47,7 +47,8 @@
     "roundUpdated": "Runde aktualisiert",
     "errorAddRound": "Runde konnte nicht hinzugefügt werden",
     "errorDeleteRound": "Runde konnte nicht gelöscht werden",
-    "errorLoadGame": "Spiel konnte nicht geladen werden"
+    "errorLoadGame": "Spiel konnte nicht geladen werden",
+    "private": "Privat"
   },
   "newGame": {
     "title": "Neues Spiel",
@@ -56,7 +57,9 @@
     "you": "Du",
     "start": "Spiel starten",
     "cancel": "Abbrechen",
-    "errorDuplicatePlayer": "Jeder Spieler darf nur einmal ausgewählt werden."
+    "errorDuplicatePlayer": "Jeder Spieler darf nur einmal ausgewählt werden.",
+    "isPrivate": "Spiel privat machen",
+    "isPrivateHelp": "Private Spiele sind nur für Spielteilnehmer sichtbar. Nicht-private Spiele sind für alle Benutzer sichtbar."
   },
   "settings": {
     "title": "Einstellungen",

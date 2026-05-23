@@ -9,6 +9,7 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import CircularProgress from "@mui/material/CircularProgress";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import LockIcon from "@mui/icons-material/Lock";
 import { useAuth } from "../contexts/AuthContext";
 import { createGame, fetchUserGames } from "../services/gameService";
 import { fetchRounds } from "../services/gameService";
@@ -107,10 +108,11 @@ const HomePage = () => {
 
   const handleCreateGame = async (
     players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
+    isPrivate?: boolean,
   ) => {
     if (!user) return;
     try {
-      const gameId = await createGame(user.uid, players);
+      const gameId = await createGame(user.uid, players, isPrivate);
       setDialogOpen(false);
       navigate(`/game/${gameId}`);
     } catch (err) {
@@ -317,17 +319,50 @@ const HomePage = () => {
                           mb: 1.5,
                         }}
                       >
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            fontWeight: 700,
-                            textTransform: "uppercase",
-                            letterSpacing: 0.5,
-                            color: getLabelColor(),
-                          }}
-                        >
-                          {getLabelText()}
-                        </Typography>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontWeight: 700,
+                              textTransform: "uppercase",
+                              letterSpacing: 0.5,
+                              color: getLabelColor(),
+                            }}
+                          >
+                            {getLabelText()}
+                          </Typography>
+                          {game.isPrivate && (
+                            <Box
+                              sx={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 0.25,
+                                bgcolor: (theme) =>
+                                  theme.palette.mode === "dark"
+                                    ? "rgba(255, 255, 255, 0.08)"
+                                    : "rgba(0, 0, 0, 0.05)",
+                                px: 0.75,
+                                py: 0.25,
+                                borderRadius: "4px",
+                                color: "text.secondary",
+                              }}
+                            >
+                              <LockIcon sx={{ fontSize: "0.75rem" }} />
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  fontSize: "0.65rem",
+                                  fontWeight: 800,
+                                  textTransform: "uppercase",
+                                  letterSpacing: 0.5,
+                                  lineHeight: 1,
+                                }}
+                              >
+                                {t("game.private")}
+                              </Typography>
+                            </Box>
+                          )}
+                        </Box>
                         <Typography variant="caption" color="text.secondary">
                           {formatDate(game.createdAt)}
                         </Typography>
