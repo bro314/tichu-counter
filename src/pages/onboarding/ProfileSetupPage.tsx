@@ -12,6 +12,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import { useAuth } from "../../contexts/AuthContext";
 import { useThemeMode } from "../../contexts/ThemeContext";
+import Alert from "@mui/material/Alert";
 import { AVATAR_EMOJIS } from "../../constants";
 import * as sx from "../../styles/commonStyles";
 
@@ -48,6 +49,7 @@ const ProfileSetupPage = ({ onComplete }: ProfileSetupPageProps) => {
   const [language, setLanguage] = useState(i18n.language);
   const [theme, setTheme] = useState(mode);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang);
@@ -67,6 +69,7 @@ const ProfileSetupPage = ({ onComplete }: ProfileSetupPageProps) => {
 
   const handleFinish = async () => {
     setLoading(true);
+    setError(null);
     try {
       await updateProfile({
         displayName: displayName || "Player",
@@ -78,6 +81,8 @@ const ProfileSetupPage = ({ onComplete }: ProfileSetupPageProps) => {
       onComplete();
     } catch (err) {
       console.error("Failed to save profile:", err);
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message || t("onboarding.errorSaveProfile"));
     } finally {
       setLoading(false);
     }
@@ -100,6 +105,12 @@ const ProfileSetupPage = ({ onComplete }: ProfileSetupPageProps) => {
       <Typography variant="h5" sx={{ mb: 4, fontWeight: 700 }}>
         {t("onboarding.setupProfile")}
       </Typography>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
 
       {/* Avatar picker — scrollable container showing ~3 rows */}
       <Typography variant="subtitle2" sx={{ mb: 1 }}>

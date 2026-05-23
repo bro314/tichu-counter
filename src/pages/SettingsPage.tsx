@@ -96,15 +96,29 @@ const SettingsPage = () => {
   };
 
   const handleAvatarSelect = async (emoji: string) => {
-    await updateProfile({ avatar: emoji });
-    setAvatarDialogOpen(false);
+    try {
+      await updateProfile({ avatar: emoji });
+      setAvatarDialogOpen(false);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setErrorMessage(message || t("settings.errorUpdateProfile"));
+      setErrorSnackbarOpen(true);
+    }
   };
 
   const handleNameSave = async () => {
     if (editName.trim()) {
-      await updateProfile({ displayName: editName.trim() });
+      try {
+        await updateProfile({ displayName: editName.trim() });
+        setNameDialogOpen(false);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        setErrorMessage(message || t("settings.errorUpdateProfile"));
+        setErrorSnackbarOpen(true);
+      }
+    } else {
+      setNameDialogOpen(false);
     }
-    setNameDialogOpen(false);
   };
 
   const handleSignOut = async () => {

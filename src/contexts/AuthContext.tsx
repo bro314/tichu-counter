@@ -10,7 +10,7 @@ import {
   deleteUser,
   signInWithCredential,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, Timestamp, deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, Timestamp, deleteDoc, collection, getDocs } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { Capacitor } from '@capacitor/core';
 import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
@@ -114,6 +114,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       createdAt: Timestamp.now(),
     };
     const updated = { ...existing, ...data };
+
+    // Validate combination of displayName + avatar is unique across all users
+    const cleanName = (updated.displayName || '').replace(/\s+/g, '').toLowerCase();
+    const cleanAvatar = updated.avatar || '';
+
+    const snapshot = await getDocs(collection(db, 'users'));
+    const isDuplicate = snapshot.docs.some((docSnap) => {
+      if (docSnap.id === user.uid) return false;
+      const otherData = docSnap.data();
+      const otherName = (otherData.displayName as string || '').replace(/\s+/g, '').toLowerCase();
+      const otherAvatar = otherData.avatar as string || '';
+      return otherName === cleanName && otherAvatar === cleanAvatar;
+    });
+
+    if (isDuplicate) {
+      throw new Error('This combination of name and avatar is already taken by another player.');
+    }
+
     await setDoc(ref, updated, { merge: true });
     setProfile(updated as UserProfile);
   };
