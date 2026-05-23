@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, documentId } from 'firebase/firestore';
 import { db } from '../firebase';
 
 export interface RegisteredPlayer {
@@ -16,17 +16,28 @@ export async function fetchPlayers(uids: string[]): Promise<RegisteredPlayer[]> 
   const missingUids = uniqueUids.filter((uid) => !resolvedPlayersCache.has(uid));
 
   if (missingUids.length > 0) {
-    const promises = missingUids.map((uid) => getDoc(doc(db, 'users', uid)));
-    const snapshots = await Promise.all(promises);
+    // Firestore 'in' query allows up to 30 items per batch
+    const BATCH_SIZE = 30;
+    const batches: string[][] = [];
+    for (let i = 0; i < missingUids.length; i += BATCH_SIZE) {
+      batches.push(missingUids.slice(i, i + BATCH_SIZE));
+    }
 
-    snapshots.forEach((snap) => {
-      if (snap.exists()) {
-        resolvedPlayersCache.set(snap.id, {
-          uid: snap.id,
-          displayName: (snap.data().displayName as string) || 'Player',
-          avatar: (snap.data().avatar as string) || '🐉',
-        });
-      }
+    const promises = batches.map(async (batch) => {
+      const q = query(collection(db, 'users'), where(documentId(), 'in', batch));
+      const snap = await getDocs(q);
+      return snap.docs;
+    });
+
+    const results = await Promise.all(promises);
+    const docs = results.flat();
+
+    docs.forEach((d) => {
+      resolvedPlayersCache.set(d.id, {
+        uid: d.id,
+        displayName: (d.data().displayName as string) || 'Player',
+        avatar: (d.data().avatar as string) || '🐉',
+      });
     });
   }
 
