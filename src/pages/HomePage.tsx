@@ -17,7 +17,7 @@ import type { Game, PlayerSlot, RoundScore } from "../types/game";
 import NewGameDialog from "../components/NewGameDialog";
 import * as sx from "../styles/commonStyles";
 import { shape } from "../styles/tokens";
-import { fetchAllPlayers } from "../services/playerService";
+import { fetchPlayers } from "../services/playerService";
 import type { PlayerNameResolver } from "../utils/playerName";
 
 const HomePage = () => {
@@ -78,31 +78,19 @@ const HomePage = () => {
       );
       setScores(scoreMap);
 
-      // Fetch player profiles for name resolution
-      let allPlayers = await fetchAllPlayers(profile?.isTestUser ?? false);
-      let profileMap = new Map<string, PlayerNameResolver>();
-      for (const p of allPlayers) {
-        profileMap.set(p.uid, { displayName: p.displayName, avatar: p.avatar });
-      }
-
-      // Check if we need to force refetch because some player in the games list is missing
-      let hasMissingPlayer = false;
+      // Collect all player UIDs from the user's games
+      const uids: string[] = [];
       for (const game of gameList) {
         for (const slot of game.players) {
-          if (slot.uid && slot.uid !== user.uid && !profileMap.has(slot.uid)) {
-            hasMissingPlayer = true;
-            break;
-          }
+          if (slot.uid) uids.push(slot.uid);
         }
-        if (hasMissingPlayer) break;
       }
 
-      if (hasMissingPlayer) {
-        allPlayers = await fetchAllPlayers(profile?.isTestUser ?? false, true);
-        profileMap = new Map<string, PlayerNameResolver>();
-        for (const p of allPlayers) {
-          profileMap.set(p.uid, { displayName: p.displayName, avatar: p.avatar });
-        }
+      // Fetch profiles only for those UIDs (using cache where possible)
+      const players = await fetchPlayers(uids);
+      const profileMap = new Map<string, PlayerNameResolver>();
+      for (const p of players) {
+        profileMap.set(p.uid, { displayName: p.displayName, avatar: p.avatar });
       }
 
       setPlayerProfileMap(profileMap);
@@ -111,7 +99,7 @@ const HomePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [user, profile]);
+  }, [user]);
 
   useEffect(() => {
     loadGames();

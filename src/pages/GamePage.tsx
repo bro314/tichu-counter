@@ -45,7 +45,7 @@ import {
 import type { Game, Round, PlayerSlot } from "../types/game";
 import NewGameDialog from "../components/NewGameDialog";
 import type { PlayerNameResolver } from "../utils/playerName";
-import { fetchAllPlayers } from "../services/playerService";
+import { fetchPlayers } from "../services/playerService";
 import * as sx from "../styles/commonStyles";
 import { fonts, shape } from "../styles/tokens";
 import type { TransitionProps } from "@mui/material/transitions";
@@ -247,35 +247,15 @@ const GamePage = () => {
       setRounds(r);
       // Fetch profiles for registered players in this game
       if (g) {
-        let allPlayers = await fetchAllPlayers(profile?.isTestUser ?? false);
-        let profileMap = new Map<string, PlayerNameResolver>();
-        for (const p of allPlayers) {
+        const uids = g.players.map((p) => p.uid).filter((uid): uid is string => uid !== null);
+        const players = await fetchPlayers(uids);
+        const profileMap = new Map<string, PlayerNameResolver>();
+        for (const p of players) {
           profileMap.set(p.uid, {
             displayName: p.displayName,
             avatar: p.avatar,
           });
         }
-
-        // Check if there is any missing player profile in this game
-        let hasMissingPlayer = false;
-        for (const slot of g.players) {
-          if (slot.uid && slot.uid !== user?.uid && !profileMap.has(slot.uid)) {
-            hasMissingPlayer = true;
-            break;
-          }
-        }
-
-        if (hasMissingPlayer) {
-          allPlayers = await fetchAllPlayers(profile?.isTestUser ?? false, true);
-          profileMap = new Map<string, PlayerNameResolver>();
-          for (const p of allPlayers) {
-            profileMap.set(p.uid, {
-              displayName: p.displayName,
-              avatar: p.avatar,
-            });
-          }
-        }
-
         setPlayerProfiles(profileMap);
       }
     } catch (err) {
@@ -288,7 +268,7 @@ const GamePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [id, t, user, profile]);
+  }, [id, t]);
 
   useEffect(() => {
     loadGame();
