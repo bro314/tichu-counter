@@ -51,10 +51,10 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
   // Fetch registered players when dialog opens
   useEffect(() => {
     if (open) {
-      fetchAllPlayers().then(setRegisteredPlayers).catch(console.error);
+      fetchAllPlayers(profile?.isTestUser ?? false).then(setRegisteredPlayers).catch(console.error);
       setError(null);
     }
-  }, [open]);
+  }, [open, profile?.isTestUser]);
 
   // Dynamic filter for selectable registered players in each slot
   const getSelectablePlayers = (slotNum: number) => {

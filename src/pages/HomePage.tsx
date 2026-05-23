@@ -79,7 +79,7 @@ const HomePage = () => {
       setScores(scoreMap);
 
       // Fetch player profiles for name resolution
-      const allPlayers = await fetchAllPlayers();
+      const allPlayers = await fetchAllPlayers(profile?.isTestUser ?? false);
       const profileMap = new Map<string, PlayerNameResolver>();
       for (const p of allPlayers) {
         profileMap.set(p.uid, { displayName: p.displayName, avatar: p.avatar });
@@ -90,7 +90,7 @@ const HomePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, profile]);
 
   useEffect(() => {
     loadGames();

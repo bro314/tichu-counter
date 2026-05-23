@@ -8,11 +8,16 @@ export interface RegisteredPlayer {
 }
 
 /** Fetch all registered user profiles for player selection */
-export async function fetchAllPlayers(): Promise<RegisteredPlayer[]> {
+export async function fetchAllPlayers(shouldFetchTestPlayers: boolean = false): Promise<RegisteredPlayer[]> {
   const snapshot = await getDocs(collection(db, 'users'));
-  return snapshot.docs.map((d) => ({
-    uid: d.id,
-    displayName: (d.data().displayName as string) || 'Player',
-    avatar: (d.data().avatar as string) || '🐉',
-  }));
+  return snapshot.docs
+    .filter((d) => {
+      const isTest = !!d.data().isTestUser;
+      return isTest === shouldFetchTestPlayers;
+    })
+    .map((d) => ({
+      uid: d.id,
+      displayName: (d.data().displayName as string) || 'Player',
+      avatar: (d.data().avatar as string) || '🐉',
+    }));
 }

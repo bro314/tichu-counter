@@ -21,6 +21,7 @@ export interface UserProfile {
   language: string;
   theme: string;
   createdAt: Date;
+  isTestUser?: boolean;
 }
 
 interface AuthContextType {

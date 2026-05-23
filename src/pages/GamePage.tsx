@@ -247,7 +247,7 @@ const GamePage = () => {
       setRounds(r);
       // Fetch profiles for registered players in this game
       if (g) {
-        const allPlayers = await fetchAllPlayers();
+        const allPlayers = await fetchAllPlayers(profile?.isTestUser ?? false);
         const profileMap = new Map<string, PlayerNameResolver>();
         for (const p of allPlayers) {
           profileMap.set(p.uid, {
@@ -267,7 +267,7 @@ const GamePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [id, t]);
+  }, [id, t, profile]);
 
   useEffect(() => {
     loadGame();
