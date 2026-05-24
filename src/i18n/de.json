@@ -58,7 +58,9 @@
     "private": "Privat",
     "tag": "Event / Label",
     "editGame": "Spiel bearbeiten",
-    "gameUpdated": "Spieleinstellungen erfolgreich aktualisiert."
+    "gameUpdated": "Spieleinstellungen erfolgreich aktualisiert.",
+    "deleteRoundTitle": "Runde löschen",
+    "deleteRoundConfirm": "Möchtest du diese Runde wirklich löschen?"
   },
   "newGame": {
     "title": "Neues Spiel",

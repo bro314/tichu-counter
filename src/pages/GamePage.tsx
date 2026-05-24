@@ -20,12 +20,10 @@ import DialogActions from "@mui/material/DialogActions";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Slide from "@mui/material/Slide";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import AddIcon from "@mui/icons-material/Add";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import EditIcon from "@mui/icons-material/Edit";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteIcon from "@mui/icons-material/Delete";
 import LockIcon from "@mui/icons-material/Lock";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import { useAuth } from "../contexts/AuthContext";
@@ -134,21 +132,11 @@ const GamePage = () => {
   const [rounds, setRounds] = useState<Round[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Game Menu state
-  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const menuOpen = Boolean(menuAnchor);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editGameDialogOpen, setEditGameDialogOpen] = useState(false);
-
-  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setMenuAnchor(event.currentTarget);
-  };
-  const handleMenuClose = () => {
-    setMenuAnchor(null);
-  };
+  const [deleteRoundDialogOpen, setDeleteRoundDialogOpen] = useState(false);
 
   const confirmDeleteGame = () => {
-    handleMenuClose();
     setDeleteDialogOpen(true);
   };
 
@@ -518,12 +506,17 @@ const GamePage = () => {
     }
   };
 
-  const handleDeleteClick = async () => {
+  const handleDeleteClick = () => {
+    setDeleteRoundDialogOpen(true);
+  };
+
+  const handleConfirmDeleteRound = async () => {
     if (!id || !editingRound) return;
     try {
       await deleteRound(id, editingRound.id);
       const newRounds = rounds.filter((r) => r.id !== editingRound.id);
       setRounds(newRounds);
+      setDeleteRoundDialogOpen(false);
       closeEditor();
       const newTotals = calculateTotals(newRounds);
       const w = checkWinner(newTotals);
@@ -536,6 +529,7 @@ const GamePage = () => {
       }
     } catch (err) {
       console.error("Failed to delete round:", err);
+      setDeleteRoundDialogOpen(false);
       setSnackbar({
         open: true,
         message: t("game.errorDeleteRound"),
@@ -1442,6 +1436,47 @@ const GamePage = () => {
             >
               {t("game.addRound")}
             </Button>
+            <IconButton
+              id="edit-game-btn"
+              onClick={() => setEditGameDialogOpen(true)}
+              sx={{
+                bgcolor: "action.hover",
+                border: 1,
+                borderColor: "divider",
+                borderRadius: `${shape.buttonRadius}px`,
+                p: 1.5,
+                flexShrink: 0,
+                transition: "all 0.15s ease",
+                "&:hover": {
+                  bgcolor: "action.selected",
+                },
+              }}
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              id="delete-game-btn"
+              onClick={confirmDeleteGame}
+              sx={{
+                bgcolor: "action.hover",
+                border: 1,
+                borderColor: "divider",
+                borderRadius: `${shape.buttonRadius}px`,
+                p: 1.5,
+                flexShrink: 0,
+                color: "error.main",
+                transition: "all 0.15s ease",
+                "&:hover": {
+                  bgcolor: "action.selected",
+                  color: "error.dark",
+                },
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </>
+        ) : (
+          <>
             <Button
               id="edit-game-btn"
               variant="outlined"
@@ -1451,35 +1486,28 @@ const GamePage = () => {
               sx={{
                 py: 1.5,
                 borderRadius: `${shape.buttonRadius}px`,
-                minWidth: 0,
-                px: 2,
+                flex: 1,
               }}
             >
               {t("common.edit")}
             </Button>
+            <Button
+              id="delete-game-btn"
+              variant="outlined"
+              color="error"
+              size="large"
+              startIcon={<DeleteIcon />}
+              onClick={confirmDeleteGame}
+              sx={{
+                py: 1.5,
+                borderRadius: `${shape.buttonRadius}px`,
+                flex: 1,
+              }}
+            >
+              {t("common.delete")}
+            </Button>
           </>
-        ) : (
-          <Box sx={{ flex: 1 }} />
         )}
-
-        <IconButton
-          id="game-options-menu-btn"
-          onClick={handleMenuOpen}
-          sx={{
-            bgcolor: "action.hover",
-            border: 1,
-            borderColor: "divider",
-            borderRadius: `${shape.buttonRadius}px`,
-            p: 1.5,
-            flexShrink: 0,
-            transition: "all 0.15s ease",
-            "&:hover": {
-              bgcolor: "action.selected",
-            },
-          }}
-        >
-          <MoreVertIcon />
-        </IconButton>
       </Box>
 
       {/* ========== ROUND EDITOR ========== */}
@@ -1701,64 +1729,49 @@ const GamePage = () => {
                 </Typography>
               </Box>
             </Card>
-            <Box sx={{ display: "flex", gap: 1.5 }}>
-              {editingRound && (
-                <Button
-                  variant="outlined"
-                  color="error"
-                  size="large"
-                  fullWidth
-                  onClick={handleDeleteClick}
-                  sx={{ py: 1.3 }}
-                >
-                  {t("common.delete")}
-                </Button>
-              )}
-              <Button
-                variant="outlined"
-                size="large"
-                fullWidth
-                onClick={closeEditor}
-                sx={{ py: 1.3 }}
-              >
-                {t("common.cancel")}
-              </Button>
+            <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
               <Button
                 id="save-round-btn"
                 variant="contained"
                 size="large"
-                fullWidth
                 onClick={handleSaveRound}
-                sx={{ py: 1.3 }}
+                sx={{ py: 1.3, flex: 1 }}
               >
                 {t("common.save")}
               </Button>
+              <Button
+                variant="outlined"
+                size="large"
+                onClick={closeEditor}
+                sx={{ py: 1.3, px: 3, whiteSpace: "nowrap" }}
+              >
+                {t("common.cancel")}
+              </Button>
+              {editingRound && (
+                <IconButton
+                  color="error"
+                  onClick={handleDeleteClick}
+                  sx={{
+                    border: 1,
+                    borderColor: "divider",
+                    borderRadius: `${shape.buttonRadius}px`,
+                    p: 1.4,
+                    transition: "all 0.15s ease",
+                    "&:hover": {
+                      bgcolor: "action.hover",
+                      color: "error.main",
+                    },
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              )}
             </Box>
           </Box>
         </Box>
       </Dialog>
 
-      {/* Game actions menu */}
-      <Menu
-        anchorEl={menuAnchor}
-        open={menuOpen}
-        onClose={handleMenuClose}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-      >
-        <MenuItem
-          onClick={confirmDeleteGame}
-          sx={{ color: "error.main", fontWeight: 600 }}
-        >
-          {t("home.deleteGame")}
-        </MenuItem>
-      </Menu>
+
 
       {/* Delete game confirmation dialog */}
       <Dialog
@@ -1778,6 +1791,29 @@ const GamePage = () => {
             {t("common.cancel")}
           </Button>
           <Button variant="contained" color="error" onClick={handleDeleteGame}>
+            {t("common.delete")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete round confirmation dialog */}
+      <Dialog
+        open={deleteRoundDialogOpen}
+        onClose={() => setDeleteRoundDialogOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>{t("game.deleteRoundTitle")}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary">
+            {t("game.deleteRoundConfirm")}
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setDeleteRoundDialogOpen(false)}>
+            {t("common.cancel")}
+          </Button>
+          <Button variant="contained" color="error" onClick={handleConfirmDeleteRound}>
             {t("common.delete")}
           </Button>
         </DialogActions>

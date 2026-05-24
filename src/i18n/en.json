@@ -58,7 +58,9 @@
     "private": "Private",
     "tag": "Event / Tag",
     "editGame": "Edit Game",
-    "gameUpdated": "Game settings updated successfully."
+    "gameUpdated": "Game settings updated successfully.",
+    "deleteRoundTitle": "Delete Round",
+    "deleteRoundConfirm": "Are you sure you want to delete this round?"
   },
   "newGame": {
     "title": "New Game",
