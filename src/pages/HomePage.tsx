@@ -16,7 +16,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import Chip from "@mui/material/Chip";
 import { useAuth } from "../contexts/AuthContext";
 import { createGame, fetchUserGames, searchGamesByPlayer, searchGamesByTag } from "../services/gameService";
-import { fetchRounds } from "../services/gameService";
 import { calculateTotals } from "../types/game";
 import type { Game, PlayerSlot, RoundScore } from "../types/game";
 import NewGameDialog from "../components/NewGameDialog";
@@ -91,14 +90,11 @@ const HomePage = () => {
       }
       setGames(gameList);
 
-      // Fetch scores for each game
+      // Compute scores directly from the embedded rounds in each game doc
       const scoreMap: Record<string, RoundScore> = {};
-      await Promise.all(
-        gameList.map(async (game) => {
-          const rounds = await fetchRounds(game.id);
-          scoreMap[game.id] = calculateTotals(rounds);
-        }),
-      );
+      for (const game of gameList) {
+        scoreMap[game.id] = calculateTotals(game.rounds || []);
+      }
       setScores(scoreMap);
 
       // Collect all player UIDs from the user's games

@@ -22,6 +22,7 @@ export interface UserProfile {
   theme: string;
   createdAt: Date;
   isTestUser?: boolean;
+  recentOpponentUids?: string[];
 }
 
 interface AuthContextType {

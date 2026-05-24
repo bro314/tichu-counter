@@ -7,9 +7,10 @@ import {
   deleteDoc,
   query,
   where,
-  orderBy,
   updateDoc,
   Timestamp,
+  setDoc,
+  arrayUnion,
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import type { Game, Round, PlayerSlot } from '../types/game';
@@ -26,23 +27,34 @@ function docToGame(id: string, data: Record<string, unknown>): Game {
     isPrivate: data.isPrivate as boolean | undefined,
     tag: data.tag as string | undefined,
     note: data.note as string | undefined,
+    rounds: (data.rounds as Array<Record<string, unknown>>)?.map((r) => ({
+      id: r.id as string,
+      roundNumber: r.roundNumber as number,
+      team1CardPoints: r.team1CardPoints as number,
+      team2CardPoints: r.team2CardPoints as number,
+      tichuCalls: (r.tichuCalls as number[]) || [],
+      grandTichuCalls: (r.grandTichuCalls as number[]) || [],
+      oneTwoVictory: r.oneTwoVictory as number,
+      finishedFirst: r.finishedFirst as number,
+      note: (r.note as string) || undefined,
+      createdAt: (r.createdAt as Timestamp)?.toDate() || new Date(),
+    })) || [],
   };
 }
 
-/** Convert Firestore doc to Round */
-function docToRound(id: string, data: Record<string, unknown>): Round {
-  return {
-    id,
-    roundNumber: data.roundNumber as number,
-    team1CardPoints: data.team1CardPoints as number,
-    team2CardPoints: data.team2CardPoints as number,
-    tichuCalls: (data.tichuCalls as number[]) || [],
-    grandTichuCalls: (data.grandTichuCalls as number[]) || [],
-    oneTwoVictory: data.oneTwoVictory as number,
-    finishedFirst: data.finishedFirst as number,
-    note: (data.note as string) || undefined,
-    createdAt: (data.createdAt as Timestamp)?.toDate() || new Date(),
-  };
+/** Update a user's recent opponent UIDs */
+export async function updateRecentOpponents(uid: string, opponentUids: string[]): Promise<void> {
+  if (opponentUids.length === 0) return;
+  const userRef = doc(db, 'users', uid);
+  const snap = await getDoc(userRef);
+  if (!snap.exists()) return;
+
+  const currentUids: string[] = snap.data().recentOpponentUids || [];
+
+  // Merge the new opponent UIDs at the start of the list and keep unique values
+  const merged = Array.from(new Set([...opponentUids, ...currentUids])).slice(0, 10);
+
+  await updateDoc(userRef, { recentOpponentUids: merged });
 }
 
 /** Create a new game */
@@ -66,7 +78,26 @@ export async function createGame(
     isPrivate: isPrivate || false,
     tag: tag?.trim() || null,
     note: note?.trim() || null,
+    rounds: [],
   });
+
+  // Centralized Tags: add tag to metadata document if present
+  if (tag?.trim()) {
+    await setDoc(doc(db, 'metadata', 'tags'), {
+      tags: arrayUnion(tag.trim())
+    }, { merge: true });
+  }
+
+  // Update creator's recent opponent UIDs
+  const opponents = players
+    .slice(1) // indices 1, 2, 3
+    .map(p => p.uid)
+    .filter((id): id is string => id !== null && id !== createdBy);
+
+  if (opponents.length > 0) {
+    await updateRecentOpponents(createdBy, opponents);
+  }
+
   return docRef.id;
 }
 
@@ -165,13 +196,8 @@ export async function fetchGame(gameId: string): Promise<Game | null> {
   return docToGame(docSnap.id, docSnap.data());
 }
 
-/** Delete a game and all its rounds */
+/** Delete a game */
 export async function deleteGame(gameId: string): Promise<void> {
-  // Delete all rounds first
-  const roundsSnap = await getDocs(collection(db, 'games', gameId, 'rounds'));
-  const deletePromises = roundsSnap.docs.map((d) => deleteDoc(d.ref));
-  await Promise.all(deletePromises);
-  // Delete the game
   await deleteDoc(doc(db, 'games', gameId));
 }
 
@@ -195,35 +221,59 @@ export async function updateGameMetadata(
     tag: tag.trim() || null,
     note: note.trim() || null,
   });
+
+  if (tag.trim()) {
+    await setDoc(doc(db, 'metadata', 'tags'), {
+      tags: arrayUnion(tag.trim())
+    }, { merge: true });
+  }
 }
+
+const generateId = () => Math.random().toString(36).substring(2, 15);
 
 /** Add a round to a game */
 export async function addRound(
   gameId: string,
   round: Omit<Round, 'id' | 'createdAt'>,
 ): Promise<string> {
-  // Firestore does not accept undefined values — strip them
-  const data: Record<string, unknown> = { ...round, createdAt: Timestamp.now() };
-  for (const key of Object.keys(data)) {
-    if (data[key] === undefined) delete data[key];
-  }
-  const docRef = await addDoc(collection(db, 'games', gameId, 'rounds'), data);
-  return docRef.id;
+  const gameRef = doc(db, 'games', gameId);
+  const roundId = generateId();
+  const newRound: Round = {
+    ...round,
+    id: roundId,
+    createdAt: new Date(),
+  };
+
+  const gameSnap = await getDoc(gameRef);
+  if (!gameSnap.exists()) throw new Error('Game not found');
+  const currentRounds = gameSnap.data().rounds || [];
+
+  // Clean undefined properties for Firestore
+  const cleanRound = JSON.parse(JSON.stringify(newRound));
+  // Firestore Timestamp needs to be set properly for createdAt
+  cleanRound.createdAt = Timestamp.now();
+
+  await updateDoc(gameRef, {
+    rounds: [...currentRounds, cleanRound]
+  });
+
+  return roundId;
 }
 
 /** Fetch all rounds for a game */
 export async function fetchRounds(gameId: string): Promise<Round[]> {
-  const q = query(
-    collection(db, 'games', gameId, 'rounds'),
-    orderBy('roundNumber', 'asc'),
-  );
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map((d) => docToRound(d.id, d.data()));
+  const game = await fetchGame(gameId);
+  return game?.rounds || [];
 }
 
 /** Delete a round */
 export async function deleteRound(gameId: string, roundId: string): Promise<void> {
-  await deleteDoc(doc(db, 'games', gameId, 'rounds', roundId));
+  const gameRef = doc(db, 'games', gameId);
+  const gameSnap = await getDoc(gameRef);
+  if (!gameSnap.exists()) throw new Error('Game not found');
+  const currentRounds = gameSnap.data().rounds || [];
+  const updatedRounds = currentRounds.filter((r: any) => r.id !== roundId);
+  await updateDoc(gameRef, { rounds: updatedRounds });
 }
 
 /** Update an existing round */
@@ -232,46 +282,31 @@ export async function updateRound(
   roundId: string,
   round: Omit<Round, 'id' | 'createdAt'>,
 ): Promise<void> {
-  // Firestore does not accept undefined values — strip them
-  const data: Record<string, unknown> = { ...round };
-  for (const key of Object.keys(data)) {
-    if (data[key] === undefined) delete data[key];
-  }
-  // If note was cleared, explicitly delete it
-  if (!round.note) {
-    data.note = null;
-  }
-  await updateDoc(doc(db, 'games', gameId, 'rounds', roundId), data);
+  const gameRef = doc(db, 'games', gameId);
+  const gameSnap = await getDoc(gameRef);
+  if (!gameSnap.exists()) throw new Error('Game not found');
+  const currentRounds = gameSnap.data().rounds || [];
+  const updatedRounds = currentRounds.map((r: any) => {
+    if (r.id === roundId) {
+      const updatedItem = {
+        ...r,
+        ...round,
+        note: round.note || null, // Clear note explicitly if empty
+      };
+      // Keep original timestamp if it existed
+      if (r.createdAt) updatedItem.createdAt = r.createdAt;
+      return updatedItem;
+    }
+    return r;
+  });
+  await updateDoc(gameRef, { rounds: updatedRounds });
 }
 
-/** Fetch all unique tags from games the user has access to */
-export async function fetchAllTags(currentUserUid: string): Promise<string[]> {
-  // Query 1: Public games
-  const qPublic = query(
-    collection(db, 'games'),
-    where('isPrivate', '==', false)
-  );
-
-  // Query 2: User's games (created or participated in)
-  const userGames = await fetchUserGames(currentUserUid);
-
-  const snapPublic = await getDocs(qPublic);
-  const publicGames = snapPublic.docs.map((d) => d.data());
-
-  const tags = new Set<string>();
-
-  const addCleanTag = (tagVal: unknown) => {
-    if (typeof tagVal === 'string') {
-      const trimmed = tagVal.trim();
-      if (trimmed) {
-        tags.add(trimmed);
-      }
-    }
-  };
-
-  publicGames.forEach((g) => addCleanTag(g.tag));
-  userGames.forEach((g) => addCleanTag(g.tag));
-
-  return Array.from(tags).sort((a, b) => a.localeCompare(b));
+/** Fetch all unique tags from metadata document */
+export async function fetchAllTags(): Promise<string[]> {
+  const snap = await getDoc(doc(db, 'metadata', 'tags'));
+  if (!snap.exists()) return [];
+  const tags = snap.data().tags as string[] || [];
+  return tags.sort((a, b) => a.localeCompare(b));
 }
 

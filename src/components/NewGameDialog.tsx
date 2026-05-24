@@ -14,7 +14,7 @@ import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { useAuth } from "../contexts/AuthContext";
-import { fetchAllPlayers } from "../services/playerService";
+import { fetchPlayers, searchPlayers } from "../services/playerService";
 import type { RegisteredPlayer } from "../services/playerService";
 import type { PlayerSlot, Game } from "../types/game";
 import { fetchAllTags } from "../services/gameService";
@@ -52,9 +52,6 @@ const NewGameDialog = ({
   const { t } = useTranslation();
   const { user, profile } = useAuth();
 
-  const [registeredPlayers, setRegisteredPlayers] = useState<
-    RegisteredPlayer[]
-  >([]);
   const [error, setError] = useState<string | null>(null);
 
   // Each slot: either a selected registered player or a typed guest string
@@ -64,76 +61,154 @@ const NewGameDialog = ({
   const [player3Input, setPlayer3Input] = useState("");
   const [player4, setPlayer4] = useState<PlayerSelection>(null);
   const [player4Input, setPlayer4Input] = useState("");
+
+  const [recentOpponents, setRecentOpponents] = useState<RegisteredPlayer[]>([]);
+  const [player2Options, setPlayer2Options] = useState<RegisteredPlayer[]>([]);
+  const [player3Options, setPlayer3Options] = useState<RegisteredPlayer[]>([]);
+  const [player4Options, setPlayer4Options] = useState<RegisteredPlayer[]>([]);
+
   const [isPrivate, setIsPrivate] = useState(false);
   const [tag, setTag] = useState("");
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [note, setNote] = useState("");
 
-  // Fetch registered players and tags when dialog opens
+  // Fetch recent opponents and tags when dialog opens
   useEffect(() => {
     if (open) {
-      fetchAllPlayers(profile?.isTestUser ?? false)
-        .then((players) => {
-          setRegisteredPlayers(players);
-          setError(null);
-
-          if (editMode && game) {
-            setIsPrivate(game.isPrivate || false);
-            setTag(game.tag || "");
-            setTagInput(game.tag || "");
-            setNote(game.note || "");
-
-            const resolvePlayer = (slot: PlayerSlot) => {
-              if (slot.uid) {
-                const found = players.find((p) => p.uid === slot.uid);
-                return (
-                  found || {
-                    uid: slot.uid,
-                    displayName: "Player",
-                    avatar: "🐉",
-                  }
-                );
-              }
-              return null;
-            };
-
-            const p2Resolved = resolvePlayer(game.players[1]);
-            setPlayer2(p2Resolved);
-            setPlayer2Input(p2Resolved ? "" : game.players[1].guestName || "");
-
-            const p3Resolved = resolvePlayer(game.players[2]);
-            setPlayer3(p3Resolved);
-            setPlayer3Input(p3Resolved ? "" : game.players[2].guestName || "");
-
-            const p4Resolved = resolvePlayer(game.players[3]);
-            setPlayer4(p4Resolved);
-            setPlayer4Input(p4Resolved ? "" : game.players[3].guestName || "");
-          } else {
-            setIsPrivate(false);
-            setTag("");
-            setTagInput("");
-            setNote("");
-            setPlayer2(null);
-            setPlayer2Input("");
-            setPlayer3(null);
-            setPlayer3Input("");
-            setPlayer4(null);
-            setPlayer4Input("");
-          }
-        })
-        .catch(console.error);
+      setError(null);
 
       if (user) {
-        fetchAllTags(user.uid)
+        fetchAllTags()
           .then(setAvailableTags)
           .catch(console.error);
+
+        const recentUids = profile?.recentOpponentUids || [];
+        if (recentUids.length > 0) {
+          fetchPlayers(recentUids)
+            .then(setRecentOpponents)
+            .catch(console.error);
+        } else {
+          setRecentOpponents([]);
+        }
+      }
+
+      if (editMode && game) {
+        setIsPrivate(game.isPrivate || false);
+        setTag(game.tag || "");
+        setTagInput(game.tag || "");
+        setNote(game.note || "");
+
+        const resolveAndSetPlayers = async () => {
+          const uidsToFetch = game.players
+            .slice(1)
+            .map((p) => p.uid)
+            .filter((uid): uid is string => uid !== null);
+
+          let resolvedList: RegisteredPlayer[] = [];
+          if (uidsToFetch.length > 0) {
+            resolvedList = await fetchPlayers(uidsToFetch);
+          }
+
+          const resolvePlayer = (slot: PlayerSlot) => {
+            if (slot.uid) {
+              return resolvedList.find((p) => p.uid === slot.uid) || {
+                uid: slot.uid,
+                displayName: "Player",
+                avatar: "🐉",
+              };
+            }
+            return null;
+          };
+
+          const p2Resolved = resolvePlayer(game.players[1]);
+          setPlayer2(p2Resolved);
+          setPlayer2Input(p2Resolved ? "" : game.players[1].guestName || "");
+
+          const p3Resolved = resolvePlayer(game.players[2]);
+          setPlayer3(p3Resolved);
+          setPlayer3Input(p3Resolved ? "" : game.players[2].guestName || "");
+
+          const p4Resolved = resolvePlayer(game.players[3]);
+          setPlayer4(p4Resolved);
+          setPlayer4Input(p4Resolved ? "" : game.players[3].guestName || "");
+        };
+
+        resolveAndSetPlayers().catch(console.error);
+      } else {
+        setIsPrivate(false);
+        setTag("");
+        setTagInput("");
+        setNote("");
+        setPlayer2(null);
+        setPlayer2Input("");
+        setPlayer3(null);
+        setPlayer3Input("");
+        setPlayer4(null);
+        setPlayer4Input("");
+        setPlayer2Options([]);
+        setPlayer3Options([]);
+        setPlayer4Options([]);
       }
     }
-  }, [open, profile?.isTestUser, editMode, game, user]);
+  }, [open, profile?.recentOpponentUids, editMode, game, user]);
+
+  // Debounced search for Player 2
+  useEffect(() => {
+    const term = player2Input.trim();
+    if (!term) {
+      setPlayer2Options([]);
+      return;
+    }
+    const delayDebounce = setTimeout(async () => {
+      try {
+        const results = await searchPlayers(term, profile?.isTestUser ?? false);
+        setPlayer2Options(results);
+      } catch (err) {
+        console.error(err);
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounce);
+  }, [player2Input, profile?.isTestUser]);
+
+  // Debounced search for Player 3
+  useEffect(() => {
+    const term = player3Input.trim();
+    if (!term) {
+      setPlayer3Options([]);
+      return;
+    }
+    const delayDebounce = setTimeout(async () => {
+      try {
+        const results = await searchPlayers(term, profile?.isTestUser ?? false);
+        setPlayer3Options(results);
+      } catch (err) {
+        console.error(err);
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounce);
+  }, [player3Input, profile?.isTestUser]);
+
+  // Debounced search for Player 4
+  useEffect(() => {
+    const term = player4Input.trim();
+    if (!term) {
+      setPlayer4Options([]);
+      return;
+    }
+    const delayDebounce = setTimeout(async () => {
+      try {
+        const results = await searchPlayers(term, profile?.isTestUser ?? false);
+        setPlayer4Options(results);
+      } catch (err) {
+        console.error(err);
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounce);
+  }, [player4Input, profile?.isTestUser]);
 
   // Dynamic filter for selectable registered players in each slot
-  const getSelectablePlayers = (slotNum: number) => {
+  const getSelectablePlayers = (playersList: RegisteredPlayer[], slotNum: number) => {
     const selectedUids = new Set<string>();
     if (user) selectedUids.add(user.uid);
 
@@ -141,7 +216,7 @@ const NewGameDialog = ({
     if (slotNum !== 3 && player3) selectedUids.add(player3.uid);
     if (slotNum !== 4 && player4) selectedUids.add(player4.uid);
 
-    return registeredPlayers.filter((p) => !selectedUids.has(p.uid));
+    return playersList.filter((p) => !selectedUids.has(p.uid));
   };
 
   const buildSlot = (
@@ -221,13 +296,14 @@ const NewGameDialog = ({
     inputValue: string,
     onChange: (val: PlayerSelection) => void,
     onInputChange: (val: string) => void,
+    options: RegisteredPlayer[],
     disabled: boolean = false,
   ) => {
-    const options = getSelectablePlayers(n);
+    const filteredOptions = getSelectablePlayers(options, n);
     return (
       <Autocomplete
         id={`player${n}-input`}
-        options={options}
+        options={filteredOptions}
         value={value}
         inputValue={inputValue}
         disabled={disabled}
@@ -329,6 +405,7 @@ const NewGameDialog = ({
                 currentUserPlayer ? `${currentUserPlayer.avatar} ${currentUserPlayer.displayName}` : "",
                 () => {},
                 () => {},
+                [],
                 true,
               )}
 
@@ -339,6 +416,7 @@ const NewGameDialog = ({
                 player2Input,
                 setPlayer2,
                 setPlayer2Input,
+                player2Input.trim() === "" ? recentOpponents : player2Options,
                 editMode,
               )}
 
@@ -358,6 +436,7 @@ const NewGameDialog = ({
                 player3Input,
                 setPlayer3,
                 setPlayer3Input,
+                player3Input.trim() === "" ? recentOpponents : player3Options,
                 editMode,
               )}
 
@@ -368,6 +447,7 @@ const NewGameDialog = ({
                 player4Input,
                 setPlayer4,
                 setPlayer4Input,
+                player4Input.trim() === "" ? recentOpponents : player4Options,
                 editMode,
               )}
             </>

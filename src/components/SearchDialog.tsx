@@ -13,7 +13,7 @@ import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import PersonIcon from "@mui/icons-material/Person";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import { useAuth } from "../contexts/AuthContext";
-import { fetchAllPlayers } from "../services/playerService";
+import { fetchPlayers, searchPlayers } from "../services/playerService";
 import type { RegisteredPlayer } from "../services/playerService";
 import { fetchAllTags } from "../services/gameService";
 
@@ -41,36 +41,60 @@ const SearchDialog = ({
   const { user, profile } = useAuth();
 
   const [mode, setMode] = useState<SearchMode>("player");
-  const [registeredPlayers, setRegisteredPlayers] = useState<
-    RegisteredPlayer[]
-  >([]);
   const [selectedPlayer, setSelectedPlayer] =
     useState<RegisteredPlayer | null>(null);
   const [playerInput, setPlayerInput] = useState("");
+
+  const [recentOpponents, setRecentOpponents] = useState<RegisteredPlayer[]>([]);
+  const [playerOptions, setPlayerOptions] = useState<RegisteredPlayer[]>([]);
 
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [tagInput, setTagInput] = useState("");
 
-  // Load registered players and tags when dialog opens
+  // Load recent opponents and tags when dialog opens
   useEffect(() => {
     if (open) {
-      fetchAllPlayers(profile?.isTestUser ?? false)
-        .then(setRegisteredPlayers)
-        .catch(console.error);
-
       if (user) {
-        fetchAllTags(user.uid)
+        fetchAllTags()
           .then(setAvailableTags)
           .catch(console.error);
+
+        const recentUids = profile?.recentOpponentUids || [];
+        if (recentUids.length > 0) {
+          fetchPlayers(recentUids)
+            .then(setRecentOpponents)
+            .catch(console.error);
+        } else {
+          setRecentOpponents([]);
+        }
       }
 
       setSelectedPlayer(null);
       setPlayerInput("");
       setSelectedTag(null);
       setTagInput("");
+      setPlayerOptions([]);
     }
-  }, [open, profile?.isTestUser, user]);
+  }, [open, profile?.recentOpponentUids, user]);
+
+  // Debounced search for Player Input
+  useEffect(() => {
+    const term = playerInput.trim();
+    if (!term) {
+      setPlayerOptions([]);
+      return;
+    }
+    const delayDebounce = setTimeout(async () => {
+      try {
+        const results = await searchPlayers(term, profile?.isTestUser ?? false);
+        setPlayerOptions(results);
+      } catch (err) {
+        console.error(err);
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounce);
+  }, [playerInput, profile?.isTestUser]);
 
   const handleApply = () => {
     if (mode === "player" && selectedPlayer) {
@@ -113,7 +137,7 @@ const SearchDialog = ({
           {mode === "player" && (
             <Autocomplete
               id="search-player-input"
-              options={registeredPlayers}
+              options={playerInput.trim() === "" ? recentOpponents : playerOptions}
               value={selectedPlayer}
               inputValue={playerInput}
               filterOptions={filterOptions}

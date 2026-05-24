@@ -16,6 +16,7 @@ export interface Game {
   isPrivate?: boolean;
   tag?: string;
   note?: string;
+  rounds?: Round[];
 }
 
 /** A single round of scoring */

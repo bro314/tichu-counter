@@ -38,6 +38,12 @@ service cloud.firestore {
       allow write: if isOwner(userId);
     }
 
+    // Metadata collection:
+    // - Any logged-in user can read and write metadata documents (such as tags).
+    match /metadata/{metadataId} {
+      allow read, write: if isAuthenticated();
+    }
+
     // 2. Games collection:
     // - Any logged-in user can create a game, provided they mark themselves as creator.
     // - Only game participants can write/edit/delete. All authenticated users can read if non-private.
