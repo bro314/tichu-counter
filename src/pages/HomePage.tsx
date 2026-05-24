@@ -132,10 +132,11 @@ const HomePage = () => {
     players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
     isPrivate?: boolean,
     tag?: string,
+    note?: string,
   ) => {
     if (!user) return;
     try {
-      const gameId = await createGame(user.uid, players, isPrivate, tag);
+      const gameId = await createGame(user.uid, players, isPrivate, tag, note);
       setDialogOpen(false);
       navigate(`/game/${gameId}`);
     } catch (err) {
@@ -688,6 +689,21 @@ const HomePage = () => {
                           </Box>
                         </Box>
                       </Box>
+                      {/* Optional Game Note */}
+                      {game.note && (
+                        <Box
+                          sx={{
+                            mt: 1,
+                          }}
+                        >
+                          <Typography
+                            variant="caption"
+                            sx={{ ...sx.metaText, fontStyle: "italic" }}
+                          >
+                            {game.note}
+                          </Typography>
+                        </Box>
+                      )}
                     </CardContent>
                   </CardActionArea>
                 </Card>

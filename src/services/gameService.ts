@@ -25,6 +25,7 @@ function docToGame(id: string, data: Record<string, unknown>): Game {
     playerUids: (data.playerUids as string[]) || undefined,
     isPrivate: data.isPrivate as boolean | undefined,
     tag: data.tag as string | undefined,
+    note: data.note as string | undefined,
   };
 }
 
@@ -50,6 +51,7 @@ export async function createGame(
   players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
   isPrivate?: boolean,
   tag?: string,
+  note?: string,
 ): Promise<string> {
   const playerUids = players
     .map((p) => p.uid)
@@ -63,6 +65,7 @@ export async function createGame(
     playerUids,
     isPrivate: isPrivate || false,
     tag: tag?.trim() || null,
+    note: note?.trim() || null,
   });
   return docRef.id;
 }
@@ -185,10 +188,12 @@ export async function updateGameMetadata(
   gameId: string,
   isPrivate: boolean,
   tag: string,
+  note: string,
 ): Promise<void> {
   await updateDoc(doc(db, 'games', gameId), {
     isPrivate,
     tag: tag.trim() || null,
+    note: note.trim() || null,
   });
 }
 

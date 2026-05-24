@@ -74,7 +74,9 @@
     "isPrivate": "Make game private",
     "isPrivateHelp": "Private games are only visible to game participants. Non-private games are visible to all users.",
     "tagLabel": "Game Tag (e.g. Tournament)",
-    "tagPlaceholder": "Optional event or tag"
+    "tagPlaceholder": "Optional event or tag",
+    "noteLabel": "Game Note",
+    "notePlaceholder": "Optional comment or note"
   },
   "settings": {
     "title": "Settings",

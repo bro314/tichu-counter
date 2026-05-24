@@ -15,6 +15,7 @@ export interface Game {
   playerUids?: string[];
   isPrivate?: boolean;
   tag?: string;
+  note?: string;
 }
 
 /** A single round of scoring */

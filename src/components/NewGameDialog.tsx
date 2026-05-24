@@ -31,10 +31,11 @@ interface NewGameDialogProps {
     players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
     isPrivate?: boolean,
     tag?: string,
+    note?: string,
   ) => void;
   editMode?: boolean;
   game?: Game | null;
-  onUpdateGame?: (isPrivate: boolean, tag: string) => void;
+  onUpdateGame?: (isPrivate: boolean, tag: string, note: string) => void;
 }
 
 /** A player selection can be a registered user or a guest name */
@@ -65,6 +66,7 @@ const NewGameDialog = ({
   const [player4Input, setPlayer4Input] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [tag, setTag] = useState("");
+  const [note, setNote] = useState("");
 
   // Fetch registered players when dialog opens
   useEffect(() => {
@@ -77,6 +79,7 @@ const NewGameDialog = ({
           if (editMode && game) {
             setIsPrivate(game.isPrivate || false);
             setTag(game.tag || "");
+            setNote(game.note || "");
 
             const resolvePlayer = (slot: PlayerSlot) => {
               if (slot.uid) {
@@ -106,6 +109,7 @@ const NewGameDialog = ({
           } else {
             setIsPrivate(false);
             setTag("");
+            setNote("");
             setPlayer2(null);
             setPlayer2Input("");
             setPlayer3(null);
@@ -150,7 +154,7 @@ const NewGameDialog = ({
 
     if (editMode) {
       if (onUpdateGame) {
-        onUpdateGame(isPrivate, tag.trim());
+        onUpdateGame(isPrivate, tag.trim(), note.trim());
       }
       return;
     }
@@ -184,7 +188,7 @@ const NewGameDialog = ({
 
     setError(null);
     if (onCreateGame) {
-      onCreateGame([p1, p2, p3, p4], isPrivate, tag.trim());
+      onCreateGame([p1, p2, p3, p4], isPrivate, tag.trim(), note.trim());
     }
     // Reset
     setPlayer2(null);
@@ -193,6 +197,7 @@ const NewGameDialog = ({
     setPlayer3Input("");
     setPlayer4(null);
     setPlayer4Input("");
+    setNote("");
   };
 
   const playerLabel = (n: number) => t("newGame.player", { n });
@@ -385,6 +390,22 @@ const NewGameDialog = ({
               }
             }}
             helperText={`${tag.length}/12`}
+            size="small"
+            fullWidth
+            sx={{ mt: 1 }}
+          />
+
+          {/* Game Note */}
+          <TextField
+            label={t("newGame.noteLabel")}
+            placeholder={t("newGame.notePlaceholder")}
+            value={note}
+            onChange={(e) => {
+              if (e.target.value.length <= 80) {
+                setNote(e.target.value);
+              }
+            }}
+            helperText={`${note.length}/80`}
             size="small"
             fullWidth
             sx={{ mt: 1 }}

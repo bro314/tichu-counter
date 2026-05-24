@@ -74,7 +74,9 @@
     "isPrivate": "Spiel privat machen",
     "isPrivateHelp": "Private Spiele sind nur für Spielteilnehmer sichtbar. Nicht-private Spiele sind für alle Benutzer sichtbar.",
     "tagLabel": "Spiel-Label (z.B. Turnier)",
-    "tagPlaceholder": "Optionales Event oder Label"
+    "tagPlaceholder": "Optionales Event oder Label",
+    "noteLabel": "Spielnotiz",
+    "notePlaceholder": "Optionale Anmerkung oder Notiz"
   },
   "settings": {
     "title": "Einstellungen",

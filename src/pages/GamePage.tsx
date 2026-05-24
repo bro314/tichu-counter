@@ -79,9 +79,10 @@ function NoGameFallback() {
     players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
     isPrivate?: boolean,
     tag?: string,
+    note?: string,
   ) => {
     if (!user) return;
-    const gameId = await createGame(user.uid, players, isPrivate, tag);
+    const gameId = await createGame(user.uid, players, isPrivate, tag, note);
     localStorage.setItem("lastGameId", gameId);
     navigate(`/game/${gameId}`, { replace: true });
   };
@@ -143,10 +144,10 @@ const GamePage = () => {
     }
   };
 
-  const handleUpdateGame = async (isPrivate: boolean, tag: string) => {
+  const handleUpdateGame = async (isPrivate: boolean, tag: string, note: string) => {
     if (!game) return;
     try {
-      await updateGameMetadata(game.id, isPrivate, tag);
+      await updateGameMetadata(game.id, isPrivate, tag, note);
       setEditGameDialogOpen(false);
       // Reload game metadata
       const updatedGame = await fetchGame(game.id);
@@ -823,6 +824,21 @@ const GamePage = () => {
                   </Box>
                 </Box>
               </Box>
+              {/* Optional Game Note */}
+              {game.note && (
+                <Box
+                  sx={{
+                    mt: 1,
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    sx={{ ...sx.metaText, fontStyle: "italic" }}
+                  >
+                    {game.note}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </CardActionArea>
         </Card>
