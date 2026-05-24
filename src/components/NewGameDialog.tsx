@@ -299,62 +299,66 @@ const NewGameDialog = ({
           </Alert>
         )}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
-          {/* Team 1 header */}
-          <Typography
-            variant="subtitle2"
-            color="text.secondary"
-            sx={{ fontWeight: 600 }}
-          >
-            {t("game.team1")}
-          </Typography>
+          {!editMode && (
+            <>
+              {/* Team 1 header */}
+              <Typography
+                variant="subtitle2"
+                color="text.secondary"
+                sx={{ fontWeight: 600 }}
+              >
+                {t("game.team1")}
+              </Typography>
 
-          {/* Player 1 — current user (read-only) */}
-          {renderPlayerPicker(
-            1,
-            currentUserPlayer,
-            currentUserPlayer ? `${currentUserPlayer.avatar} ${currentUserPlayer.displayName}` : "",
-            () => {},
-            () => {},
-            true,
-          )}
+              {/* Player 1 — current user (read-only) */}
+              {renderPlayerPicker(
+                1,
+                currentUserPlayer,
+                currentUserPlayer ? `${currentUserPlayer.avatar} ${currentUserPlayer.displayName}` : "",
+                () => {},
+                () => {},
+                true,
+              )}
 
-          {/* Player 2 */}
-          {renderPlayerPicker(
-            2,
-            player2,
-            player2Input,
-            setPlayer2,
-            setPlayer2Input,
-            editMode,
-          )}
+              {/* Player 2 */}
+              {renderPlayerPicker(
+                2,
+                player2,
+                player2Input,
+                setPlayer2,
+                setPlayer2Input,
+                editMode,
+              )}
 
-          {/* Team 2 header */}
-          <Typography
-            variant="subtitle2"
-            color="text.secondary"
-            sx={{ fontWeight: 600, mt: 1 }}
-          >
-            {t("game.team2")}
-          </Typography>
+              {/* Team 2 header */}
+              <Typography
+                variant="subtitle2"
+                color="text.secondary"
+                sx={{ fontWeight: 600, mt: 1 }}
+              >
+                {t("game.team2")}
+              </Typography>
 
-          {/* Player 3 */}
-          {renderPlayerPicker(
-            3,
-            player3,
-            player3Input,
-            setPlayer3,
-            setPlayer3Input,
-            editMode,
-          )}
+              {/* Player 3 */}
+              {renderPlayerPicker(
+                3,
+                player3,
+                player3Input,
+                setPlayer3,
+                setPlayer3Input,
+                editMode,
+              )}
 
-          {/* Player 4 */}
-          {renderPlayerPicker(
-            4,
-            player4,
-            player4Input,
-            setPlayer4,
-            setPlayer4Input,
-            editMode,
+              {/* Player 4 */}
+              {renderPlayerPicker(
+                4,
+                player4,
+                player4Input,
+                setPlayer4,
+                setPlayer4Input,
+                editMode,
+              )}
+            </>
           )}
 
           {/* Privacy setting */}
