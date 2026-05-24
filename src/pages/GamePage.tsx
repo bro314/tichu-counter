@@ -291,6 +291,7 @@ const GamePage = () => {
   const totals = calculateTotals(rounds);
   const winner = checkWinner(totals);
   const isGameOver = winner !== 0 || game.status === "finished";
+  const isPlayer = game.players.some((p) => p.uid === user?.uid);
   const playerAvatars = game.players.map(
     (slot) => getPlayerDetails(slot).avatar,
   );
@@ -933,8 +934,16 @@ const GamePage = () => {
                   sx={{ overflow: "visible" }}
                 >
                   <CardActionArea
-                    onClick={() => openEditRound(round)}
-                    sx={{ px: 2, py: 1 }}
+                    onClick={isPlayer ? () => openEditRound(round) : undefined}
+                    disabled={!isPlayer}
+                    sx={{
+                      px: 2,
+                      py: 1,
+                      cursor: isPlayer ? "pointer" : "default",
+                      "&.Mui-disabled": {
+                        opacity: 1,
+                      },
+                    }}
                   >
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       {/* Date & Time Column (DD.MM. top, HH:MM bottom) */}
@@ -1143,20 +1152,22 @@ const GamePage = () => {
                       </Box>
 
                       {/* Edit Icon Button for symmetry */}
-                      <IconButton
-                        size="small"
-                        sx={{
-                          ml: 1.5,
-                          p: 0.25,
-                          color: "text.disabled",
-                          opacity: 0.6,
-                          minWidth: 12,
-                          justifyContent: "flex-end",
-                          flex: 1,
-                        }}
-                      >
-                        <EditIcon sx={{ fontSize: "0.95rem" }} />
-                      </IconButton>
+                      {isPlayer && (
+                        <IconButton
+                          size="small"
+                          sx={{
+                            ml: 1.5,
+                            p: 0.25,
+                            color: "text.disabled",
+                            opacity: 0.6,
+                            minWidth: 12,
+                            justifyContent: "flex-end",
+                            flex: 1,
+                          }}
+                        >
+                          <EditIcon sx={{ fontSize: "0.95rem" }} />
+                        </IconButton>
+                      )}
                     </Box>
 
                     {/* Optional Note Row */}
@@ -1183,95 +1194,97 @@ const GamePage = () => {
       </Box>
 
       {/* Bottom action block */}
-      <Box sx={sx.dynamicBottomBar(showBottomShadow)}>
-        {!isGameOver ? (
-          <>
-            <Button
-              id="open-round-editor-btn"
-              variant="contained"
-              size="large"
-              startIcon={<AddIcon />}
-              onClick={openNewRound}
-              sx={{
-                ...sx.ctaButton,
-                flex: 1,
-              }}
-            >
-              {t("game.addRound")}
-            </Button>
-            <IconButton
-              id="edit-game-btn"
-              onClick={() => setEditGameDialogOpen(true)}
-              sx={{
-                bgcolor: "action.hover",
-                border: 1,
-                borderColor: "divider",
-                borderRadius: `${shape.buttonRadius}px`,
-                p: 1.5,
-                flexShrink: 0,
-                transition: "all 0.15s ease",
-                "&:hover": {
-                  bgcolor: "action.selected",
-                },
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-            <IconButton
-              id="delete-game-btn"
-              onClick={confirmDeleteGame}
-              sx={{
-                bgcolor: "action.hover",
-                border: 1,
-                borderColor: "divider",
-                borderRadius: `${shape.buttonRadius}px`,
-                p: 1.5,
-                flexShrink: 0,
-                color: "error.main",
-                transition: "all 0.15s ease",
-                "&:hover": {
-                  bgcolor: "action.selected",
-                  color: "error.dark",
-                },
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </>
-        ) : (
-          <>
-            <Button
-              id="edit-game-btn"
-              variant="outlined"
-              size="large"
-              startIcon={<EditIcon />}
-              onClick={() => setEditGameDialogOpen(true)}
-              sx={{
-                py: 1.5,
-                borderRadius: `${shape.buttonRadius}px`,
-                flex: 1,
-              }}
-            >
-              {t("common.edit")}
-            </Button>
-            <Button
-              id="delete-game-btn"
-              variant="outlined"
-              color="error"
-              size="large"
-              startIcon={<DeleteIcon />}
-              onClick={confirmDeleteGame}
-              sx={{
-                py: 1.5,
-                borderRadius: `${shape.buttonRadius}px`,
-                flex: 1,
-              }}
-            >
-              {t("common.delete")}
-            </Button>
-          </>
-        )}
-      </Box>
+      {isPlayer && (
+        <Box sx={sx.dynamicBottomBar(showBottomShadow)}>
+          {!isGameOver ? (
+            <>
+              <Button
+                id="open-round-editor-btn"
+                variant="contained"
+                size="large"
+                startIcon={<AddIcon />}
+                onClick={openNewRound}
+                sx={{
+                  ...sx.ctaButton,
+                  flex: 1,
+                }}
+              >
+                {t("game.addRound")}
+              </Button>
+              <IconButton
+                id="edit-game-btn"
+                onClick={() => setEditGameDialogOpen(true)}
+                sx={{
+                  bgcolor: "action.hover",
+                  border: 1,
+                  borderColor: "divider",
+                  borderRadius: `${shape.buttonRadius}px`,
+                  p: 1.5,
+                  flexShrink: 0,
+                  transition: "all 0.15s ease",
+                  "&:hover": {
+                    bgcolor: "action.selected",
+                  },
+                }}
+              >
+                <EditIcon />
+              </IconButton>
+              <IconButton
+                id="delete-game-btn"
+                onClick={confirmDeleteGame}
+                sx={{
+                  bgcolor: "action.hover",
+                  border: 1,
+                  borderColor: "divider",
+                  borderRadius: `${shape.buttonRadius}px`,
+                  p: 1.5,
+                  flexShrink: 0,
+                  color: "error.main",
+                  transition: "all 0.15s ease",
+                  "&:hover": {
+                    bgcolor: "action.selected",
+                    color: "error.dark",
+                  },
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </>
+          ) : (
+            <>
+              <Button
+                id="edit-game-btn"
+                variant="outlined"
+                size="large"
+                startIcon={<EditIcon />}
+                onClick={() => setEditGameDialogOpen(true)}
+                sx={{
+                  py: 1.5,
+                  borderRadius: `${shape.buttonRadius}px`,
+                  flex: 1,
+                }}
+              >
+                {t("common.edit")}
+              </Button>
+              <Button
+                id="delete-game-btn"
+                variant="outlined"
+                color="error"
+                size="large"
+                startIcon={<DeleteIcon />}
+                onClick={confirmDeleteGame}
+                sx={{
+                  py: 1.5,
+                  borderRadius: `${shape.buttonRadius}px`,
+                  flex: 1,
+                }}
+              >
+                {t("common.delete")}
+              </Button>
+            </>
+          )}
+        </Box>
+      )}
 
       <RoundEditorDialog
         open={editorOpen}
