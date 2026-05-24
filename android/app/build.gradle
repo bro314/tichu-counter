@@ -16,10 +16,45 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            // Read signing info from environment variables
+            def keystorePathVal = System.getenv("ANDROID_KEYSTORE_PATH") ?: ""
+            def keystorePasswordVal = System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: ""
+            def keyAliasVal = System.getenv("ANDROID_KEY_ALIAS") ?: ""
+            def keyPasswordVal = System.getenv("ANDROID_KEY_PASSWORD") ?: ""
+
+            // Fallback to local.properties if env variables are not defined
+            if (!keystorePathVal && project.rootProject.file('local.properties').exists()) {
+                Properties properties = new Properties()
+                properties.load(project.rootProject.file('local.properties').newDataInputStream())
+                keystorePathVal = properties.getProperty('keystore.path') ?: ""
+                keystorePasswordVal = properties.getProperty('keystore.password') ?: ""
+                keyAliasVal = properties.getProperty('keystore.alias') ?: ""
+                keyPasswordVal = properties.getProperty('keystore.keyPassword') ?: ""
+            }
+
+            if (keystorePathVal) {
+                // If it's a relative path, resolve it relative to the root project or app directory
+                def keystoreFile = new File(keystorePathVal)
+                if (!keystoreFile.isAbsolute()) {
+                    keystoreFile = project.rootProject.file(keystorePathVal)
+                }
+                storeFile keystoreFile
+                storePassword keystorePasswordVal
+                keyAlias keyAliasVal
+                keyPassword keyPasswordVal
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (signingConfigs.release.storeFile) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }

@@ -1,0 +1,51 @@
+default_platform(:android)
+
+platform :android do
+  desc "Automatically build and upload release to Google Play Internal Testing track"
+  lane :internal do
+    # 1. Sync the Capacitor assets
+    UI.message("Building web assets and syncing with Capacitor...")
+    sh("cd .. && npm run build && npx cap sync android")
+
+    # 2. Automatically get and increment version code based on Google Play Store internal track
+    begin
+      UI.message("Fetching version code from Google Play Console...")
+      version_codes = google_play_track_version_codes(
+        track: "internal",
+        package_name: "app.tichuCounter"
+      )
+      
+      latest_version_code = version_codes.max || 0
+      new_version_code = latest_version_code + 1
+      UI.message("Google Play latest version code: #{latest_version_code}. Setting new version code to: #{new_version_code}")
+      
+      increment_version_code(
+        version_code: new_version_code,
+        app_project_dir: "app"
+      )
+    rescue => e
+      UI.important("Could not retrieve version code from Google Play: #{e.message}")
+      UI.message("Falling back to local version code increment.")
+      increment_version_code(app_project_dir: "app")
+    end
+
+    # 3. Build signed Release App Bundle (.aab)
+    UI.message("Building Release App Bundle...")
+    gradle(
+      task: "bundle",
+      build_type: "Release"
+    )
+
+    # 4. Upload to Google Play Store internal track
+    UI.message("Uploading to Google Play Console (Internal Testing)...")
+    upload_to_play_store(
+      track: "internal",
+      aab: "app/build/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+    
+    UI.success("Successfully uploaded internal testing release!")
+  end
+end
