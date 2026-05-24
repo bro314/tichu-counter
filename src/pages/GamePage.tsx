@@ -38,6 +38,7 @@ import {
   updateGameStatus,
   createGame,
   deleteGame,
+  updateGameMetadata,
 } from "../services/gameService";
 import {
   calculateRoundScore,
@@ -137,6 +138,7 @@ const GamePage = () => {
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const menuOpen = Boolean(menuAnchor);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editGameDialogOpen, setEditGameDialogOpen] = useState(false);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setMenuAnchor(event.currentTarget);
@@ -161,6 +163,31 @@ const GamePage = () => {
       setSnackbar({
         open: true,
         message: t("game.errorDeleteRound"),
+        severity: "error",
+      });
+    }
+  };
+
+  const handleUpdateGame = async (isPrivate: boolean, tag: string) => {
+    if (!game) return;
+    try {
+      await updateGameMetadata(game.id, isPrivate, tag);
+      setEditGameDialogOpen(false);
+      // Reload game metadata
+      const updatedGame = await fetchGame(game.id);
+      if (updatedGame) {
+        setGame(updatedGame);
+      }
+      setSnackbar({
+        open: true,
+        message: t("game.gameUpdated"),
+        severity: "success",
+      });
+    } catch (err) {
+      console.error("Failed to update game settings:", err);
+      setSnackbar({
+        open: true,
+        message: t("game.errorLoadGame"),
         severity: "error",
       });
     }
@@ -1401,19 +1428,36 @@ const GamePage = () => {
       {/* Bottom action block */}
       <Box sx={sx.dynamicBottomBar(showBottomShadow)}>
         {!isGameOver ? (
-          <Button
-            id="open-round-editor-btn"
-            variant="contained"
-            size="large"
-            startIcon={<AddIcon />}
-            onClick={openNewRound}
-            sx={{
-              ...sx.ctaButton,
-              flex: 1,
-            }}
-          >
-            {t("game.addRound")}
-          </Button>
+          <>
+            <Button
+              id="open-round-editor-btn"
+              variant="contained"
+              size="large"
+              startIcon={<AddIcon />}
+              onClick={openNewRound}
+              sx={{
+                ...sx.ctaButton,
+                flex: 1,
+              }}
+            >
+              {t("game.addRound")}
+            </Button>
+            <Button
+              id="edit-game-btn"
+              variant="outlined"
+              size="large"
+              startIcon={<EditIcon />}
+              onClick={() => setEditGameDialogOpen(true)}
+              sx={{
+                py: 1.5,
+                borderRadius: `${shape.buttonRadius}px`,
+                minWidth: 0,
+                px: 2,
+              }}
+            >
+              {t("common.edit")}
+            </Button>
+          </>
         ) : (
           <Box sx={{ flex: 1 }} />
         )}
@@ -1738,6 +1782,15 @@ const GamePage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Edit game settings dialog */}
+      <NewGameDialog
+        open={editGameDialogOpen}
+        onClose={() => setEditGameDialogOpen(false)}
+        editMode={true}
+        game={game}
+        onUpdateGame={handleUpdateGame}
+      />
 
       <Snackbar
         open={snackbar.open}

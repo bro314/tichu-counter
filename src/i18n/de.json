@@ -19,7 +19,14 @@
     "points": "Pkt",
     "deleteGame": "Spiel löschen",
     "deleteConfirm": "Möchtest du dieses Spiel wirklich löschen?",
-    "deleteConfirmTitle": "Spiel löschen"
+    "deleteConfirmTitle": "Spiel löschen",
+    "search": "Suche",
+    "searchTitle": "Spiele suchen",
+    "searchByPlayer": "Spieler",
+    "searchByTag": "Label",
+    "searchPlayerPlaceholder": "Spieler suchen...",
+    "searchTagPlaceholder": "Label eingeben...",
+    "noResults": "Keine Spiele für diese Suche gefunden."
   },
   "game": {
     "title": "Spiel",
@@ -49,10 +56,13 @@
     "errorDeleteRound": "Runde konnte nicht gelöscht werden",
     "errorLoadGame": "Spiel konnte nicht geladen werden",
     "private": "Privat",
-    "tag": "Event / Label"
+    "tag": "Event / Label",
+    "editGame": "Spiel bearbeiten",
+    "gameUpdated": "Spieleinstellungen erfolgreich aktualisiert."
   },
   "newGame": {
     "title": "Neues Spiel",
+    "editTitle": "Spiel bearbeiten",
     "player": "Spieler {{n}}",
     "playerPlaceholder": "Gastname eingeben oder Benutzer wählen",
     "you": "Du",
@@ -111,6 +121,7 @@
     "confirm": "Bestätigen",
     "undo": "Rückgängig",
     "save": "Speichern",
-    "deleted": "Gelöscht"
+    "deleted": "Gelöscht",
+    "edit": "Bearbeiten"
   }
 }

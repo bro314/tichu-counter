@@ -9,18 +9,29 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import CircularProgress from "@mui/material/CircularProgress";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import SearchIcon from "@mui/icons-material/Search";
 import LockIcon from "@mui/icons-material/Lock";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import CloseIcon from "@mui/icons-material/Close";
+import Chip from "@mui/material/Chip";
 import { useAuth } from "../contexts/AuthContext";
-import { createGame, fetchUserGames } from "../services/gameService";
+import { createGame, fetchUserGames, searchGamesByPlayer, searchGamesByTag } from "../services/gameService";
 import { fetchRounds } from "../services/gameService";
 import { calculateTotals } from "../types/game";
 import type { Game, PlayerSlot, RoundScore } from "../types/game";
 import NewGameDialog from "../components/NewGameDialog";
+import SearchDialog from "../components/SearchDialog";
 import * as sx from "../styles/commonStyles";
 import { shape } from "../styles/tokens";
 import { fetchPlayers } from "../services/playerService";
+import appIconImg from "../assets/app-icon.png";
+import type { RegisteredPlayer } from "../services/playerService";
 import type { PlayerNameResolver } from "../utils/playerName";
+
+type SearchFilter =
+  | { type: "player"; player: RegisteredPlayer }
+  | { type: "tag"; tag: string }
+  | null;
 
 const HomePage = () => {
   const { t } = useTranslation();
@@ -31,6 +42,8 @@ const HomePage = () => {
   const [scores, setScores] = useState<Record<string, RoundScore>>({});
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [searchDialogOpen, setSearchDialogOpen] = useState(false);
+  const [searchFilter, setSearchFilter] = useState<SearchFilter>(null);
   const [playerProfileMap, setPlayerProfileMap] = useState<
     Map<string, PlayerNameResolver>
   >(new Map());
@@ -66,8 +79,16 @@ const HomePage = () => {
   const loadGames = useCallback(async () => {
     if (!user) return;
     setLoading(true);
+    setGames([]); // Clear stale/merged-looking list while loading
     try {
-      const gameList = await fetchUserGames(user.uid);
+      let gameList: Game[];
+      if (searchFilter?.type === "player") {
+        gameList = await searchGamesByPlayer(searchFilter.player.uid, user.uid);
+      } else if (searchFilter?.type === "tag") {
+        gameList = await searchGamesByTag(searchFilter.tag, user.uid);
+      } else {
+        gameList = await fetchUserGames(user.uid);
+      }
       setGames(gameList);
 
       // Fetch scores for each game
@@ -101,7 +122,7 @@ const HomePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, searchFilter]);
 
   useEffect(() => {
     loadGames();
@@ -142,9 +163,77 @@ const HomePage = () => {
     >
       {/* Title Header */}
       <Box sx={sx.dynamicHeader(showTopShadow)}>
-        <Typography variant="h5" sx={{ fontWeight: 700 }}>
-          {t("home.title")}
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.2 }}>
+            <Box
+              component="img"
+              src={appIconImg}
+              alt="Dragon's Count"
+              sx={{
+                width: 40,
+                height: 40,
+                objectFit: "contain",
+                borderRadius: `${shape.borderRadius}px`,
+              }}
+            />
+            <Typography variant="h6" sx={{ fontWeight: 800, letterSpacing: -0.5 }}>
+              {t("app.name")}
+            </Typography>
+          </Box>
+          {searchFilter ? (
+            <Chip
+              icon={
+                searchFilter.type === "player" ? (
+                  <Typography sx={{ fontSize: "1rem", lineHeight: 1 }}>
+                    {searchFilter.player.avatar}
+                  </Typography>
+                ) : (
+                  <LocalOfferIcon sx={{ fontSize: "0.9rem" }} />
+                )
+              }
+              label={
+                searchFilter.type === "player"
+                  ? searchFilter.player.displayName
+                  : searchFilter.tag
+              }
+              size="small"
+              onDelete={() => setSearchFilter(null)}
+              deleteIcon={<CloseIcon sx={{ fontSize: "0.9rem" }} />}
+              sx={{
+                fontWeight: 700,
+                fontSize: "0.75rem",
+                textTransform: "uppercase",
+                letterSpacing: 0.5,
+                maxWidth: 180,
+              }}
+            />
+          ) : (
+            profile && (
+              <Chip
+                icon={
+                  <Typography sx={{ fontSize: "1rem", lineHeight: 1 }}>
+                    {profile.avatar || "🐉"}
+                  </Typography>
+                }
+                label={profile.displayName || "Player"}
+                size="small"
+                sx={{
+                  fontWeight: 700,
+                  fontSize: "0.75rem",
+                  textTransform: "uppercase",
+                  letterSpacing: 0.5,
+                  maxWidth: 180,
+                }}
+              />
+            )
+          )}
+        </Box>
       </Box>
 
       {/* Game list */}
@@ -181,7 +270,7 @@ const HomePage = () => {
               color="text.secondary"
               sx={{ textAlign: "center", px: 4 }}
             >
-              {t("home.noGames")}
+              {searchFilter ? t("home.noResults") : t("home.noGames")}
             </Typography>
           </Box>
         ) : (
@@ -608,18 +697,32 @@ const HomePage = () => {
         )}
       </Box>
 
-      {/* Start new game button */}
+      {/* Bottom bar with Start New Game and Search */}
       <Box sx={sx.dynamicBottomBar(showBottomShadow)}>
         <Button
           id="start-new-game-btn"
           variant="contained"
           size="large"
-          fullWidth
           startIcon={<PlayArrowIcon />}
           onClick={() => setDialogOpen(true)}
-          sx={sx.ctaButton}
+          sx={{ ...sx.ctaButton, flex: 1 }}
         >
           {t("home.newGame")}
+        </Button>
+        <Button
+          id="search-games-btn"
+          variant="outlined"
+          size="large"
+          startIcon={<SearchIcon />}
+          onClick={() => setSearchDialogOpen(true)}
+          sx={{
+            py: 1.5,
+            borderRadius: `${shape.buttonRadius}px`,
+            minWidth: 0,
+            px: 2,
+          }}
+        >
+          {t("home.search")}
         </Button>
       </Box>
 
@@ -628,6 +731,20 @@ const HomePage = () => {
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         onCreateGame={handleCreateGame}
+      />
+
+      {/* Search dialog */}
+      <SearchDialog
+        open={searchDialogOpen}
+        onClose={() => setSearchDialogOpen(false)}
+        onSearchPlayer={(player) => {
+          setSearchFilter({ type: "player", player });
+          setSearchDialogOpen(false);
+        }}
+        onSearchTag={(tag) => {
+          setSearchFilter({ type: "tag", tag });
+          setSearchDialogOpen(false);
+        }}
       />
     </Box>
   );

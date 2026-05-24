@@ -19,7 +19,14 @@
     "points": "pts",
     "deleteGame": "Delete Game",
     "deleteConfirm": "Are you sure you want to delete this game?",
-    "deleteConfirmTitle": "Delete Game"
+    "deleteConfirmTitle": "Delete Game",
+    "search": "Search",
+    "searchTitle": "Search Games",
+    "searchByPlayer": "Player",
+    "searchByTag": "Tag",
+    "searchPlayerPlaceholder": "Search for a player...",
+    "searchTagPlaceholder": "Enter a tag...",
+    "noResults": "No games found for this search."
   },
   "game": {
     "title": "Game",
@@ -49,10 +56,13 @@
     "errorDeleteRound": "Failed to delete round",
     "errorLoadGame": "Failed to load game",
     "private": "Private",
-    "tag": "Event / Tag"
+    "tag": "Event / Tag",
+    "editGame": "Edit Game",
+    "gameUpdated": "Game settings updated successfully."
   },
   "newGame": {
     "title": "New Game",
+    "editTitle": "Edit Game",
     "player": "Player {{n}}",
     "playerPlaceholder": "Enter guest name or choose user",
     "you": "You",
@@ -111,6 +121,7 @@
     "confirm": "Confirm",
     "undo": "Undo",
     "save": "Save",
-    "deleted": "Deleted"
+    "deleted": "Deleted",
+    "edit": "Edit"
   }
 }

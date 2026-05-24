@@ -101,6 +101,60 @@ export async function fetchUserGames(uid: string): Promise<Game[]> {
   return games.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 }
 
+/** Search games by player UID (games where this player participates) */
+export async function searchGamesByPlayer(playerUid: string, currentUserUid: string): Promise<Game[]> {
+  // Query 1: Public games where playerUid participates
+  const qPublic = query(
+    collection(db, 'games'),
+    where('playerUids', 'array-contains', playerUid),
+    where('isPrivate', '==', false)
+  );
+
+  // Query 2: All games where current user participates/created
+  const userGames = await fetchUserGames(currentUserUid);
+  
+  // Filter user's games to those where playerUid is also a participant
+  const matchingUserGames = userGames.filter(g => g.playerUids?.includes(playerUid));
+
+  const snapPublic = await getDocs(qPublic);
+  const publicGames = snapPublic.docs.map((d) => docToGame(d.id, d.data()));
+
+  // Merge lists and deduplicate
+  const gameMap = new Map<string, Game>();
+  publicGames.forEach(g => gameMap.set(g.id, g));
+  matchingUserGames.forEach(g => gameMap.set(g.id, g));
+
+  const merged = Array.from(gameMap.values());
+  return merged.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+}
+
+/** Search games by tag (exact match) */
+export async function searchGamesByTag(tag: string, currentUserUid: string): Promise<Game[]> {
+  // Query 1: Public games with this tag
+  const qPublic = query(
+    collection(db, 'games'),
+    where('tag', '==', tag),
+    where('isPrivate', '==', false)
+  );
+
+  // Query 2: All games where current user participates/created
+  const userGames = await fetchUserGames(currentUserUid);
+
+  // Filter user's games to those with the tag
+  const matchingUserGames = userGames.filter(g => g.tag === tag);
+
+  const snapPublic = await getDocs(qPublic);
+  const publicGames = snapPublic.docs.map((d) => docToGame(d.id, d.data()));
+
+  // Merge lists and deduplicate
+  const gameMap = new Map<string, Game>();
+  publicGames.forEach(g => gameMap.set(g.id, g));
+  matchingUserGames.forEach(g => gameMap.set(g.id, g));
+
+  const merged = Array.from(gameMap.values());
+  return merged.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+}
+
 /** Fetch a single game by ID */
 export async function fetchGame(gameId: string): Promise<Game | null> {
   const docSnap = await getDoc(doc(db, 'games', gameId));
@@ -124,6 +178,18 @@ export async function updateGameStatus(
   status: 'active' | 'finished',
 ): Promise<void> {
   await updateDoc(doc(db, 'games', gameId), { status });
+}
+
+/** Update game metadata (isPrivate, tag) */
+export async function updateGameMetadata(
+  gameId: string,
+  isPrivate: boolean,
+  tag: string,
+): Promise<void> {
+  await updateDoc(doc(db, 'games', gameId), {
+    isPrivate,
+    tag: tag.trim() || null,
+  });
 }
 
 /** Add a round to a game */

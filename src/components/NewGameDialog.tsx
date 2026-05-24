@@ -17,7 +17,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchAllPlayers } from "../services/playerService";
 import type { RegisteredPlayer } from "../services/playerService";
-import type { PlayerSlot } from "../types/game";
+import type { PlayerSlot, Game } from "../types/game";
 
 const filterOptions = createFilterOptions<RegisteredPlayer>({
   matchFrom: "start",
@@ -27,17 +27,27 @@ const filterOptions = createFilterOptions<RegisteredPlayer>({
 interface NewGameDialogProps {
   open: boolean;
   onClose: () => void;
-  onCreateGame: (
+  onCreateGame?: (
     players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
     isPrivate?: boolean,
     tag?: string,
   ) => void;
+  editMode?: boolean;
+  game?: Game | null;
+  onUpdateGame?: (isPrivate: boolean, tag: string) => void;
 }
 
 /** A player selection can be a registered user or a guest name */
 type PlayerSelection = RegisteredPlayer | null;
 
-const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
+const NewGameDialog = ({
+  open,
+  onClose,
+  onCreateGame,
+  editMode = false,
+  game = null,
+  onUpdateGame,
+}: NewGameDialogProps) => {
   const { t } = useTranslation();
   const { user, profile } = useAuth();
 
@@ -59,12 +69,54 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
   // Fetch registered players when dialog opens
   useEffect(() => {
     if (open) {
-      fetchAllPlayers(profile?.isTestUser ?? false).then(setRegisteredPlayers).catch(console.error);
-      setError(null);
-      setIsPrivate(false);
-      setTag("");
+      fetchAllPlayers(profile?.isTestUser ?? false)
+        .then((players) => {
+          setRegisteredPlayers(players);
+          setError(null);
+
+          if (editMode && game) {
+            setIsPrivate(game.isPrivate || false);
+            setTag(game.tag || "");
+
+            const resolvePlayer = (slot: PlayerSlot) => {
+              if (slot.uid) {
+                const found = players.find((p) => p.uid === slot.uid);
+                return (
+                  found || {
+                    uid: slot.uid,
+                    displayName: "Player",
+                    avatar: "🐉",
+                  }
+                );
+              }
+              return null;
+            };
+
+            const p2Resolved = resolvePlayer(game.players[1]);
+            setPlayer2(p2Resolved);
+            setPlayer2Input(p2Resolved ? "" : game.players[1].guestName || "");
+
+            const p3Resolved = resolvePlayer(game.players[2]);
+            setPlayer3(p3Resolved);
+            setPlayer3Input(p3Resolved ? "" : game.players[2].guestName || "");
+
+            const p4Resolved = resolvePlayer(game.players[3]);
+            setPlayer4(p4Resolved);
+            setPlayer4Input(p4Resolved ? "" : game.players[3].guestName || "");
+          } else {
+            setIsPrivate(false);
+            setTag("");
+            setPlayer2(null);
+            setPlayer2Input("");
+            setPlayer3(null);
+            setPlayer3Input("");
+            setPlayer4(null);
+            setPlayer4Input("");
+          }
+        })
+        .catch(console.error);
     }
-  }, [open, profile?.isTestUser]);
+  }, [open, profile?.isTestUser, editMode, game]);
 
   // Dynamic filter for selectable registered players in each slot
   const getSelectablePlayers = (slotNum: number) => {
@@ -93,8 +145,15 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
     };
   };
 
-  const handleStart = () => {
+  const handleStartOrSave = () => {
     if (!user) return;
+
+    if (editMode) {
+      if (onUpdateGame) {
+        onUpdateGame(isPrivate, tag.trim());
+      }
+      return;
+    }
 
     const p1 = { uid: user.uid, guestName: null };
     const p2 = buildSlot(player2, player2Input, 2);
@@ -124,7 +183,9 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
     }
 
     setError(null);
-    onCreateGame([p1, p2, p3, p4], isPrivate, tag.trim());
+    if (onCreateGame) {
+      onCreateGame([p1, p2, p3, p4], isPrivate, tag.trim());
+    }
     // Reset
     setPlayer2(null);
     setPlayer2Input("");
@@ -225,7 +286,7 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle>{t("newGame.title")}</DialogTitle>
+      <DialogTitle>{editMode ? t("newGame.editTitle") : t("newGame.title")}</DialogTitle>
       <DialogContent>
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
@@ -259,6 +320,7 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
             player2Input,
             setPlayer2,
             setPlayer2Input,
+            editMode,
           )}
 
           {/* Team 2 header */}
@@ -277,6 +339,7 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
             player3Input,
             setPlayer3,
             setPlayer3Input,
+            editMode,
           )}
 
           {/* Player 4 */}
@@ -286,6 +349,7 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
             player4Input,
             setPlayer4,
             setPlayer4Input,
+            editMode,
           )}
 
           {/* Privacy setting */}
@@ -328,9 +392,9 @@ const NewGameDialog = ({ open, onClose, onCreateGame }: NewGameDialogProps) => {
         </Box>
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2 }}>
-        <Button onClick={onClose}>{t("newGame.cancel")}</Button>
-        <Button id="create-game-btn" variant="contained" onClick={handleStart}>
-          {t("newGame.start")}
+        <Button onClick={onClose}>{t("common.cancel")}</Button>
+        <Button id="create-game-btn" variant="contained" onClick={handleStartOrSave}>
+          {editMode ? t("common.save") : t("newGame.start")}
         </Button>
       </DialogActions>
     </Dialog>
