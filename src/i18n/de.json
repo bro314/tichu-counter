@@ -65,18 +65,18 @@
   "newGame": {
     "title": "Neues Spiel",
     "editTitle": "Spiel bearbeiten",
-    "player": "Spieler {{n}}",
-    "playerPlaceholder": "Gastname eingeben oder Benutzer wählen",
+    "player": "SpielerIn {{n}}",
+    "playerPlaceholder": "Gastname eingeben oder BenutzerIn wählen",
     "you": "Du",
     "start": "Spiel starten",
     "cancel": "Abbrechen",
-    "errorDuplicatePlayer": "Jeder Spieler darf nur einmal ausgewählt werden.",
-    "isPrivate": "Spiel privat machen",
-    "isPrivateHelp": "Private Spiele sind nur für Spielteilnehmer sichtbar. Nicht-private Spiele sind für alle Benutzer sichtbar.",
-    "tagLabel": "Spiel-Label (z.B. Turnier)",
-    "tagPlaceholder": "Optionales Event oder Label",
-    "noteLabel": "Spielnotiz",
-    "notePlaceholder": "Optionale Anmerkung oder Notiz"
+    "errorDuplicatePlayer": "Jeder darf nur einmal ausgewählt werden.",
+    "isPrivate": "Privates Spiel",
+    "isPrivateHelp": "(nur für Mitspielende sichtbar)",
+    "tagLabel": "Label",
+    "tagPlaceholder": "Optionales Label zum Gruppieren und Suchen",
+    "noteLabel": "Notiz",
+    "notePlaceholder": "Optionale Notiz zum Spiel"
   },
   "settings": {
     "title": "Einstellungen",

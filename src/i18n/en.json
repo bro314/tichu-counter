@@ -71,12 +71,12 @@
     "start": "Start Game",
     "cancel": "Cancel",
     "errorDuplicatePlayer": "Each player can only be selected once.",
-    "isPrivate": "Make game private",
-    "isPrivateHelp": "Private games are only visible to game participants. Non-private games are visible to all users.",
-    "tagLabel": "Game Tag (e.g. Tournament)",
-    "tagPlaceholder": "Optional event or tag",
-    "noteLabel": "Game Note",
-    "notePlaceholder": "Optional comment or note"
+    "isPrivate": "Private game",
+    "isPrivateHelp": "(only visible to game participants)",
+    "tagLabel": "Tag",
+    "tagPlaceholder": "Optional tag for grouping and searching",
+    "noteLabel": "Note",
+    "notePlaceholder": "Optional note about the game"
   },
   "settings": {
     "title": "Settings",
