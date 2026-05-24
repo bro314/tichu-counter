@@ -17,6 +17,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { fetchAllPlayers } from "../services/playerService";
 import type { RegisteredPlayer } from "../services/playerService";
 import type { PlayerSlot, Game } from "../types/game";
+import { fetchAllTags } from "../services/gameService";
 
 const filterOptions = createFilterOptions<RegisteredPlayer>({
   matchFrom: "start",
@@ -65,9 +66,11 @@ const NewGameDialog = ({
   const [player4Input, setPlayer4Input] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [tag, setTag] = useState("");
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
   const [note, setNote] = useState("");
 
-  // Fetch registered players when dialog opens
+  // Fetch registered players and tags when dialog opens
   useEffect(() => {
     if (open) {
       fetchAllPlayers(profile?.isTestUser ?? false)
@@ -78,6 +81,7 @@ const NewGameDialog = ({
           if (editMode && game) {
             setIsPrivate(game.isPrivate || false);
             setTag(game.tag || "");
+            setTagInput(game.tag || "");
             setNote(game.note || "");
 
             const resolvePlayer = (slot: PlayerSlot) => {
@@ -108,6 +112,7 @@ const NewGameDialog = ({
           } else {
             setIsPrivate(false);
             setTag("");
+            setTagInput("");
             setNote("");
             setPlayer2(null);
             setPlayer2Input("");
@@ -118,8 +123,14 @@ const NewGameDialog = ({
           }
         })
         .catch(console.error);
+
+      if (user) {
+        fetchAllTags(user.uid)
+          .then(setAvailableTags)
+          .catch(console.error);
+      }
     }
-  }, [open, profile?.isTestUser, editMode, game]);
+  }, [open, profile?.isTestUser, editMode, game, user]);
 
   // Dynamic filter for selectable registered players in each slot
   const getSelectablePlayers = (slotNum: number) => {
@@ -196,6 +207,8 @@ const NewGameDialog = ({
     setPlayer3Input("");
     setPlayer4(null);
     setPlayer4Input("");
+    setTag("");
+    setTagInput("");
     setNote("");
   };
 
@@ -385,18 +398,35 @@ const NewGameDialog = ({
           </FormControl>
 
           {/* Game Tag / Label */}
-          <TextField
-            label={t("newGame.tagLabel")}
-            placeholder={t("newGame.tagPlaceholder")}
+          <Autocomplete
+            freeSolo
+            id="game-tag-input"
+            options={availableTags}
             value={tag}
-            onChange={(e) => {
-              if (e.target.value.length <= 12) {
-                setTag(e.target.value);
+            inputValue={tagInput}
+            onChange={(_, newVal) => {
+              if (typeof newVal === "string") {
+                setTag(newVal);
+              } else if (newVal === null) {
+                setTag("");
+              }
+            }}
+            onInputChange={(_, newInput, reason) => {
+              if (reason !== "reset" && newInput.length <= 12) {
+                setTag(newInput);
+                setTagInput(newInput);
               }
             }}
             size="small"
             fullWidth
-            sx={{ mt: 1 }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={t("newGame.tagLabel")}
+                placeholder={t("newGame.tagPlaceholder")}
+                sx={{ mt: 1 }}
+              />
+            )}
           />
 
           {/* Game Note */}

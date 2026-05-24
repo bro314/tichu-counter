@@ -243,3 +243,35 @@ export async function updateRound(
   }
   await updateDoc(doc(db, 'games', gameId, 'rounds', roundId), data);
 }
+
+/** Fetch all unique tags from games the user has access to */
+export async function fetchAllTags(currentUserUid: string): Promise<string[]> {
+  // Query 1: Public games
+  const qPublic = query(
+    collection(db, 'games'),
+    where('isPrivate', '==', false)
+  );
+
+  // Query 2: User's games (created or participated in)
+  const userGames = await fetchUserGames(currentUserUid);
+
+  const snapPublic = await getDocs(qPublic);
+  const publicGames = snapPublic.docs.map((d) => d.data());
+
+  const tags = new Set<string>();
+
+  const addCleanTag = (tagVal: unknown) => {
+    if (typeof tagVal === 'string') {
+      const trimmed = tagVal.trim();
+      if (trimmed) {
+        tags.add(trimmed);
+      }
+    }
+  };
+
+  publicGames.forEach((g) => addCleanTag(g.tag));
+  userGames.forEach((g) => addCleanTag(g.tag));
+
+  return Array.from(tags).sort((a, b) => a.localeCompare(b));
+}
+

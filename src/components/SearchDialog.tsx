@@ -15,6 +15,7 @@ import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchAllPlayers } from "../services/playerService";
 import type { RegisteredPlayer } from "../services/playerService";
+import { fetchAllTags } from "../services/gameService";
 
 const filterOptions = createFilterOptions<RegisteredPlayer>({
   matchFrom: "start",
@@ -37,7 +38,7 @@ const SearchDialog = ({
   onSearchTag,
 }: SearchDialogProps) => {
   const { t } = useTranslation();
-  const { profile } = useAuth();
+  const { user, profile } = useAuth();
 
   const [mode, setMode] = useState<SearchMode>("player");
   const [registeredPlayers, setRegisteredPlayers] = useState<
@@ -46,31 +47,42 @@ const SearchDialog = ({
   const [selectedPlayer, setSelectedPlayer] =
     useState<RegisteredPlayer | null>(null);
   const [playerInput, setPlayerInput] = useState("");
+
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [tagInput, setTagInput] = useState("");
 
-  // Load registered players when dialog opens
+  // Load registered players and tags when dialog opens
   useEffect(() => {
     if (open) {
       fetchAllPlayers(profile?.isTestUser ?? false)
         .then(setRegisteredPlayers)
         .catch(console.error);
+
+      if (user) {
+        fetchAllTags(user.uid)
+          .then(setAvailableTags)
+          .catch(console.error);
+      }
+
       setSelectedPlayer(null);
       setPlayerInput("");
+      setSelectedTag(null);
       setTagInput("");
     }
-  }, [open, profile?.isTestUser]);
+  }, [open, profile?.isTestUser, user]);
 
   const handleApply = () => {
     if (mode === "player" && selectedPlayer) {
       onSearchPlayer(selectedPlayer);
-    } else if (mode === "tag" && tagInput.trim()) {
-      onSearchTag(tagInput.trim());
+    } else if (mode === "tag" && selectedTag) {
+      onSearchTag(selectedTag);
     }
   };
 
   const canApply =
     (mode === "player" && selectedPlayer !== null) ||
-    (mode === "tag" && tagInput.trim().length > 0);
+    (mode === "tag" && selectedTag !== null);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
@@ -156,19 +168,27 @@ const SearchDialog = ({
 
           {/* Tag search mode */}
           {mode === "tag" && (
-            <TextField
-              label={t("home.searchByTag")}
-              placeholder={t("home.searchTagPlaceholder")}
-              value={tagInput}
-              onChange={(e) => {
-                if (e.target.value.length <= 12) {
-                  setTagInput(e.target.value);
-                }
+            <Autocomplete
+              id="search-tag-input"
+              options={availableTags}
+              value={selectedTag}
+              inputValue={tagInput}
+              onChange={(_, newVal) => {
+                setSelectedTag(newVal);
               }}
-              helperText={`${tagInput.length}/12`}
+              onInputChange={(_, newInput, reason) => {
+                if (reason !== "reset") setTagInput(newInput);
+              }}
               size="small"
               fullWidth
-              autoFocus
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={t("home.searchByTag")}
+                  placeholder={t("home.searchTagPlaceholder")}
+                  autoFocus
+                />
+              )}
             />
           )}
         </Box>
