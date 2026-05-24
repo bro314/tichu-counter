@@ -13,7 +13,6 @@ import Alert from "@mui/material/Alert";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import FormHelperText from "@mui/material/FormHelperText";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchAllPlayers } from "../services/playerService";
 import type { RegisteredPlayer } from "../services/playerService";
@@ -373,14 +372,16 @@ const NewGameDialog = ({
                 />
               }
               label={
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  {t("newGame.isPrivate")}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    {t("newGame.isPrivate")}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {t("newGame.isPrivateHelp")}
+                  </Typography>
+                </Box>
               }
             />
-            <FormHelperText sx={{ mt: 0, ml: 4 }}>
-              {t("newGame.isPrivateHelp")}
-            </FormHelperText>
           </FormControl>
 
           {/* Game Tag / Label */}
@@ -393,7 +394,6 @@ const NewGameDialog = ({
                 setTag(e.target.value);
               }
             }}
-            helperText={`${tag.length}/12`}
             size="small"
             fullWidth
             sx={{ mt: 1 }}
@@ -409,7 +409,6 @@ const NewGameDialog = ({
                 setNote(e.target.value);
               }
             }}
-            helperText={`${note.length}/80`}
             size="small"
             fullWidth
             sx={{ mt: 1 }}
