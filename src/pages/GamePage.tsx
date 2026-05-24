@@ -1148,18 +1148,8 @@ const GamePage = () => {
                       <Box
                         sx={{
                           mt: 0.5,
-                          pl: "58px",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 0.5,
                         }}
                       >
-                        <Typography
-                          variant="caption"
-                          sx={{ fontSize: "0.8rem", lineHeight: 1 }}
-                        >
-                          💬
-                        </Typography>
                         <Typography
                           variant="caption"
                           sx={{ ...sx.metaText, fontStyle: "italic" }}
