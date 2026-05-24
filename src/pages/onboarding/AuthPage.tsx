@@ -7,9 +7,11 @@ import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Alert from "@mui/material/Alert";
 import GoogleIcon from "@mui/icons-material/Google";
+import AppleIcon from "@mui/icons-material/Apple";
 import IconButton from "@mui/material/IconButton";
 import { useAuth } from "../../contexts/AuthContext";
 import logoImg from "../../assets/logo.png";
+import { Capacitor } from "@capacitor/core";
 
 interface AuthPageProps {
   onAuthSuccess: () => void;
@@ -17,7 +19,7 @@ interface AuthPageProps {
 
 const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
   const { t, i18n } = useTranslation();
-  const { signIn, signUp, signInWithGoogle } = useAuth();
+  const { signIn, signUp, signInWithGoogle, signInWithApple } = useAuth();
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
@@ -71,6 +73,21 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : t("auth.errorGoogleFailed");
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAppleAuth = async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      await signInWithApple();
+      onAuthSuccess();
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : t("auth.errorAppleFailed");
       setError(message);
     } finally {
       setLoading(false);
@@ -173,28 +190,51 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
         </Alert>
       )}
 
-      {/* Google sign-in */}
-      <Button
-        id="google-sign-in-btn"
-        variant="outlined"
-        size="large"
-        fullWidth
-        startIcon={<GoogleIcon />}
-        onClick={handleGoogleAuth}
-        disabled={loading}
-        sx={{
-          py: 1.3,
-          mb: 2,
-          borderColor: "divider",
-          color: "text.primary",
-          "&:hover": {
-            borderColor: "primary.main",
-            bgcolor: "action.hover",
-          },
-        }}
-      >
-        {t("auth.googleSignIn")}
-      </Button>
+      {/* Platform-specific Social Login */}
+      {Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios' ? (
+        <Button
+          id="apple-sign-in-btn"
+          variant="contained"
+          size="large"
+          fullWidth
+          startIcon={<AppleIcon />}
+          onClick={handleAppleAuth}
+          disabled={loading}
+          sx={{
+            py: 1.3,
+            mb: 2,
+            bgcolor: "#000000",
+            color: "#ffffff",
+            "&:hover": {
+              bgcolor: "#1c1c1e",
+            },
+          }}
+        >
+          {t("auth.appleSignIn")}
+        </Button>
+      ) : (
+        <Button
+          id="google-sign-in-btn"
+          variant="outlined"
+          size="large"
+          fullWidth
+          startIcon={<GoogleIcon />}
+          onClick={handleGoogleAuth}
+          disabled={loading}
+          sx={{
+            py: 1.3,
+            mb: 2,
+            borderColor: "divider",
+            color: "text.primary",
+            "&:hover": {
+              borderColor: "primary.main",
+              bgcolor: "action.hover",
+            },
+          }}
+        >
+          {t("auth.googleSignIn")}
+        </Button>
+      )}
 
       {/* Divider */}
       <Divider sx={{ width: "100%", mb: 2 }}>

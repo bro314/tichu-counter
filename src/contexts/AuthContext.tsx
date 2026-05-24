@@ -9,11 +9,13 @@ import {
   signOut as firebaseSignOut,
   deleteUser,
   signInWithCredential,
+  OAuthProvider,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, Timestamp, deleteDoc, collection, getDocs } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { Capacitor } from '@capacitor/core';
 import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
+import { AppleSignIn, SignInScope } from '@capawesome/capacitor-apple-sign-in';
 
 export interface UserProfile {
   displayName: string;
@@ -32,6 +34,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<User>;
   signInWithGoogle: () => Promise<User>;
+  signInWithApple: () => Promise<User>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<void>;
   deleteAccount: () => Promise<void>;
@@ -52,21 +55,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Listen for auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setLoading(true);
-        setUser(firebaseUser);
-        // Try to fetch user profile
-        const profileDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-        if (profileDoc.exists()) {
-          setProfile(profileDoc.data() as UserProfile);
+      setLoading(true);
+      try {
+        if (firebaseUser) {
+          setUser(firebaseUser);
+          // Try to fetch user profile
+          const profileDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+          if (profileDoc.exists()) {
+            setProfile(profileDoc.data() as UserProfile);
+          } else {
+            setProfile(null);
+          }
         } else {
+          setUser(null);
           setProfile(null);
         }
-      } else {
-        setUser(null);
+      } catch (error) {
+        console.error("AuthContext: Error checking user auth/profile:", error);
+        // Fallback: set user but set profile to null to avoid blocking loading
+        setUser(firebaseUser);
         setProfile(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
     return unsubscribe;
   }, []);
@@ -94,6 +105,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return cred.user;
     } else {
       const cred = await signInWithPopup(auth, googleProvider);
+      return cred.user;
+    }
+  };
+
+  const signInWithApple = async () => {
+    if (Capacitor.isNativePlatform()) {
+      const res = await AppleSignIn.signIn({
+        scopes: [SignInScope.Email, SignInScope.FullName],
+      });
+      
+      if (!res.idToken) {
+        throw new Error('Apple Sign-In failed: No ID token returned');
+      }
+
+      const provider = new OAuthProvider('apple.com');
+      const credential = provider.credential({
+        idToken: res.idToken,
+      });
+      const cred = await signInWithCredential(auth, credential);
+      return cred.user;
+    } else {
+      const provider = new OAuthProvider('apple.com');
+      const cred = await signInWithPopup(auth, provider);
       return cred.user;
     }
   };
@@ -175,6 +209,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signIn,
         signUp,
         signInWithGoogle,
+        signInWithApple,
         signOut,
         updateProfile,
         deleteAccount,

@@ -108,7 +108,8 @@
     "errorPasswordMismatch": "Passwords do not match",
     "errorPasswordTooShort": "Password must be at least 6 characters",
     "errorAuthFailed": "Authentication failed",
-    "errorGoogleFailed": "Google sign-in failed"
+    "errorGoogleFailed": "Google sign-in failed",
+    "errorAppleFailed": "Apple sign-in failed"
   },
   "onboarding": {
     "welcome": "Welcome to Dragon's Count!",

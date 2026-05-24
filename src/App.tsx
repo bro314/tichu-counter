@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
+import { Capacitor } from '@capacitor/core';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -143,20 +144,20 @@ function App() {
     );
   } else if (!user) {
     // Not authenticated → show auth page
-    if (window.location.pathname !== '/') {
+    if (!Capacitor.isNativePlatform() && window.location.pathname !== '/') {
       window.history.replaceState({}, '', '/');
     }
     content = <AuthPage onAuthSuccess={() => {}} />;
   } else if (!hasCompletedOnboarding) {
     // Authenticated but no profile yet → show profile setup
-    if (window.location.pathname !== '/') {
+    if (!Capacitor.isNativePlatform() && window.location.pathname !== '/') {
       window.history.replaceState({}, '', '/');
     }
     content = <ProfileSetupPage onComplete={() => {}} />;
   } else {
     // Fully authenticated and onboarded → show main app
     const path = window.location.pathname;
-    if (!path.startsWith('/game') && path !== '/') {
+    if (!Capacitor.isNativePlatform() && !path.startsWith('/game') && path !== '/') {
       window.history.replaceState({}, '', '/');
     }
     content = <AppShell />;
