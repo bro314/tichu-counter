@@ -561,9 +561,8 @@ const HomePage = () => {
                             sx={{
                               ...sx.largeScoreFont,
                               flex: 1,
-                              minWidth: "90px",
+                              minWidth: "82px",
                               textAlign: "right",
-                              pr: 0.75,
                             }}
                           >
                             {score.team1}
@@ -572,10 +571,8 @@ const HomePage = () => {
                             variant="h4"
                             sx={{
                               ...sx.largeScoreFont,
-                              color: "text.secondary",
                               flexShrink: 0,
                               textAlign: "center",
-                              width: "12px",
                             }}
                           >
                             :
@@ -585,9 +582,8 @@ const HomePage = () => {
                             sx={{
                               ...sx.largeScoreFont,
                               flex: 1,
-                              minWidth: "90px",
+                              minWidth: "82px",
                               textAlign: "left",
-                              pl: 0.75,
                             }}
                           >
                             {score.team2}

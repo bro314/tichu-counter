@@ -16,7 +16,7 @@ const sharedComponents = (mode: 'light' | 'dark') => ({
       root: {
         minWidth: 60,
         '&.Mui-selected': {
-          fontSize: fonts.size.navLabel,
+          fontSize: fonts.size.xl,
         },
       },
     },

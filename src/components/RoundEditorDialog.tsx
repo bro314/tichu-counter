@@ -224,12 +224,7 @@ const RoundEditorDialog = ({
           {!isTeam1 && (
             <Typography
               variant="subtitle2"
-              sx={{
-                ...sx.playerName,
-                mb: 0,
-                ...sx.avatarListFont,
-                textAlign: "right",
-              }}
+              sx={{ ...(sx.playerNameLarge as any), mb: 0, textAlign: "right" }}
               noWrap
             >
               {displayName}
@@ -237,14 +232,14 @@ const RoundEditorDialog = ({
           )}
           <Typography
             variant="subtitle2"
-            sx={{ ...sx.lgEmojiNoneFont }}
+            sx={sx.lgEmojiNoneFont}
           >
             {avatar}
           </Typography>
           {isTeam1 && (
             <Typography
               variant="subtitle2"
-              sx={{ ...sx.playerName, mb: 0, ...sx.avatarListFont }}
+              sx={{ ...(sx.playerNameLarge as any), mb: 0, textAlign: "left" }}
               noWrap
             >
               {displayName}
@@ -261,7 +256,7 @@ const RoundEditorDialog = ({
             variant={finishedFirst === pn ? "filled" : "outlined"}
             onClick={() => toggleFinishedFirst(pn)}
             sx={{
-              ...sx.editorChip,
+              ...(sx.editorChip as any),
               flex: 1,
               minWidth: 44,
               "& .MuiChip-label": { px: 0.5 },
@@ -280,7 +275,7 @@ const RoundEditorDialog = ({
             variant={tichuCalls.includes(pn) ? "filled" : "outlined"}
             onClick={() => toggleTichu(pn)}
             sx={{
-              ...sx.editorChip,
+              ...(sx.editorChip as any),
               flex: 1,
               minWidth: 44,
               "& .MuiChip-label": { px: 0.5 },
@@ -299,7 +294,7 @@ const RoundEditorDialog = ({
             variant={grandTichuCalls.includes(pn) ? "filled" : "outlined"}
             onClick={() => toggleGrandTichu(pn)}
             sx={{
-              ...sx.editorChip,
+              ...(sx.editorChip as any),
               flex: 1,
               minWidth: 44,
               "& .MuiChip-label": { px: 0.5 },
@@ -344,7 +339,7 @@ const RoundEditorDialog = ({
             }}
           >
             <Typography
-              sx={{ ...sx.avatarListFont, ...sx.semiboldFont }}
+              sx={{ ...(sx.avatarListFont as any), ...(sx.semiboldFont as any) }}
               variant="h6"
             >
               {t("game.round")}{" "}
@@ -354,7 +349,7 @@ const RoundEditorDialog = ({
             </Typography>
             <Typography
               sx={{
-                ...sx.timestampFont,
+                ...(sx.timestampFont as any),
                 color: "text.secondary",
                 textAlign: "right",
                 whiteSpace: "pre-line",
@@ -430,7 +425,7 @@ const RoundEditorDialog = ({
           {validationError && (
             <Alert
               severity="warning"
-              sx={{ mb: 2, ...sx.editorChipFont }}
+              sx={{ mb: 2, ...(sx.editorChipFont as any) }}
             >
               {validationError}
             </Alert>
@@ -440,10 +435,10 @@ const RoundEditorDialog = ({
               <Typography
                 variant="caption"
                 sx={{
-                  ...sx.semiboldFont,
+                  ...(sx.semiboldFont as any),
                   mb: 0.5,
                   display: "block",
-                  ...sx.avatarListFont,
+                  ...(sx.avatarListFont as any),
                 }}
               >
                 {t("game.cardPoints")}
@@ -454,10 +449,10 @@ const RoundEditorDialog = ({
                 <Typography
                   variant="body2"
                   sx={{
-                    ...sx.roundScore("primary"),
+                    ...(sx.scoreFont as any),
                     minWidth: 32,
                     textAlign: "right",
-                    ...sx.avatarListFont,
+                    ...(sx.avatarListFont as any),
                   }}
                 >
                   {team1CardPoints}
@@ -473,9 +468,9 @@ const RoundEditorDialog = ({
                 <Typography
                   variant="body2"
                   sx={{
-                    ...sx.roundScore("secondary"),
+                    ...(sx.scoreFont as any),
                     minWidth: 32,
-                    ...sx.avatarListFont,
+                    ...(sx.avatarListFont as any),
                   }}
                 >
                   {100 - team1CardPoints}
@@ -509,19 +504,19 @@ const RoundEditorDialog = ({
             >
               <Typography
                 variant="h5"
-                sx={{ ...sx.scoreNumber("primary"), ...sx.avatarListFont }}
+                sx={{ ...(sx.scoreNumber("primary") as any), ...(sx.avatarListFont as any) }}
               >
                 {fmtScore(previewScore.team1)}
               </Typography>
               <Typography
                 variant="h6"
-                sx={{ ...sx.scoreSeparator, ...sx.avatarListFont }}
+                sx={{ ...(sx.scoreSeparator as any), ...(sx.avatarListFont as any) }}
               >
                 :
               </Typography>
               <Typography
                 variant="h5"
-                sx={{ ...sx.scoreNumber("secondary"), ...sx.avatarListFont }}
+                sx={{ ...(sx.scoreNumber("secondary") as any), ...(sx.avatarListFont as any) }}
               >
                 {fmtScore(previewScore.team2)}
               </Typography>

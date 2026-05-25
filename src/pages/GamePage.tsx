@@ -499,14 +499,14 @@ const GamePage = () => {
             boxShadow:
               gameResult === "active"
                 ? (theme) =>
-                    theme.palette.mode === "dark"
-                      ? "0 4px 20px rgba(245, 158, 11, 0.1)"
-                      : "0 4px 14px rgba(245, 158, 11, 0.08)"
+                  theme.palette.mode === "dark"
+                    ? "0 4px 20px rgba(245, 158, 11, 0.1)"
+                    : "0 4px 14px rgba(245, 158, 11, 0.08)"
                 : gameResult === "won"
                   ? (theme) =>
-                      theme.palette.mode === "dark"
-                        ? "0 4px 20px rgba(34, 197, 94, 0.1)"
-                        : "0 4px 14px rgba(34, 197, 94, 0.08)"
+                    theme.palette.mode === "dark"
+                      ? "0 4px 20px rgba(34, 197, 94, 0.1)"
+                      : "0 4px 14px rgba(34, 197, 94, 0.08)"
                   : "none",
           }}
         >
@@ -524,7 +524,7 @@ const GamePage = () => {
               },
             }}
           >
-            <Box sx={{ py: 1.5, px: 2 }}>
+            <Box sx={{ py: 1, px: 1 }}>
               {/* Status, timestamp, and refresh button */}
               <Box
                 sx={{
@@ -704,9 +704,8 @@ const GamePage = () => {
                     sx={{
                       ...sx.largeScoreFont,
                       flex: 1,
-                      minWidth: "90px",
+                      minWidth: "82px",
                       textAlign: "right",
-                      pr: 0.75,
                     }}
                   >
                     {totals.team1}
@@ -715,10 +714,8 @@ const GamePage = () => {
                     variant="h4"
                     sx={{
                       ...sx.largeScoreFont,
-                      color: "text.secondary",
                       flexShrink: 0,
                       textAlign: "center",
-                      width: "12px",
                     }}
                   >
                     :
@@ -728,9 +725,8 @@ const GamePage = () => {
                     sx={{
                       ...sx.largeScoreFont,
                       flex: 1,
-                      minWidth: "90px",
+                      minWidth: "82px",
                       textAlign: "left",
-                      pl: 0.75,
                     }}
                   >
                     {totals.team2}
@@ -831,8 +827,8 @@ const GamePage = () => {
         sx={{
           flex: 1,
           overflow: "auto",
-          px: 2,
-          py: 1.5,
+          px: 1,
+          py: 1,
           msOverflowStyle: "none",
           scrollbarWidth: "none",
           "&::-webkit-scrollbar": {
@@ -916,7 +912,7 @@ const GamePage = () => {
                     onClick={isPlayer ? () => openEditRound(round) : undefined}
                     disabled={!isPlayer}
                     sx={{
-                      px: 2,
+                      px: 1,
                       py: 1,
                       cursor: isPlayer ? "pointer" : "default",
                       "&.Mui-disabled": {
@@ -1025,7 +1021,7 @@ const GamePage = () => {
                         <Typography
                           variant="body2"
                           sx={{
-                            ...sx.roundScore("primary"),
+                            ...sx.scoreFont,
                             ml: "auto",
                             minWidth: 40,
                             textAlign: "right",
@@ -1058,7 +1054,7 @@ const GamePage = () => {
                         <Typography
                           variant="body2"
                           sx={{
-                            ...sx.roundScore("secondary"),
+                            ...sx.scoreFont,
                             mr: "auto",
                             minWidth: 40,
                           }}
@@ -1234,7 +1230,7 @@ const GamePage = () => {
                 startIcon={<EditIcon />}
                 onClick={() => setEditGameDialogOpen(true)}
                 sx={{
-                  py: 1.5,
+                  py: 1,
                   borderRadius: `${shape.buttonRadius}px`,
                   flex: 1,
                 }}
@@ -1249,7 +1245,7 @@ const GamePage = () => {
                 startIcon={<DeleteIcon />}
                 onClick={confirmDeleteGame}
                 sx={{
-                  py: 1.5,
+                  py: 1,
                   borderRadius: `${shape.buttonRadius}px`,
                   flex: 1,
                 }}

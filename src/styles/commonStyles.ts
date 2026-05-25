@@ -100,16 +100,6 @@ export const historyChip: SxProps<Theme> = {
   },
 };
 
-/** Round score text */
-export const roundScore = (
-  _color: "primary" | "secondary",
-): SxProps<Theme> => ({
-  fontWeight: fonts.weight.bold,
-  color: "text.primary",
-  fontSize: fonts.size.normal,
-  fontFamily: fonts.mono,
-});
-
 /** Timestamp / metadata text */
 export const metaText: SxProps<Theme> = {
   fontSize: fonts.size.xs,
@@ -123,13 +113,6 @@ export const playerCard = (_isTeam1: boolean): SxProps<Theme> => ({
   p: 1.5,
   bgcolor: "background.paper",
 });
-
-/** Player name in editor card */
-export const playerName: SxProps<Theme> = {
-  fontWeight: fonts.weight.semibold,
-  mb: 1,
-  fontSize: fonts.size.sm,
-};
 
 /** Toggle chip in editor (Tichu, GT, 1st) */
 export const editorChip: SxProps<Theme> = {
@@ -370,9 +353,17 @@ export const smIconFont: SxProps<Theme> = {
   fontSize: fonts.size.sm,
 };
 
+/** Round score text */
+export const scoreFont: SxProps<Theme> = {
+  fontWeight: fonts.weight.medium,
+  color: "text.primary",
+  fontSize: fonts.size.normal,
+  fontFamily: fonts.mono,
+};
+
 /** Large score display font (Main scoreboard) */
 export const largeScoreFont: SxProps<Theme> = {
-  fontWeight: fonts.weight.bold,
+  fontWeight: fonts.weight.medium,
   lineHeight: fonts.lineHeight.none,
   fontFamily: fonts.mono,
 };
@@ -382,6 +373,12 @@ export const historyTimeFont: SxProps<Theme> = {
   fontWeight: fonts.weight.medium,
   fontSize: fonts.size.sm,
   lineHeight: fonts.lineHeight.tight,
+};
+
+/** Player name in editor card */
+export const playerNameLarge: SxProps<Theme> = {
+  fontWeight: fonts.weight.semibold,
+  fontSize: fonts.size.large,
 };
 
 /** Medium avatar font inside lists/history */
