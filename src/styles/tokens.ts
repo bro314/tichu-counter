@@ -85,7 +85,7 @@ export const shape = {
 // ─── Spacing ──────────────────────────────────────────────────
 export const spacing = {
   /** Standard page horizontal padding */
-  pagePx: 2,
+  pagePx: 1,
   /** Bottom nav height */
   navHeight: 64,
 } as const;

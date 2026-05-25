@@ -229,14 +229,14 @@ export const appFrame: SxProps<Theme> = {
   flexDirection: "column",
   height: "100%",
   width: "100%",
-  maxWidth: 480,
+  maxWidth: 400,
   mx: "auto",
   bgcolor: "background.default",
   borderLeft: "none",
   borderRight: "none",
   boxShadow: "none",
   position: "relative",
-  "@media (min-width: 480px)": {
+  "@media (min-width: 400px)": {
     borderLeft: (theme) =>
       `1px solid ${theme.palette.mode === "dark" ? colors.desktopBorder.dark : colors.desktopBorder.light}`,
     borderRight: (theme) =>
@@ -259,9 +259,9 @@ export const dynamicHeader = (showShadow: boolean): SxProps<Theme> => ({
   borderColor: "divider",
   boxShadow: showShadow
     ? (theme) =>
-        theme.palette.mode === "dark"
-          ? "0 8px 24px rgba(0, 0, 0, 0.8)"
-          : "0 8px 20px rgba(0, 0, 0, 0.24)"
+      theme.palette.mode === "dark"
+        ? "0 8px 24px rgba(0, 0, 0, 0.8)"
+        : "0 8px 20px rgba(0, 0, 0, 0.24)"
     : "none",
   position: "relative",
   zIndex: 1,
@@ -280,9 +280,9 @@ export const dynamicBottomBar = (showShadow: boolean): SxProps<Theme> => ({
   borderColor: "divider",
   boxShadow: showShadow
     ? (theme) =>
-        theme.palette.mode === "dark"
-          ? "0 -8px 24px rgba(0, 0, 0, 0.8)"
-          : "0 -8px 20px rgba(0, 0, 0, 0.24)"
+      theme.palette.mode === "dark"
+        ? "0 -8px 24px rgba(0, 0, 0, 0.8)"
+        : "0 -8px 20px rgba(0, 0, 0, 0.24)"
     : "none",
   position: "relative",
   zIndex: 1,

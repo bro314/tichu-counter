@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { colors, fonts, shape, shadows } from './styles/tokens';
+import { colors, fonts, shape, shadows } from './tokens';
 
 /** Shared component overrides (same for both themes) */
 const sharedComponents = (mode: 'light' | 'dark') => ({

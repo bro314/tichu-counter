@@ -240,8 +240,8 @@ const HomePage = () => {
         sx={{
           flex: 1,
           overflow: "auto",
-          px: 2,
-          py: 1.5,
+          px: 1,
+          py: 1,
           msOverflowStyle: "none",
           scrollbarWidth: "none",
           "&::-webkit-scrollbar": {
@@ -383,20 +383,20 @@ const HomePage = () => {
                     boxShadow:
                       gameResult === "active"
                         ? (theme) =>
-                            theme.palette.mode === "dark"
-                              ? "0 4px 20px rgba(245, 158, 11, 0.1)"
-                              : "0 4px 14px rgba(245, 158, 11, 0.08)"
+                          theme.palette.mode === "dark"
+                            ? "0 4px 20px rgba(245, 158, 11, 0.1)"
+                            : "0 4px 14px rgba(245, 158, 11, 0.08)"
                         : gameResult === "won"
                           ? (theme) =>
-                              theme.palette.mode === "dark"
-                                ? "0 4px 20px rgba(34, 197, 94, 0.1)"
-                                : "0 4px 14px rgba(34, 197, 94, 0.08)"
+                            theme.palette.mode === "dark"
+                              ? "0 4px 20px rgba(34, 197, 94, 0.1)"
+                              : "0 4px 14px rgba(34, 197, 94, 0.08)"
                           : "none",
                   }}
                 >
                   <CardActionArea onClick={() => navigate(`/game/${game.id}`)}>
                     <CardContent
-                      sx={{ py: 1.5, px: 2, "&:last-child": { pb: 1.5 } }}
+                      sx={{ py: 1, px: 1, "&:last-child": { pb: 1.5 } }}
                     >
                       {/* Status and timestamp */}
                       <Box
@@ -572,7 +572,6 @@ const HomePage = () => {
                             alignItems: "center",
                             justifyContent: "center",
                             flex: 1,
-                            px: 0.5,
                           }}
                         >
                           <Typography
