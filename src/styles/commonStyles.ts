@@ -76,14 +76,16 @@ export const teamLabel = (_color: "primary" | "secondary"): SxProps<Theme> => ({
 export const scoreNumber = (
   _color: "primary" | "secondary",
 ): SxProps<Theme> => ({
-  fontWeight: fonts.weight.extrabold,
+  fontWeight: fonts.weight.bold,
   color: "text.primary",
+  fontFamily: fonts.mono,
 });
 
 /** Colon separator between scores */
 export const scoreSeparator: SxProps<Theme> = {
-  fontWeight: fonts.weight.regular - 100, // 300
+  fontWeight: fonts.weight.regular,
   color: "text.secondary",
+  fontFamily: fonts.mono,
 };
 
 // ─── Round history ────────────────────────────────────────────
@@ -91,7 +93,7 @@ export const scoreSeparator: SxProps<Theme> = {
 /** Round history chip (Tichu, GT, 1-2) */
 export const historyChip: SxProps<Theme> = {
   height: 18,
-  fontSize: "0.72rem",
+  fontSize: fonts.size.sm,
   fontWeight: 700,
   "& .MuiChip-label": {
     px: 0.75,
@@ -104,7 +106,8 @@ export const roundScore = (
 ): SxProps<Theme> => ({
   fontWeight: fonts.weight.bold,
   color: "text.primary",
-  fontSize: "1.05rem",
+  fontSize: fonts.size.normal,
+  fontFamily: fonts.mono,
 });
 
 /** Timestamp / metadata text */
@@ -292,7 +295,7 @@ export const dynamicBottomBar = (showShadow: boolean): SxProps<Theme> => ({
 
 /** Extrabold header font (App name header) */
 export const h6HeaderFont: SxProps<Theme> = {
-  fontWeight: fonts.weight.extrabold,
+  fontWeight: fonts.weight.bold,
   letterSpacing: fonts.letterSpacing.tight,
 };
 
@@ -331,13 +334,13 @@ export const avatarListFont: SxProps<Theme> = {
 export const timestampFont: SxProps<Theme> = {
   fontSize: fonts.size.sm,
   fontWeight: fonts.weight.medium,
-  lineHeight: fonts.lineHeight.historyTime,
+  lineHeight: fonts.lineHeight.tight,
 };
 
 /** Standard badge font with uppercase text (Tag, Private badges on chip) */
 export const uppercaseBadgeFont: SxProps<Theme> = {
-  fontWeight: fonts.weight.bold,
   fontSize: fonts.size.sm,
+  fontWeight: fonts.weight.bold,
   textTransform: "uppercase",
   letterSpacing: fonts.letterSpacing.wide,
 };
@@ -345,7 +348,7 @@ export const uppercaseBadgeFont: SxProps<Theme> = {
 /** Smaller extrabold uppercase badge font (Private, Tag on card) */
 export const cardBadgeFont: SxProps<Theme> = {
   fontSize: fonts.size.xs,
-  fontWeight: fonts.weight.extrabold,
+  fontWeight: fonts.weight.bold,
   textTransform: "uppercase",
   letterSpacing: fonts.letterSpacing.wide,
   lineHeight: fonts.lineHeight.none,
@@ -369,15 +372,16 @@ export const smIconFont: SxProps<Theme> = {
 
 /** Large score display font (Main scoreboard) */
 export const largeScoreFont: SxProps<Theme> = {
-  fontWeight: fonts.weight.extrabold,
+  fontWeight: fonts.weight.bold,
   lineHeight: fonts.lineHeight.none,
+  fontFamily: fonts.mono,
 };
 
 /** Timestamp display in round history */
 export const historyTimeFont: SxProps<Theme> = {
   fontWeight: fonts.weight.medium,
   fontSize: fonts.size.sm,
-  lineHeight: fonts.lineHeight.historyTime,
+  lineHeight: fonts.lineHeight.tight,
 };
 
 /** Medium avatar font inside lists/history */

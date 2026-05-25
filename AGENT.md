@@ -24,6 +24,7 @@ It tracks games, rounds, and scores for two teams of two players.
     - `xl`: `'1.4rem'` (large emoji/flag icon size)
     - `xxl`: `'1.6rem'` (profile small avatars)
     - `xxxl`: `'1.8rem'` (settings large avatars)
+  - **Monospace Family**: Monospace font-family is defined under `fonts.mono` and is used exclusively for score display, scoreboard lists, and colons to ensure premium alignment and design.
   - **Strict Rule**: No page or component (`.tsx` file) may reference or import `fonts` from `tokens.ts` directly. All typography, font weights, alignments, and sizes must be consumed through generic typography blocks exported from `src/styles/commonStyles.ts` via the spread operator in the `sx` prop (e.g., `sx={{ ...sx.semiboldFont, mt: 1 }}`).
 - **Theme Color Palette**:
   - **Team 1 (Slate Blue)**: `#1B4F72` (dm: `#5dade2`)
