@@ -102,7 +102,7 @@ const ProfileSetupPage = ({ onComplete }: ProfileSetupPageProps) => {
         mx: "auto",
       }}
     >
-      <Typography variant="h5" sx={{ mb: 4, fontWeight: 700 }}>
+      <Typography variant="h5" sx={{ mb: 4, ...sx.boldFont }}>
         {t("onboarding.setupProfile")}
       </Typography>
 

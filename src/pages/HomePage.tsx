@@ -179,7 +179,7 @@ const HomePage = () => {
                 borderRadius: `${shape.borderRadius}px`,
               }}
             />
-            <Typography variant="h6" sx={{ fontWeight: 800, letterSpacing: -0.5 }}>
+            <Typography variant="h6" sx={{ ...sx.h6HeaderFont }}>
               {t("app.name")}
             </Typography>
           </Box>
@@ -187,11 +187,11 @@ const HomePage = () => {
             <Chip
               icon={
                 searchFilter.type === "player" ? (
-                  <Typography sx={{ fontSize: "1rem", lineHeight: 1 }}>
+                  <Typography sx={{ ...sx.avatarIconFont }}>
                     {searchFilter.player.avatar}
                   </Typography>
                 ) : (
-                  <LocalOfferIcon sx={{ fontSize: "0.9rem" }} />
+                  <LocalOfferIcon sx={{ ...sx.mdIconFont }} />
                 )
               }
               label={
@@ -201,12 +201,9 @@ const HomePage = () => {
               }
               size="small"
               onDelete={() => setSearchFilter(null)}
-              deleteIcon={<CloseIcon sx={{ fontSize: "0.9rem" }} />}
+              deleteIcon={<CloseIcon sx={{ ...sx.mdIconFont }} />}
               sx={{
-                fontWeight: 700,
-                fontSize: "0.75rem",
-                textTransform: "uppercase",
-                letterSpacing: 0.5,
+                ...sx.uppercaseBadgeFont,
                 maxWidth: 180,
               }}
             />
@@ -214,17 +211,14 @@ const HomePage = () => {
             profile && (
               <Chip
                 icon={
-                  <Typography sx={{ fontSize: "1rem", lineHeight: 1 }}>
+                  <Typography sx={{ ...sx.avatarIconFont }}>
                     {profile.avatar || "🐉"}
                   </Typography>
                 }
                 label={profile.displayName || "Player"}
                 size="small"
                 sx={{
-                  fontWeight: 700,
-                  fontSize: "0.75rem",
-                  textTransform: "uppercase",
-                  letterSpacing: 0.5,
+                  ...sx.uppercaseBadgeFont,
                   maxWidth: 180,
                 }}
               />
@@ -411,9 +405,7 @@ const HomePage = () => {
                           <Typography
                             variant="caption"
                             sx={{
-                              fontWeight: 700,
-                              textTransform: "uppercase",
-                              letterSpacing: 0.5,
+                              ...sx.uppercaseBadgeFont,
                               color: getLabelColor(),
                             }}
                           >
@@ -435,15 +427,11 @@ const HomePage = () => {
                                 color: "text.secondary",
                               }}
                             >
-                              <LockIcon sx={{ fontSize: "0.75rem" }} />
+                              <LockIcon sx={{ ...sx.smIconFont }} />
                               <Typography
                                 variant="caption"
                                 sx={{
-                                  fontSize: "0.65rem",
-                                  fontWeight: 800,
-                                  textTransform: "uppercase",
-                                  letterSpacing: 0.5,
-                                  lineHeight: 1,
+                                  ...sx.cardBadgeFont,
                                 }}
                               >
                                 {t("game.private")}
@@ -469,15 +457,11 @@ const HomePage = () => {
                                     : "rgb(126, 34, 206)",
                               }}
                             >
-                              <LocalOfferIcon sx={{ fontSize: "0.75rem" }} />
+                              <LocalOfferIcon sx={{ ...sx.smIconFont }} />
                               <Typography
                                 variant="caption"
                                 sx={{
-                                  fontSize: "0.65rem",
-                                  fontWeight: 800,
-                                  textTransform: "uppercase",
-                                  letterSpacing: 0.5,
-                                  lineHeight: 1,
+                                  ...sx.cardBadgeFont,
                                 }}
                               >
                                 {game.tag}
@@ -521,8 +505,7 @@ const HomePage = () => {
                             <Typography
                               variant="body2"
                               sx={{
-                                fontSize: "1rem",
-                                lineHeight: 1,
+                                ...sx.avatarIconFont,
                                 flexShrink: 0,
                               }}
                             >
@@ -530,7 +513,7 @@ const HomePage = () => {
                             </Typography>
                             <Typography
                               variant="body2"
-                              sx={{ fontWeight: 600, minWidth: 0 }}
+                              sx={{ ...sx.semiboldFont, minWidth: 0 }}
                               noWrap
                             >
                               {p1.displayName}
@@ -548,8 +531,7 @@ const HomePage = () => {
                             <Typography
                               variant="body2"
                               sx={{
-                                fontSize: "1rem",
-                                lineHeight: 1,
+                                ...sx.avatarIconFont,
                                 flexShrink: 0,
                               }}
                             >
@@ -557,7 +539,7 @@ const HomePage = () => {
                             </Typography>
                             <Typography
                               variant="body2"
-                              sx={{ fontWeight: 600, minWidth: 0 }}
+                              sx={{ ...sx.semiboldFont, minWidth: 0 }}
                               noWrap
                             >
                               {p2.displayName}
@@ -577,8 +559,7 @@ const HomePage = () => {
                           <Typography
                             variant="h4"
                             sx={{
-                              fontWeight: 800,
-                              lineHeight: 1,
+                              ...sx.largeScoreFont,
                               flex: 1,
                               minWidth: "90px",
                               textAlign: "right",
@@ -590,8 +571,7 @@ const HomePage = () => {
                           <Typography
                             variant="h4"
                             sx={{
-                              fontWeight: 800,
-                              lineHeight: 1,
+                              ...sx.largeScoreFont,
                               color: "text.secondary",
                               flexShrink: 0,
                               textAlign: "center",
@@ -603,8 +583,7 @@ const HomePage = () => {
                           <Typography
                             variant="h4"
                             sx={{
-                              fontWeight: 800,
-                              lineHeight: 1,
+                              ...sx.largeScoreFont,
                               flex: 1,
                               minWidth: "90px",
                               textAlign: "left",
@@ -638,7 +617,7 @@ const HomePage = () => {
                           >
                             <Typography
                               variant="body2"
-                              sx={{ fontWeight: 600, minWidth: 0 }}
+                              sx={{ ...sx.semiboldFont, minWidth: 0 }}
                               noWrap
                             >
                               {p3.displayName}
@@ -646,8 +625,7 @@ const HomePage = () => {
                             <Typography
                               variant="body2"
                               sx={{
-                                fontSize: "1rem",
-                                lineHeight: 1,
+                                ...sx.avatarIconFont,
                                 flexShrink: 0,
                               }}
                             >
@@ -666,7 +644,7 @@ const HomePage = () => {
                           >
                             <Typography
                               variant="body2"
-                              sx={{ fontWeight: 600, minWidth: 0 }}
+                              sx={{ ...sx.semiboldFont, minWidth: 0 }}
                               noWrap
                             >
                               {p4.displayName}
@@ -674,8 +652,7 @@ const HomePage = () => {
                             <Typography
                               variant="body2"
                               sx={{
-                                fontSize: "1rem",
-                                lineHeight: 1,
+                                ...sx.avatarIconFont,
                                 flexShrink: 0,
                               }}
                             >

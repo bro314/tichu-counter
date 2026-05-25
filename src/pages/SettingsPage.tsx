@@ -139,7 +139,7 @@ const SettingsPage = () => {
         overflowY: "auto",
       }}
     >
-      <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>
+      <Typography variant="h5" sx={{ mb: 2, ...sx.boldFont }}>
         {t("settings.title")}
       </Typography>
 
@@ -287,7 +287,7 @@ const SettingsPage = () => {
         <MenuItem
           id="delete-account-menu-item"
           onClick={handleDeleteConfirmOpen}
-          sx={{ color: "error.main", fontWeight: 600 }}
+          sx={{ color: "error.main", ...sx.semiboldFont }}
         >
           {t("settings.deleteAccount")}
         </MenuItem>

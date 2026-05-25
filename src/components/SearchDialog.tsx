@@ -16,6 +16,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { fetchPlayers, searchPlayers } from "../services/playerService";
 import type { RegisteredPlayer } from "../services/playerService";
 import { fetchAllTags } from "../services/gameService";
+import * as sx from "../styles/commonStyles";
 
 const filterOptions = createFilterOptions<RegisteredPlayer>({
   matchFrom: "start",
@@ -121,7 +122,7 @@ const SearchDialog = ({
               variant={mode === "player" ? "filled" : "outlined"}
               color={mode === "player" ? "primary" : "default"}
               onClick={() => setMode("player")}
-              sx={{ fontWeight: 600 }}
+              sx={{ ...sx.semiboldFont }}
             />
             <Chip
               icon={<LocalOfferIcon />}
@@ -129,7 +130,7 @@ const SearchDialog = ({
               variant={mode === "tag" ? "filled" : "outlined"}
               color={mode === "tag" ? "primary" : "default"}
               onClick={() => setMode("tag")}
-              sx={{ fontWeight: 600 }}
+              sx={{ ...sx.semiboldFont }}
             />
           </Box>
 
@@ -170,7 +171,7 @@ const SearchDialog = ({
                     {...rest}
                     sx={{ display: "flex", alignItems: "center", gap: 1 }}
                   >
-                    <Typography sx={{ fontSize: "1.2rem" }}>
+                    <Typography sx={{ ...sx.avatarListFont }}>
                       {option.avatar}
                     </Typography>
                     <Typography variant="body2">

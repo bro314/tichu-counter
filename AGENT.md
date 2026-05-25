@@ -14,6 +14,17 @@ It tracks games, rounds, and scores for two teams of two players.
 
 ## Architecture & Styling Conventions
 - **Styling**: We use MUI's `sx` prop with centralized style objects defined in `src/styles/commonStyles.ts` and `src/styles/tokens.ts`.
+- **Typography Font Regime**:
+  - Standardized scale keys in `tokens.ts`:
+    - `xs`: `'0.6rem'` (timestamps, tiny labels, badges)
+    - `sm`: `'0.75rem'` (nav labels, history card timestamps, chips)
+    - `md`: `'0.9rem'` (medium emojis, icons)
+    - `normal`: `'1rem'` (standard body, main buttons)
+    - `large`: `'1.2rem'` (list inputs, larger avatar emojis)
+    - `xl`: `'1.4rem'` (large emoji/flag icon size)
+    - `xxl`: `'1.6rem'` (profile small avatars)
+    - `xxxl`: `'1.8rem'` (settings large avatars)
+  - **Strict Rule**: No page or component (`.tsx` file) may reference or import `fonts` from `tokens.ts` directly. All typography, font weights, alignments, and sizes must be consumed through generic typography blocks exported from `src/styles/commonStyles.ts` via the spread operator in the `sx` prop (e.g., `sx={{ ...sx.semiboldFont, mt: 1 }}`).
 - **Theme Color Palette**:
   - **Team 1 (Slate Blue)**: `#1B4F72` (dm: `#5dade2`)
   - **Team 2 (Red)**: Crimson `#EC1C24` (dm: `#ff6f61`)

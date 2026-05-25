@@ -18,6 +18,7 @@ import { fetchPlayers, searchPlayers } from "../services/playerService";
 import type { RegisteredPlayer } from "../services/playerService";
 import type { PlayerSlot, Game } from "../types/game";
 import { fetchAllTags } from "../services/gameService";
+import * as sx from "../styles/commonStyles";
 
 const filterOptions = createFilterOptions<RegisteredPlayer>({
   matchFrom: "start",
@@ -352,7 +353,7 @@ const NewGameDialog = ({
               {...rest}
               sx={{ display: "flex", alignItems: "center", gap: 1 }}
             >
-              <Typography sx={{ fontSize: "1.2rem" }}>
+              <Typography sx={{ ...sx.avatarListFont }}>
                 {option.avatar}
               </Typography>
               <Typography variant="body2">{option.displayName}</Typography>
@@ -393,7 +394,7 @@ const NewGameDialog = ({
               <Typography
                 variant="subtitle2"
                 color="text.secondary"
-                sx={{ fontWeight: 600 }}
+                sx={{ ...sx.semiboldFont }}
               >
                 {t("game.team1")}
               </Typography>
@@ -424,7 +425,7 @@ const NewGameDialog = ({
               <Typography
                 variant="subtitle2"
                 color="text.secondary"
-                sx={{ fontWeight: 600, mt: 1 }}
+                sx={{ ...sx.semiboldFont, mt: 1 }}
               >
                 {t("game.team2")}
               </Typography>
@@ -466,7 +467,7 @@ const NewGameDialog = ({
               }
               label={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  <Typography variant="body2" sx={{ ...sx.semiboldFont }}>
                     {t("newGame.isPrivate")}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">

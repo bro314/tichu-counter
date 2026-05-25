@@ -53,22 +53,25 @@ export const fonts = {
     extrabold: 800,
   },
   size: {
-    /** Tiny labels, timestamps */
     xs: '0.6rem',
-    /** Small captions, chip labels */
-    sm: '0.65rem',
-    /** Chip text */
-    chip: '0.7rem',
-    /** Editor labels */
-    editorChip: '0.8rem',
-    /** Nav selected label */
-    navLabel: '0.75rem',
-    /** CTA buttons */
-    cta: '1rem',
-    /** Avatar emoji in settings dialog */
-    avatarLarge: '1.8rem',
-    /** Avatar emoji in onboarding/profile */
-    avatarSmall: '1.6rem',
+    sm: '0.75rem',
+    md: '0.9rem',
+    normal: '1rem',
+    large: '1.2rem',
+    xl: '1.4rem',
+    xxl: '1.6rem',
+    xxxl: '1.8rem',
+  },
+  letterSpacing: {
+    tight: -0.5,
+    normal: 'normal',
+    wide: 0.5,
+  },
+  lineHeight: {
+    none: 1,
+    tight: 1.25,
+    historyTime: 1.2,
+    normal: 1.5,
   },
 } as const;
 

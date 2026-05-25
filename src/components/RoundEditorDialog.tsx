@@ -21,7 +21,7 @@ import { calculateRoundScore } from "../types/game";
 import type { Game, Round, PlayerSlot } from "../types/game";
 import type { PlayerNameResolver } from "../utils/playerName";
 import * as sx from "../styles/commonStyles";
-import { fonts, shape } from "../styles/tokens";
+import { shape } from "../styles/tokens";
 
 const SlideUp = React.forwardRef(function Transition(
   props: TransitionProps & { children: React.ReactElement },
@@ -227,7 +227,7 @@ const RoundEditorDialog = ({
               sx={{
                 ...sx.playerName,
                 mb: 0,
-                fontSize: "1.2rem",
+                ...sx.avatarListFont,
                 textAlign: "right",
               }}
               noWrap
@@ -237,14 +237,14 @@ const RoundEditorDialog = ({
           )}
           <Typography
             variant="subtitle2"
-            sx={{ fontSize: "1.45rem", lineHeight: 1 }}
+            sx={{ ...sx.lgEmojiNoneFont }}
           >
             {avatar}
           </Typography>
           {isTeam1 && (
             <Typography
               variant="subtitle2"
-              sx={{ ...sx.playerName, mb: 0, fontSize: "1.2rem" }}
+              sx={{ ...sx.playerName, mb: 0, ...sx.avatarListFont }}
               noWrap
             >
               {displayName}
@@ -344,7 +344,7 @@ const RoundEditorDialog = ({
             }}
           >
             <Typography
-              sx={{ fontWeight: 600, fontSize: "1.2rem" }}
+              sx={{ ...sx.avatarListFont, ...sx.semiboldFont }}
               variant="h6"
             >
               {t("game.round")}{" "}
@@ -354,11 +354,9 @@ const RoundEditorDialog = ({
             </Typography>
             <Typography
               sx={{
-                fontSize: "0.75rem",
+                ...sx.timestampFont,
                 color: "text.secondary",
-                fontWeight: 500,
                 textAlign: "right",
-                lineHeight: 1.2,
                 whiteSpace: "pre-line",
               }}
             >
@@ -432,7 +430,7 @@ const RoundEditorDialog = ({
           {validationError && (
             <Alert
               severity="warning"
-              sx={{ mb: 2, fontSize: fonts.size.editorChip }}
+              sx={{ mb: 2, ...sx.editorChipFont }}
             >
               {validationError}
             </Alert>
@@ -442,10 +440,10 @@ const RoundEditorDialog = ({
               <Typography
                 variant="caption"
                 sx={{
-                  fontWeight: fonts.weight.semibold,
+                  ...sx.semiboldFont,
                   mb: 0.5,
                   display: "block",
-                  fontSize: "1.2rem",
+                  ...sx.avatarListFont,
                 }}
               >
                 {t("game.cardPoints")}
@@ -459,7 +457,7 @@ const RoundEditorDialog = ({
                     ...sx.roundScore("primary"),
                     minWidth: 32,
                     textAlign: "right",
-                    fontSize: "1.2rem",
+                    ...sx.avatarListFont,
                   }}
                 >
                   {team1CardPoints}
@@ -477,7 +475,7 @@ const RoundEditorDialog = ({
                   sx={{
                     ...sx.roundScore("secondary"),
                     minWidth: 32,
-                    fontSize: "1.2rem",
+                    ...sx.avatarListFont,
                   }}
                 >
                   {100 - team1CardPoints}
@@ -511,19 +509,19 @@ const RoundEditorDialog = ({
             >
               <Typography
                 variant="h5"
-                sx={{ ...sx.scoreNumber("primary"), fontSize: "1.2rem" }}
+                sx={{ ...sx.scoreNumber("primary"), ...sx.avatarListFont }}
               >
                 {fmtScore(previewScore.team1)}
               </Typography>
               <Typography
                 variant="h6"
-                sx={{ ...sx.scoreSeparator, fontSize: "1.2rem" }}
+                sx={{ ...sx.scoreSeparator, ...sx.avatarListFont }}
               >
                 :
               </Typography>
               <Typography
                 variant="h5"
-                sx={{ ...sx.scoreNumber("secondary"), fontSize: "1.2rem" }}
+                sx={{ ...sx.scoreNumber("secondary"), ...sx.avatarListFont }}
               >
                 {fmtScore(previewScore.team2)}
               </Typography>

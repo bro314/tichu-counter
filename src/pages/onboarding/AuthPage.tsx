@@ -12,6 +12,7 @@ import IconButton from "@mui/material/IconButton";
 import { useAuth } from "../../contexts/AuthContext";
 import logoImg from "../../assets/logo.png";
 import { Capacitor } from "@capacitor/core";
+import * as sx from "../../styles/commonStyles";
 
 interface AuthPageProps {
   onAuthSuccess: () => void;
@@ -122,7 +123,7 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
           id="lang-btn-en"
           onClick={() => handleLanguageChange("en")}
           sx={{
-            fontSize: "1.4rem",
+            ...sx.lgEmojiFont,
             p: 0.5,
             border: 1,
             borderColor: i18n.language === "en" ? "primary.main" : "divider",
@@ -143,7 +144,7 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
           id="lang-btn-de"
           onClick={() => handleLanguageChange("de")}
           sx={{
-            fontSize: "1.4rem",
+            ...sx.lgEmojiFont,
             p: 0.5,
             border: 1,
             borderColor: i18n.language === "de" ? "primary.main" : "divider",

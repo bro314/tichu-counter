@@ -538,9 +538,7 @@ const GamePage = () => {
                   <Typography
                     variant="caption"
                     sx={{
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      letterSpacing: 0.5,
+                      ...sx.uppercaseBadgeFont,
                       color: getLabelColor(),
                     }}
                   >
@@ -562,16 +560,10 @@ const GamePage = () => {
                         color: "text.secondary",
                       }}
                     >
-                      <LockIcon sx={{ fontSize: "0.75rem" }} />
+                      <LockIcon sx={{ ...sx.smIconFont }} />
                       <Typography
                         variant="caption"
-                        sx={{
-                          fontSize: "0.65rem",
-                          fontWeight: 800,
-                          textTransform: "uppercase",
-                          letterSpacing: 0.5,
-                          lineHeight: 1,
-                        }}
+                        sx={sx.cardBadgeFont}
                       >
                         {t("game.private")}
                       </Typography>
@@ -596,16 +588,10 @@ const GamePage = () => {
                             : "rgb(126, 34, 206)",
                       }}
                     >
-                      <LocalOfferIcon sx={{ fontSize: "0.75rem" }} />
+                      <LocalOfferIcon sx={{ ...sx.smIconFont }} />
                       <Typography
                         variant="caption"
-                        sx={{
-                          fontSize: "0.65rem",
-                          fontWeight: 800,
-                          textTransform: "uppercase",
-                          letterSpacing: 0.5,
-                          lineHeight: 1,
-                        }}
+                        sx={sx.cardBadgeFont}
                       >
                         {game.tag}
                       </Typography>
@@ -625,7 +611,7 @@ const GamePage = () => {
                       opacity: 0.6,
                     }}
                   >
-                    <RefreshIcon sx={{ fontSize: "0.9rem" }} />
+                    <RefreshIcon sx={sx.mdIconFont} />
                   </Box>
                 </Box>
               </Box>
@@ -661,8 +647,7 @@ const GamePage = () => {
                     <Typography
                       variant="body2"
                       sx={{
-                        fontSize: "1rem",
-                        lineHeight: 1,
+                        ...sx.avatarIconFont,
                         flexShrink: 0,
                       }}
                     >
@@ -670,7 +655,7 @@ const GamePage = () => {
                     </Typography>
                     <Typography
                       variant="body2"
-                      sx={{ fontWeight: 600, minWidth: 0 }}
+                      sx={{ ...sx.semiboldFont, minWidth: 0 }}
                       noWrap
                     >
                       {p1.displayName}
@@ -688,8 +673,7 @@ const GamePage = () => {
                     <Typography
                       variant="body2"
                       sx={{
-                        fontSize: "1rem",
-                        lineHeight: 1,
+                        ...sx.avatarIconFont,
                         flexShrink: 0,
                       }}
                     >
@@ -697,7 +681,7 @@ const GamePage = () => {
                     </Typography>
                     <Typography
                       variant="body2"
-                      sx={{ fontWeight: 600, minWidth: 0 }}
+                      sx={{ ...sx.semiboldFont, minWidth: 0 }}
                       noWrap
                     >
                       {p2.displayName}
@@ -718,8 +702,7 @@ const GamePage = () => {
                   <Typography
                     variant="h4"
                     sx={{
-                      fontWeight: 800,
-                      lineHeight: 1,
+                      ...sx.largeScoreFont,
                       flex: 1,
                       minWidth: "90px",
                       textAlign: "right",
@@ -731,8 +714,7 @@ const GamePage = () => {
                   <Typography
                     variant="h4"
                     sx={{
-                      fontWeight: 800,
-                      lineHeight: 1,
+                      ...sx.largeScoreFont,
                       color: "text.secondary",
                       flexShrink: 0,
                       textAlign: "center",
@@ -744,8 +726,7 @@ const GamePage = () => {
                   <Typography
                     variant="h4"
                     sx={{
-                      fontWeight: 800,
-                      lineHeight: 1,
+                      ...sx.largeScoreFont,
                       flex: 1,
                       minWidth: "90px",
                       textAlign: "left",
@@ -779,7 +760,7 @@ const GamePage = () => {
                   >
                     <Typography
                       variant="body2"
-                      sx={{ fontWeight: 600, minWidth: 0 }}
+                      sx={{ ...sx.semiboldFont, minWidth: 0 }}
                       noWrap
                     >
                       {p3.displayName}
@@ -787,8 +768,7 @@ const GamePage = () => {
                     <Typography
                       variant="body2"
                       sx={{
-                        fontSize: "1rem",
-                        lineHeight: 1,
+                        ...sx.avatarIconFont,
                         flexShrink: 0,
                       }}
                     >
@@ -807,7 +787,7 @@ const GamePage = () => {
                   >
                     <Typography
                       variant="body2"
-                      sx={{ fontWeight: 600, minWidth: 0 }}
+                      sx={{ ...sx.semiboldFont, minWidth: 0 }}
                       noWrap
                     >
                       {p4.displayName}
@@ -815,8 +795,7 @@ const GamePage = () => {
                     <Typography
                       variant="body2"
                       sx={{
-                        fontSize: "1rem",
-                        lineHeight: 1,
+                        ...sx.avatarIconFont,
                         flexShrink: 0,
                       }}
                     >
@@ -863,7 +842,7 @@ const GamePage = () => {
       >
         <Typography
           variant="subtitle2"
-          sx={{ mb: 1, fontWeight: 600, pl: "12px" }}
+          sx={{ mb: 1, ...sx.semiboldFont, pl: "12px" }}
         >
           {rounds.length > 4
             ? `${rounds.length} ${t("game.roundHistory")}`
@@ -960,9 +939,7 @@ const GamePage = () => {
                         <Typography
                           sx={{
                             color: "text.disabled",
-                            fontWeight: 500,
-                            fontSize: "0.72rem",
-                            lineHeight: 1.2,
+                            ...sx.historyTimeFont,
                           }}
                         >
                           {fmtDatePart(new Date(round.createdAt))}
@@ -970,9 +947,7 @@ const GamePage = () => {
                         <Typography
                           sx={{
                             color: "text.disabled",
-                            fontWeight: 500,
-                            fontSize: "0.72rem",
-                            lineHeight: 1.2,
+                            ...sx.historyTimeFont,
                           }}
                         >
                           {fmtTimePart(new Date(round.createdAt))}
@@ -1008,7 +983,7 @@ const GamePage = () => {
                             }}
                           >
                             <Typography
-                              sx={{ fontSize: "0.95rem", lineHeight: 1 }}
+                              sx={sx.avatarMediumFont}
                             >
                               {playerAvatars[0]}
                             </Typography>
@@ -1024,7 +999,7 @@ const GamePage = () => {
                             }}
                           >
                             <Typography
-                              sx={{ fontSize: "0.95rem", lineHeight: 1 }}
+                              sx={sx.avatarMediumFont}
                             >
                               {playerAvatars[1]}
                             </Typography>
@@ -1064,7 +1039,7 @@ const GamePage = () => {
                       <Typography
                         variant="body1"
                         color="text.secondary"
-                        sx={{ px: 0.5, fontWeight: 700 }}
+                        sx={{ px: 0.5, ...sx.boldFont }}
                       >
                         :
                       </Typography>
@@ -1126,7 +1101,7 @@ const GamePage = () => {
                           >
                             {p3Chip || <Box sx={{ width: 26, height: 18 }} />}
                             <Typography
-                              sx={{ fontSize: "0.95rem", lineHeight: 1 }}
+                              sx={sx.avatarMediumFont}
                             >
                               {playerAvatars[2]}
                             </Typography>
@@ -1143,7 +1118,7 @@ const GamePage = () => {
                           >
                             {p4Chip || <Box sx={{ width: 26, height: 18 }} />}
                             <Typography
-                              sx={{ fontSize: "0.95rem", lineHeight: 1 }}
+                              sx={sx.avatarMediumFont}
                             >
                               {playerAvatars[3]}
                             </Typography>
@@ -1165,7 +1140,7 @@ const GamePage = () => {
                             flex: 1,
                           }}
                         >
-                          <EditIcon sx={{ fontSize: "0.95rem" }} />
+                          <EditIcon sx={sx.avatarMediumFont} />
                         </IconButton>
                       )}
                     </Box>
