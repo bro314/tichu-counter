@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Dialog from "@mui/material/Dialog";
 import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -20,6 +19,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { calculateRoundScore } from "../types/game";
 import type { Game, Round, PlayerSlot } from "../types/game";
 import type { PlayerNameResolver } from "../utils/playerName";
+import { DateFormatter } from "../utils/date";
 import * as sx from "../styles/commonStyles";
 import { shape } from "../styles/tokens";
 
@@ -328,49 +328,38 @@ const RoundEditorDialog = ({
         color="default"
         elevation={0}
       >
-        <Toolbar>
-          <Box
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            p: 1.5,
+          }}
+        >
+          <Typography
+            sx={{ ...(sx.avatarListFont as any), ...(sx.semiboldFont as any) }}
+            variant="h6"
+          >
+            {t("game.round")}{" "}
+            {editingRound
+              ? rounds.findIndex((r) => r.id === editingRound.id) + 1
+              : rounds.length + 1}
+          </Typography>
+          <Typography
             sx={{
-              flex: 1,
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              py: 0.5,
+              ...(sx.timestampFont as any),
+              color: "text.secondary",
+              textAlign: "right",
+              whiteSpace: "pre-line",
             }}
           >
-            <Typography
-              sx={{ ...(sx.avatarListFont as any), ...(sx.semiboldFont as any) }}
-              variant="h6"
-            >
-              {t("game.round")}{" "}
-              {editingRound
-                ? rounds.findIndex((r) => r.id === editingRound.id) + 1
-                : rounds.length + 1}
-            </Typography>
-            <Typography
-              sx={{
-                ...(sx.timestampFont as any),
-                color: "text.secondary",
-                textAlign: "right",
-                whiteSpace: "pre-line",
-              }}
-            >
-              {(() => {
-                const d = editingRound
-                  ? new Date(editingRound.createdAt)
-                  : new Date();
-                const pad = (n: number) => String(n).padStart(2, "0");
-                const day = pad(d.getDate());
-                const year = d.getFullYear();
-                const hours = pad(d.getHours());
-                const minutes = pad(d.getMinutes());
-                const locale = i18n.language || "en";
-                const month = d.toLocaleString(locale, { month: "long" });
-                return `${day}. ${month} ${year}\n${hours}:${minutes}`;
-              })()}
-            </Typography>
-          </Box>
-        </Toolbar>
+            {DateFormatter.formatDateTime(
+              editingRound ? new Date(editingRound.createdAt) : new Date(),
+              i18n.language
+            )}
+          </Typography>
+        </Box>
       </AppBar>
 
       <Box
@@ -379,9 +368,7 @@ const RoundEditorDialog = ({
           flexDirection: "column",
           flex: 1,
           overflow: "auto",
-          px: 2,
-          pt: 2,
-          pb: "calc(16px + env(safe-area-inset-bottom))",
+          p: 1,
         }}
       >
         {/* TOP: Player cards + 1-2 Victory + Slider */}
@@ -439,12 +426,13 @@ const RoundEditorDialog = ({
                   mb: 0.5,
                   display: "block",
                   ...(sx.avatarListFont as any),
+                  textAlign: "center",
                 }}
               >
                 {t("game.cardPoints")}
               </Typography>
               <Box
-                sx={{ display: "flex", alignItems: "center", gap: 2, px: 1 }}
+                sx={{ display: "flex", alignItems: "center", gap: 1 }}
               >
                 <Typography
                   variant="body2"
@@ -499,26 +487,14 @@ const RoundEditorDialog = ({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 3,
+                py: 1,
               }}
             >
               <Typography
                 variant="h5"
-                sx={{ ...(sx.scoreNumber("primary") as any), ...(sx.avatarListFont as any) }}
+                sx={{ ...sx.largeScoreFont }}
               >
-                {fmtScore(previewScore.team1)}
-              </Typography>
-              <Typography
-                variant="h6"
-                sx={{ ...(sx.scoreSeparator as any), ...(sx.avatarListFont as any) }}
-              >
-                :
-              </Typography>
-              <Typography
-                variant="h5"
-                sx={{ ...(sx.scoreNumber("secondary") as any), ...(sx.avatarListFont as any) }}
-              >
-                {fmtScore(previewScore.team2)}
+                {fmtScore(previewScore.team1)} : {fmtScore(previewScore.team2)}
               </Typography>
             </Box>
           </Card>
@@ -548,7 +524,7 @@ const RoundEditorDialog = ({
                   border: 1,
                   borderColor: "divider",
                   borderRadius: `${shape.buttonRadius}px`,
-                  p: 1.4,
+                  p: 1.5,
                   transition: "all 0.15s ease",
                   "&:hover": {
                     bgcolor: "action.hover",
@@ -562,7 +538,7 @@ const RoundEditorDialog = ({
           </Box>
         </Box>
       </Box>
-    </Dialog>
+    </Dialog >
   );
 };
 

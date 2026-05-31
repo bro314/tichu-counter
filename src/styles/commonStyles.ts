@@ -37,7 +37,7 @@ export const scrollableList: SxProps<Theme> = {
 
 /** Primary CTA button (Start New Game, Add Round) */
 export const ctaButton: SxProps<Theme> = {
-  py: 1.5,
+  py: 1,
   fontSize: fonts.size.normal,
   borderRadius: `${shape.buttonRadius}px`,
   boxShadow: shadows.ctaGlow,
@@ -45,9 +45,7 @@ export const ctaButton: SxProps<Theme> = {
 
 /** CTA container pinned at bottom of page */
 export const ctaContainer: SxProps<Theme> = {
-  px: 2,
-  pb: 2,
-  pt: 1,
+  p: 1,
 };
 
 // ─── Score display ────────────────────────────────────────────
@@ -58,8 +56,6 @@ export const scoreHeader: SxProps<Theme> = {
   alignItems: "center",
   justifyContent: "center",
   gap: 1,
-  py: 2,
-  px: 1,
   bgcolor: "background.paper",
   borderBottom: 1,
   borderColor: "divider",
@@ -70,15 +66,6 @@ export const teamLabel = (_color: "primary" | "secondary"): SxProps<Theme> => ({
   fontWeight: fonts.weight.semibold,
   fontSize: fonts.size.xs,
   color: "text.secondary",
-});
-
-/** Large score number */
-export const scoreNumber = (
-  _color: "primary" | "secondary",
-): SxProps<Theme> => ({
-  fontWeight: fonts.weight.bold,
-  color: "text.primary",
-  fontFamily: fonts.mono,
 });
 
 /** Colon separator between scores */
@@ -94,15 +81,18 @@ export const scoreSeparator: SxProps<Theme> = {
 export const historyChip: SxProps<Theme> = {
   height: 18,
   fontSize: fonts.size.sm,
-  fontWeight: 700,
+  fontWeight: 600,
+  borderRadius: 0.5,
+  minWidth: 27,
   "& .MuiChip-label": {
-    px: 0.75,
+    px: 0.5,
   },
 };
 
 /** Timestamp / metadata text */
 export const metaText: SxProps<Theme> = {
   fontSize: fonts.size.xs,
+  lineHeight: fonts.lineHeight.tight,
   color: "text.disabled",
 };
 
@@ -110,7 +100,7 @@ export const metaText: SxProps<Theme> = {
 
 /** Player card in round editor */
 export const playerCard = (_isTeam1: boolean): SxProps<Theme> => ({
-  p: 1.5,
+  p: 1,
   bgcolor: "background.paper",
 });
 
@@ -135,8 +125,7 @@ export const victoryChip: SxProps<Theme> = {
 
 /** Score preview card */
 export const previewCard: SxProps<Theme> = {
-  px: 2,
-  py: 1.5,
+  p: 1,
   mb: 2,
   bgcolor: "action.hover",
 };
@@ -179,7 +168,7 @@ export const avatarGrid: SxProps<Theme> = {
 export const avatarItem = (selected: boolean): SxProps<Theme> => ({
   fontSize: fonts.size.xxl,
   textAlign: "center",
-  py: 0.8,
+  py: 1,
   borderRadius: 2,
   cursor: "pointer",
   border: 2,
@@ -236,9 +225,7 @@ export const appFrame: SxProps<Theme> = {
 
 /** Top header container with bottom border and dynamic downwards shadow */
 export const dynamicHeader = (showShadow: boolean): SxProps<Theme> => ({
-  px: 2,
-  pt: 2,
-  pb: 1.5,
+  p: 1,
   flexShrink: 0,
   bgcolor: "background.default",
   borderBottom: 1,
@@ -255,9 +242,7 @@ export const dynamicHeader = (showShadow: boolean): SxProps<Theme> => ({
 
 /** Bottom actions container with top border and dynamic upwards shadow */
 export const dynamicBottomBar = (showShadow: boolean): SxProps<Theme> => ({
-  px: 2,
-  pb: 2,
-  pt: 1.5,
+  p: 1,
   display: "flex",
   gap: 1.5,
   alignItems: "center",
@@ -315,6 +300,7 @@ export const avatarListFont: SxProps<Theme> = {
 
 /** Timestamp layout for dialog toolbars */
 export const timestampFont: SxProps<Theme> = {
+  color: "text.secondary",
   fontSize: fonts.size.sm,
   fontWeight: fonts.weight.medium,
   lineHeight: fonts.lineHeight.tight,
@@ -357,7 +343,7 @@ export const smIconFont: SxProps<Theme> = {
 export const scoreFont: SxProps<Theme> = {
   fontWeight: fonts.weight.medium,
   color: "text.primary",
-  fontSize: fonts.size.normal,
+  fontSize: fonts.size.xl,
   fontFamily: fonts.mono,
 };
 
@@ -377,13 +363,13 @@ export const historyTimeFont: SxProps<Theme> = {
 
 /** Player name in editor card */
 export const playerNameLarge: SxProps<Theme> = {
-  fontWeight: fonts.weight.semibold,
+  fontWeight: fonts.weight.medium,
   fontSize: fonts.size.large,
 };
 
 /** Medium avatar font inside lists/history */
 export const avatarMediumFont: SxProps<Theme> = {
-  fontSize: fonts.size.md,
+  fontSize: fonts.size.large,
   lineHeight: fonts.lineHeight.none,
 };
 
