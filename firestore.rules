@@ -16,7 +16,7 @@ service cloud.firestore {
     function isGameParticipant(gameData) {
       return isAuthenticated() && (
         gameData.createdBy == request.auth.uid || 
-        (gameData.playerUids != null && request.auth.uid in gameData.playerUids)
+        (gameData.playerUids != null && gameData.playerUids.hasAny([request.auth.uid]))
       );
     }
 
