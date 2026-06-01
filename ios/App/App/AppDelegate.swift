@@ -8,6 +8,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        if let bridgeViewController = window?.rootViewController as? CAPBridgeViewController {
+            _ = bridgeViewController.view // Force view load so webView is instantiated
+            bridgeViewController.webView?.allowsBackForwardNavigationGestures = true
+        }
         return true
     }
 

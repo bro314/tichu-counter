@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import { Capacitor } from '@capacitor/core';
+import { App as CapApp } from '@capacitor/app';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -22,6 +23,28 @@ function AppShell() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Handle native hardware and gesture back button (Android)
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    let active = true;
+    const listenerPromise = CapApp.addListener('backButton', () => {
+      if (!active) return;
+      if (location.pathname === '/') {
+        CapApp.exitApp();
+      } else {
+        navigate(-1);
+      }
+    });
+
+    return () => {
+      active = false;
+      listenerPromise.then((handle) => {
+        handle.remove();
+      });
+    };
+  }, [location.pathname, navigate]);
 
   // Derive tab index from current pathname
   const getTabIndex = useCallback(() => {
