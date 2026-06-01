@@ -71,6 +71,7 @@
     "start": "Start Game",
     "cancel": "Cancel",
     "errorDuplicatePlayer": "Each player can only be selected once.",
+    "errorGuestUpgradeOnly": "Guest players can only be upgraded to registered user accounts.",
     "isPrivate": "Private game",
     "isPrivateHelp": "(only visible to game participants)",
     "tagLabel": "Tag",

@@ -209,23 +209,48 @@ export async function updateGameStatus(
   await updateDoc(doc(db, 'games', gameId), { status });
 }
 
-/** Update game metadata (isPrivate, tag) */
+/** Update game metadata (isPrivate, tag, note, optionally players) */
 export async function updateGameMetadata(
   gameId: string,
   isPrivate: boolean,
   tag: string,
   note: string,
+  players?: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
 ): Promise<void> {
-  await updateDoc(doc(db, 'games', gameId), {
+  const updateData: Record<string, any> = {
     isPrivate,
     tag: tag.trim() || null,
     note: note.trim() || null,
-  });
+  };
+
+  if (players) {
+    updateData.players = players;
+    updateData.playerUids = players
+      .map((p) => p.uid)
+      .filter((uid): uid is string => uid !== null);
+  }
+
+  await updateDoc(doc(db, 'games', gameId), updateData);
 
   if (tag.trim()) {
     await setDoc(doc(db, 'metadata', 'tags'), {
       tags: arrayUnion(tag.trim())
     }, { merge: true });
+  }
+
+  // Update creator's recent opponent UIDs if new players were provided
+  if (players) {
+    const createdBy = players[0].uid;
+    if (createdBy) {
+      const opponents = players
+        .slice(1)
+        .map((p) => p.uid)
+        .filter((id): id is string => id !== null && id !== createdBy);
+
+      if (opponents.length > 0) {
+        await updateRecentOpponents(createdBy, opponents);
+      }
+    }
   }
 }
 

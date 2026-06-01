@@ -118,30 +118,7 @@ const GamePage = () => {
     }
   };
 
-  const handleUpdateGame = async (isPrivate: boolean, tag: string, note: string) => {
-    if (!game) return;
-    try {
-      await updateGameMetadata(game.id, isPrivate, tag, note);
-      setEditGameDialogOpen(false);
-      // Reload game metadata
-      const updatedGame = await fetchGame(game.id);
-      if (updatedGame) {
-        setGame(updatedGame);
-      }
-      setSnackbar({
-        open: true,
-        message: t("game.gameUpdated"),
-        severity: "success",
-      });
-    } catch (err) {
-      console.error("Failed to update game settings:", err);
-      setSnackbar({
-        open: true,
-        message: t("game.errorLoadGame"),
-        severity: "error",
-      });
-    }
-  };
+
   const [playerProfiles, setPlayerProfiles] = useState<
     Map<string, PlayerNameResolver>
   >(new Map());
@@ -249,6 +226,35 @@ const GamePage = () => {
   useEffect(() => {
     loadGame();
   }, [loadGame]);
+
+  const handleUpdateGame = async (
+    isPrivate: boolean,
+    tag: string,
+    note: string,
+    players?: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
+  ) => {
+    if (!game) return;
+    try {
+      await updateGameMetadata(game.id, isPrivate, tag, note, players);
+      setEditGameDialogOpen(false);
+      
+      // Reload game and player profiles
+      await loadGame(true);
+
+      setSnackbar({
+        open: true,
+        message: t("game.gameUpdated"),
+        severity: "success",
+      });
+    } catch (err) {
+      console.error("Failed to update game settings:", err);
+      setSnackbar({
+        open: true,
+        message: t("game.errorLoadGame"),
+        severity: "error",
+      });
+    }
+  };
 
   if (!id) return <NoGameFallback />;
   if (loading)

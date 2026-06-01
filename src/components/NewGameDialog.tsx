@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -36,7 +36,12 @@ interface NewGameDialogProps {
   ) => void;
   editMode?: boolean;
   game?: Game | null;
-  onUpdateGame?: (isPrivate: boolean, tag: string, note: string) => void;
+  onUpdateGame?: (
+    isPrivate: boolean,
+    tag: string,
+    note: string,
+    players?: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
+  ) => void;
 }
 
 /** A player selection can be a registered user or a guest name */
@@ -56,6 +61,7 @@ const NewGameDialog = ({
   const [error, setError] = useState<string | null>(null);
 
   // Each slot: either a selected registered player or a typed guest string
+  const [player1, setPlayer1] = useState<PlayerSelection>(null);
   const [player2, setPlayer2] = useState<PlayerSelection>(null);
   const [player2Input, setPlayer2Input] = useState("");
   const [player3, setPlayer3] = useState<PlayerSelection>(null);
@@ -73,6 +79,22 @@ const NewGameDialog = ({
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [note, setNote] = useState("");
+
+  const player2Ref = useRef(player2);
+  const player3Ref = useRef(player3);
+  const player4Ref = useRef(player4);
+
+  useEffect(() => {
+    player2Ref.current = player2;
+  }, [player2]);
+
+  useEffect(() => {
+    player3Ref.current = player3;
+  }, [player3]);
+
+  useEffect(() => {
+    player4Ref.current = player4;
+  }, [player4]);
 
   // Fetch recent opponents and tags when dialog opens
   useEffect(() => {
@@ -102,7 +124,6 @@ const NewGameDialog = ({
 
         const resolveAndSetPlayers = async () => {
           const uidsToFetch = game.players
-            .slice(1)
             .map((p) => p.uid)
             .filter((uid): uid is string => uid !== null);
 
@@ -122,17 +143,20 @@ const NewGameDialog = ({
             return null;
           };
 
+          const p1Resolved = resolvePlayer(game.players[0]);
+          setPlayer1(p1Resolved);
+
           const p2Resolved = resolvePlayer(game.players[1]);
           setPlayer2(p2Resolved);
-          setPlayer2Input(p2Resolved ? "" : game.players[1].guestName || "");
+          setPlayer2Input(p2Resolved ? `${p2Resolved.avatar} ${p2Resolved.displayName}` : game.players[1].guestName || "");
 
           const p3Resolved = resolvePlayer(game.players[2]);
           setPlayer3(p3Resolved);
-          setPlayer3Input(p3Resolved ? "" : game.players[2].guestName || "");
+          setPlayer3Input(p3Resolved ? `${p3Resolved.avatar} ${p3Resolved.displayName}` : game.players[2].guestName || "");
 
           const p4Resolved = resolvePlayer(game.players[3]);
           setPlayer4(p4Resolved);
-          setPlayer4Input(p4Resolved ? "" : game.players[3].guestName || "");
+          setPlayer4Input(p4Resolved ? `${p4Resolved.avatar} ${p4Resolved.displayName}` : game.players[3].guestName || "");
         };
 
         resolveAndSetPlayers().catch(console.error);
@@ -141,6 +165,7 @@ const NewGameDialog = ({
         setTag("");
         setTagInput("");
         setNote("");
+        setPlayer1(null);
         setPlayer2(null);
         setPlayer2Input("");
         setPlayer3(null);
@@ -239,8 +264,74 @@ const NewGameDialog = ({
     if (!user) return;
 
     if (editMode) {
-      if (onUpdateGame) {
-        onUpdateGame(isPrivate, tag.trim(), note.trim());
+      if (game) {
+        const updatedPlayers: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot] = [
+          game.players[0],
+          game.players[1],
+          game.players[2],
+          game.players[3],
+        ];
+
+        const slots = [
+          { index: 1, selected: player2, input: player2Input },
+          { index: 2, selected: player3, input: player3Input },
+          { index: 3, selected: player4, input: player4Input },
+        ];
+
+        for (const slot of slots) {
+          const original = game.players[slot.index];
+          if (original.uid === null) {
+            // Originally a guest
+            if (slot.selected) {
+              // Changed to proper user account
+              updatedPlayers[slot.index] = { uid: slot.selected.uid, guestName: null };
+            } else {
+              // Not changed to a registered user
+              if (slot.input.trim() !== (original.guestName || "")) {
+                setError(t("newGame.errorGuestUpgradeOnly"));
+                return;
+              }
+              // Unchanged
+              updatedPlayers[slot.index] = original;
+            }
+          }
+        }
+
+        // Validate duplicate registered players
+        const uids = updatedPlayers.map((p) => p.uid).filter(Boolean);
+        const uniqueUids = new Set(uids);
+        if (uniqueUids.size !== uids.length) {
+          setError(t("newGame.errorDuplicatePlayer"));
+          return;
+        }
+
+        // Validate duplicate names (registered and guest names, case-insensitive)
+        const finalNames: string[] = [];
+        // Player 1 name:
+        finalNames.push(player1 ? player1.displayName : (profile?.displayName || "You"));
+        // Players 2, 3, 4:
+        const selectedState = [player2, player3, player4];
+        for (let i = 1; i <= 3; i++) {
+          const p = updatedPlayers[i];
+          if (p.uid) {
+            const stateOpt = selectedState[i - 1];
+            finalNames.push(stateOpt?.displayName || "Player");
+          } else {
+            finalNames.push(p.guestName || "");
+          }
+        }
+
+        const cleanedNames = finalNames.map((n) => n.trim().toLowerCase());
+        const uniqueNames = new Set(cleanedNames);
+        if (uniqueNames.size !== cleanedNames.length) {
+          setError(t("newGame.errorDuplicatePlayer"));
+          return;
+        }
+
+        setError(null);
+        if (onUpdateGame) {
+          onUpdateGame(isPrivate, tag.trim(), note.trim(), updatedPlayers);
+        }
       }
       return;
     }
@@ -316,7 +407,7 @@ const NewGameDialog = ({
             onChange(null);
           } else {
             onChange(newVal);
-            if (n < 4) {
+            if (n < 4 && !editMode) {
               setTimeout(() => {
                 const nextInput = document.getElementById(
                   `player${n + 1}-input`,
@@ -366,6 +457,25 @@ const NewGameDialog = ({
             label={playerLabel(n)}
             placeholder={t("newGame.playerPlaceholder")}
             disabled={disabled}
+            onFocus={() => {
+              if (editMode && !disabled) {
+                onInputChange("");
+              }
+            }}
+            onBlur={() => {
+              if (editMode && !disabled && game) {
+                setTimeout(() => {
+                  const currentSelected =
+                    n === 2 ? player2Ref.current :
+                    n === 3 ? player3Ref.current :
+                    player4Ref.current;
+
+                  if (currentSelected === null) {
+                    onInputChange(game.players[n - 1].guestName || "");
+                  }
+                }, 150);
+              }
+            }}
           />
         )}
       />
@@ -378,6 +488,8 @@ const NewGameDialog = ({
     avatar: profile.avatar || "🐉",
   } : null;
 
+  const p1 = player1 || currentUserPlayer;
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle>{editMode ? t("newGame.editTitle") : t("newGame.title")}</DialogTitle>
@@ -388,70 +500,66 @@ const NewGameDialog = ({
           </Alert>
         )}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
-          {!editMode && (
-            <>
-              {/* Team 1 header */}
-              <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                sx={{ ...sx.semiboldFont }}
-              >
-                {t("game.team1")}
-              </Typography>
+          {/* Team 1 header */}
+          <Typography
+            variant="subtitle2"
+            color="text.secondary"
+            sx={{ ...sx.semiboldFont }}
+          >
+            {t("game.team1")}
+          </Typography>
 
-              {/* Player 1 — current user (read-only) */}
-              {renderPlayerPicker(
-                1,
-                currentUserPlayer,
-                currentUserPlayer ? `${currentUserPlayer.avatar} ${currentUserPlayer.displayName}` : "",
-                () => {},
-                () => {},
-                [],
-                true,
-              )}
+          {/* Player 1 — creator / current user (read-only) */}
+          {renderPlayerPicker(
+            1,
+            p1,
+            p1 ? `${p1.avatar} ${p1.displayName}` : "",
+            () => {},
+            () => {},
+            [],
+            true,
+          )}
 
-              {/* Player 2 */}
-              {renderPlayerPicker(
-                2,
-                player2,
-                player2Input,
-                setPlayer2,
-                setPlayer2Input,
-                player2Input.trim() === "" ? recentOpponents : player2Options,
-                editMode,
-              )}
+          {/* Player 2 */}
+          {renderPlayerPicker(
+            2,
+            player2,
+            player2Input,
+            setPlayer2,
+            setPlayer2Input,
+            player2Input.trim() === "" ? recentOpponents : player2Options,
+            editMode ? (game ? game.players[1].uid !== null : true) : false,
+          )}
 
-              {/* Team 2 header */}
-              <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                sx={{ ...sx.semiboldFont, mt: 1 }}
-              >
-                {t("game.team2")}
-              </Typography>
+          {/* Team 2 header */}
+          <Typography
+            variant="subtitle2"
+            color="text.secondary"
+            sx={{ ...sx.semiboldFont, mt: 1 }}
+          >
+            {t("game.team2")}
+          </Typography>
 
-              {/* Player 3 */}
-              {renderPlayerPicker(
-                3,
-                player3,
-                player3Input,
-                setPlayer3,
-                setPlayer3Input,
-                player3Input.trim() === "" ? recentOpponents : player3Options,
-                editMode,
-              )}
+          {/* Player 3 */}
+          {renderPlayerPicker(
+            3,
+            player3,
+            player3Input,
+            setPlayer3,
+            setPlayer3Input,
+            player3Input.trim() === "" ? recentOpponents : player3Options,
+            editMode ? (game ? game.players[2].uid !== null : true) : false,
+          )}
 
-              {/* Player 4 */}
-              {renderPlayerPicker(
-                4,
-                player4,
-                player4Input,
-                setPlayer4,
-                setPlayer4Input,
-                player4Input.trim() === "" ? recentOpponents : player4Options,
-                editMode,
-              )}
-            </>
+          {/* Player 4 */}
+          {renderPlayerPicker(
+            4,
+            player4,
+            player4Input,
+            setPlayer4,
+            setPlayer4Input,
+            player4Input.trim() === "" ? recentOpponents : player4Options,
+            editMode ? (game ? game.players[3].uid !== null : true) : false,
           )}
 
           {/* Privacy setting */}
