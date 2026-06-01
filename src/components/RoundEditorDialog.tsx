@@ -22,6 +22,7 @@ import type { PlayerNameResolver } from "../utils/playerName";
 import { DateFormatter } from "../utils/date";
 import * as sx from "../styles/commonStyles";
 import { shape } from "../styles/tokens";
+import { permutePlayerArray } from "../utils/playerPermutation";
 
 const SlideUp = React.forwardRef(function Transition(
   props: TransitionProps & { children: React.ReactElement },
@@ -108,9 +109,16 @@ const RoundEditorDialog = ({
     return { displayName, avatar };
   };
 
-  const playerAvatars = game.players.map(
+  const loggedInIndex = game.players.findIndex((player) => player.uid === user?.uid);
+  const leftTeam = loggedInIndex !== -1 && loggedInIndex >= 2 ? 2 : 1;
+  const rightTeam = loggedInIndex !== -1 && loggedInIndex >= 2 ? 1 : 2;
+
+  const originalPlayerAvatars = game.players.map(
     (slot) => getPlayerDetails(slot).avatar,
   );
+  const playerAvatars = loggedInIndex !== -1
+    ? permutePlayerArray(originalPlayerAvatars, loggedInIndex)
+    : originalPlayerAvatars;
 
   const toggleTichu = (playerNum: number) => {
     const isSelecting = !tichuCalls.includes(playerNum);
@@ -208,20 +216,20 @@ const RoundEditorDialog = ({
 
   const renderPlayerCardInDialog = (playerIndex: number) => {
     const pn = playerIndex + 1;
-    const isTeam1 = pn <= 2;
+    const isTeam1Layout = loggedInIndex !== -1 ? ((playerIndex ^ loggedInIndex) < 2) : (pn <= 2);
     const { displayName, avatar } = getPlayerDetails(game.players[playerIndex]);
     return (
-      <Card key={`player-dialog-${pn}`} sx={sx.playerCard(isTeam1)}>
+      <Card key={`player-dialog-${pn}`} sx={sx.playerCard(isTeam1Layout)}>
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: isTeam1 ? "flex-start" : "flex-end",
+            justifyContent: isTeam1Layout ? "flex-start" : "flex-end",
             gap: 0.75,
             mb: 1,
           }}
         >
-          {!isTeam1 && (
+          {!isTeam1Layout && (
             <Typography
               variant="subtitle2"
               sx={{ ...(sx.playerNameLarge as any), mb: 0, textAlign: "right" }}
@@ -236,7 +244,7 @@ const RoundEditorDialog = ({
           >
             {avatar}
           </Typography>
-          {isTeam1 && (
+          {isTeam1Layout && (
             <Typography
               variant="subtitle2"
               sx={{ ...(sx.playerNameLarge as any), mb: 0, textAlign: "left" }}
@@ -381,10 +389,10 @@ const RoundEditorDialog = ({
               mb: 1.5,
             }}
           >
-            {renderPlayerCardInDialog(0)}
-            {renderPlayerCardInDialog(2)}
-            {renderPlayerCardInDialog(1)}
-            {renderPlayerCardInDialog(3)}
+            {renderPlayerCardInDialog(loggedInIndex !== -1 ? (0 ^ loggedInIndex) : 0)}
+            {renderPlayerCardInDialog(loggedInIndex !== -1 ? (2 ^ loggedInIndex) : 2)}
+            {renderPlayerCardInDialog(loggedInIndex !== -1 ? (1 ^ loggedInIndex) : 1)}
+            {renderPlayerCardInDialog(loggedInIndex !== -1 ? (3 ^ loggedInIndex) : 3)}
           </Box>
           <Box
             sx={{
@@ -396,16 +404,16 @@ const RoundEditorDialog = ({
           >
             <Chip
               label={`${playerAvatars[0]} ${playerAvatars[1]}  ${t("game.oneTwoVictory")}`}
-              color={oneTwoVictory === 1 ? "primary" : "default"}
-              variant={oneTwoVictory === 1 ? "filled" : "outlined"}
-              onClick={() => toggleOneTwoVictory(1)}
+              color={oneTwoVictory === leftTeam ? "primary" : "default"}
+              variant={oneTwoVictory === leftTeam ? "filled" : "outlined"}
+              onClick={() => toggleOneTwoVictory(leftTeam)}
               sx={sx.victoryChip}
             />
             <Chip
               label={`${playerAvatars[2]} ${playerAvatars[3]}  ${t("game.oneTwoVictory")}`}
-              color={oneTwoVictory === 2 ? "primary" : "default"}
-              variant={oneTwoVictory === 2 ? "filled" : "outlined"}
-              onClick={() => toggleOneTwoVictory(2)}
+              color={oneTwoVictory === rightTeam ? "primary" : "default"}
+              variant={oneTwoVictory === rightTeam ? "filled" : "outlined"}
+              onClick={() => toggleOneTwoVictory(rightTeam)}
               sx={sx.victoryChip}
             />
           </Box>
@@ -443,12 +451,12 @@ const RoundEditorDialog = ({
                     ...(sx.avatarListFont as any),
                   }}
                 >
-                  {team1CardPoints}
+                  {leftTeam === 1 ? team1CardPoints : 100 - team1CardPoints}
                 </Typography>
                 <Slider
                   id="card-points-slider"
-                  value={100 - team1CardPoints}
-                  onChange={(_, v) => setTeam1CardPoints(100 - (v as number))}
+                  value={leftTeam === 1 ? 100 - team1CardPoints : team1CardPoints}
+                  onChange={(_, v) => setTeam1CardPoints(leftTeam === 1 ? 100 - (v as number) : (v as number))}
                   min={-25}
                   max={125}
                   step={5}
@@ -461,7 +469,7 @@ const RoundEditorDialog = ({
                     ...(sx.avatarListFont as any),
                   }}
                 >
-                  {100 - team1CardPoints}
+                  {leftTeam === 1 ? 100 - team1CardPoints : team1CardPoints}
                 </Typography>
               </Box>
             </>
@@ -494,7 +502,7 @@ const RoundEditorDialog = ({
                 variant="h5"
                 sx={{ ...sx.largeScoreFont }}
               >
-                {fmtScore(previewScore.team1)} : {fmtScore(previewScore.team2)}
+                {fmtScore(leftTeam === 1 ? previewScore.team1 : previewScore.team2)} : {fmtScore(leftTeam === 1 ? previewScore.team2 : previewScore.team1)}
               </Typography>
             </Box>
           </Card>

@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import { calculateRoundScore } from "../types/game";
 import type { Round } from "../types/game";
 import * as sx from "../styles/commonStyles";
+import { permutePlayerArray } from "../utils/playerPermutation";
 
 interface RoundCardProps {
   round: Round;
@@ -13,10 +14,21 @@ interface RoundCardProps {
   isPlayer: boolean;
   onEditRound: (round: Round) => void;
   cumulativeScore: { team1: number; team2: number };
+  loggedInIndex?: number;
 }
 
-const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScore }: RoundCardProps) => {
+const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScore, loggedInIndex }: RoundCardProps) => {
   const score = calculateRoundScore(round);
+  const hasLoggedIn = loggedInIndex !== undefined && loggedInIndex !== -1;
+  const avatars = hasLoggedIn ? permutePlayerArray(playerAvatars, loggedInIndex) : playerAvatars;
+
+  const orig1 = hasLoggedIn ? (0 ^ loggedInIndex) + 1 : 1;
+  const orig2 = hasLoggedIn ? (1 ^ loggedInIndex) + 1 : 2;
+  const orig3 = hasLoggedIn ? (2 ^ loggedInIndex) + 1 : 3;
+  const orig4 = hasLoggedIn ? (3 ^ loggedInIndex) + 1 : 4;
+
+  const leftTeam = hasLoggedIn && loggedInIndex >= 2 ? 2 : 1;
+  const rightTeam = hasLoggedIn && loggedInIndex >= 2 ? 1 : 2;
 
   const getPlayerCallChip = (r: Round, pNum: number) => {
     const isTichu = r.tichuCalls.includes(pNum);
@@ -33,25 +45,25 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
     );
   };
 
-  const p1Chip = getPlayerCallChip(round, 1);
-  const p2Chip = getPlayerCallChip(round, 2);
-  const p3Chip = getPlayerCallChip(round, 3);
-  const p4Chip = getPlayerCallChip(round, 4);
+  const p1Chip = getPlayerCallChip(round, orig1);
+  const p2Chip = getPlayerCallChip(round, orig2);
+  const p3Chip = getPlayerCallChip(round, orig3);
+  const p4Chip = getPlayerCallChip(round, orig4);
 
-  const hasP1Call = round.tichuCalls.includes(1) || round.grandTichuCalls.includes(1);
-  const hasP2Call = round.tichuCalls.includes(2) || round.grandTichuCalls.includes(2);
-  const p1Success = round.finishedFirst === 1;
+  const hasP1Call = round.tichuCalls.includes(orig1) || round.grandTichuCalls.includes(orig1);
+  const hasP2Call = round.tichuCalls.includes(orig2) || round.grandTichuCalls.includes(orig2);
+  const p1Success = round.finishedFirst === orig1;
 
-  let t1VictoryTarget: 1 | 2 = 1;
-  if (round.oneTwoVictory === 1) {
+  let t1VictoryTarget = orig1;
+  if (round.oneTwoVictory === leftTeam) {
     if (!hasP1Call && !hasP2Call) {
-      t1VictoryTarget = 1;
+      t1VictoryTarget = orig1;
     } else if (hasP1Call && !hasP2Call) {
-      t1VictoryTarget = 2;
+      t1VictoryTarget = orig2;
     } else if (!hasP1Call && hasP2Call) {
-      t1VictoryTarget = 1;
+      t1VictoryTarget = orig1;
     } else {
-      t1VictoryTarget = !p1Success ? 1 : 2;
+      t1VictoryTarget = !p1Success ? orig1 : orig2;
     }
   }
 
@@ -60,39 +72,39 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
   );
 
   const slot1Content =
-    round.oneTwoVictory === 1 && t1VictoryTarget === 1
+    round.oneTwoVictory === leftTeam && t1VictoryTarget === orig1
       ? victoryChip
       : p1Chip;
 
   const slot2Content =
-    round.oneTwoVictory === 1 && t1VictoryTarget === 2
+    round.oneTwoVictory === leftTeam && t1VictoryTarget === orig2
       ? victoryChip
       : p2Chip;
 
-  const hasP3Call = round.tichuCalls.includes(3) || round.grandTichuCalls.includes(3);
-  const hasP4Call = round.tichuCalls.includes(4) || round.grandTichuCalls.includes(4);
-  const p3Success = round.finishedFirst === 3;
+  const hasP3Call = round.tichuCalls.includes(orig3) || round.grandTichuCalls.includes(orig3);
+  const hasP4Call = round.tichuCalls.includes(orig4) || round.grandTichuCalls.includes(orig4);
+  const p3Success = round.finishedFirst === orig3;
 
-  let t2VictoryTarget: 3 | 4 = 3;
-  if (round.oneTwoVictory === 2) {
+  let t2VictoryTarget = orig3;
+  if (round.oneTwoVictory === rightTeam) {
     if (!hasP3Call && !hasP4Call) {
-      t2VictoryTarget = 3;
+      t2VictoryTarget = orig3;
     } else if (hasP3Call && !hasP4Call) {
-      t2VictoryTarget = 4;
+      t2VictoryTarget = orig4;
     } else if (!hasP3Call && hasP4Call) {
-      t2VictoryTarget = 3;
+      t2VictoryTarget = orig3;
     } else {
-      t2VictoryTarget = !p3Success ? 3 : 4;
+      t2VictoryTarget = !p3Success ? orig3 : orig4;
     }
   }
 
   const slot3Content =
-    round.oneTwoVictory === 2 && t2VictoryTarget === 3
+    round.oneTwoVictory === rightTeam && t2VictoryTarget === orig3
       ? victoryChip
       : p3Chip;
 
   const slot4Content =
-    round.oneTwoVictory === 2 && t2VictoryTarget === 4
+    round.oneTwoVictory === rightTeam && t2VictoryTarget === orig4
       ? victoryChip
       : p4Chip;
 
@@ -141,7 +153,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
                 }}
               >
                 <Typography sx={sx.avatarMediumFont}>
-                  {playerAvatars[0]}
+                  {avatars[0]}
                 </Typography>
                 {slot1Content || <Box sx={{ width: 26, height: 18 }} />}
               </Box>
@@ -155,7 +167,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
                 }}
               >
                 <Typography sx={sx.avatarMediumFont}>
-                  {playerAvatars[1]}
+                  {avatars[1]}
                 </Typography>
                 {slot2Content || <Box sx={{ width: 26, height: 18 }} />}
               </Box>
@@ -176,7 +188,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
               variant="body2"
               sx={{ ...sx.scoreFont }}
             >
-              {score.team1}
+              {leftTeam === 1 ? score.team1 : score.team2}
             </Typography>
             <Typography
               variant="body2"
@@ -188,7 +200,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
               variant="body2"
               sx={{ ...sx.scoreFont }}
             >
-              {score.team2}
+              {leftTeam === 1 ? score.team2 : score.team1}
             </Typography>
           </Box>
 
@@ -206,7 +218,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
               variant="body2"
               sx={{ ...sx.scoreFont }}
             >
-              {cumulativeScore.team1}
+              {leftTeam === 1 ? cumulativeScore.team1 : cumulativeScore.team2}
             </Typography>
             <Typography
               variant="body2"
@@ -218,7 +230,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
               variant="body2"
               sx={{ ...sx.scoreFont }}
             >
-              {cumulativeScore.team2}
+              {leftTeam === 1 ? cumulativeScore.team2 : cumulativeScore.team1}
             </Typography>
           </Box>
 
@@ -253,7 +265,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
               >
                 {slot3Content || <Box sx={{ width: 26, height: 18 }} />}
                 <Typography sx={sx.avatarMediumFont}>
-                  {playerAvatars[2]}
+                  {avatars[2]}
                 </Typography>
               </Box>
               {/* Player 4 Row */}
@@ -268,7 +280,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
               >
                 {slot4Content || <Box sx={{ width: 26, height: 18 }} />}
                 <Typography sx={sx.avatarMediumFont}>
-                  {playerAvatars[3]}
+                  {avatars[3]}
                 </Typography>
               </Box>
             </Box>

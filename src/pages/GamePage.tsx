@@ -274,6 +274,7 @@ const GamePage = () => {
   const winner = checkWinner(totals);
   const isGameOver = winner !== 0 || game.status === "finished";
   const isPlayer = game.players.some((p) => p.uid === user?.uid);
+  const loggedInIndex = game ? game.players.findIndex((p) => p.uid === user?.uid) : -1;
   const playerAvatars = game.players.map(
     (slot) => getPlayerDetails(slot).avatar,
   );
@@ -462,6 +463,7 @@ const GamePage = () => {
                     isPlayer={isPlayer}
                     onEditRound={openEditRound}
                     cumulativeScore={cumulativeScore}
+                    loggedInIndex={loggedInIndex}
                   />
                 );
               })}

@@ -12,6 +12,7 @@ import { shape } from "../styles/tokens";
 import type { Game, PlayerSlot } from "../types/game";
 import type { PlayerNameResolver } from "../utils/playerName";
 import { DateFormatter } from "../utils/date";
+import { permutePlayerArray } from "../utils/playerPermutation";
 
 interface GameCardProps {
   game: Game;
@@ -24,7 +25,8 @@ const GameCard = ({ game, score, playerProfileMap, onClick }: GameCardProps) => 
   const { t, i18n } = useTranslation();
   const { user, profile } = useAuth();
 
-  const p = game.players;
+  const loggedInIndex = game.players.findIndex((player) => player.uid === user?.uid);
+  const p = loggedInIndex !== -1 ? permutePlayerArray(game.players, loggedInIndex) : game.players;
   const isActive = game.status === "active";
 
   const getPlayerDetails = (slot: PlayerSlot) => {
@@ -54,10 +56,14 @@ const GameCard = ({ game, score, playerProfileMap, onClick }: GameCardProps) => 
   const p4 = getPlayerDetails(p[3]);
 
   // Determine game status/outcome relative to current user
-  const isUserInTeam1 = p[0].uid === user?.uid || p[1].uid === user?.uid;
-  const isUserInTeam2 = p[2].uid === user?.uid || p[3].uid === user?.uid;
+  const isUserInTeam1 = game.players[0].uid === user?.uid || game.players[1].uid === user?.uid;
+  const isUserInTeam2 = game.players[2].uid === user?.uid || game.players[3].uid === user?.uid;
   const isTeam1Winner = score.team1 > score.team2;
   const isTeam2Winner = score.team2 > score.team1;
+
+  const displayScore = loggedInIndex >= 2
+    ? { team1: score.team2, team2: score.team1 }
+    : score;
 
   let gameResult: "active" | "won" | "lost" | "finished" = "active";
   if (isActive) {
@@ -137,7 +143,7 @@ const GameCard = ({ game, score, playerProfileMap, onClick }: GameCardProps) => 
               textAlign: "right",
             }}
           >
-            {score.team1}
+            {displayScore.team1}
           </Typography>
           <Typography
             variant="h4"
@@ -158,7 +164,7 @@ const GameCard = ({ game, score, playerProfileMap, onClick }: GameCardProps) => 
               textAlign: "left",
             }}
           >
-            {score.team2}
+            {displayScore.team2}
           </Typography>
         </Box>
 
