@@ -37,6 +37,7 @@ import NewGameDialog from "../components/NewGameDialog";
 import RoundEditorDialog from "../components/RoundEditorDialog";
 import GameCard from "../components/GameCard";
 import RoundCard from "../components/RoundCard";
+import PullToRefresh from "../components/PullToRefresh";
 import type { PlayerNameResolver } from "../utils/playerName";
 import { fetchPlayers } from "../services/playerService";
 import * as sx from "../styles/commonStyles";
@@ -211,9 +212,11 @@ const GamePage = () => {
     [user, profile, playerProfiles, t],
   );
 
-  const loadGame = useCallback(async () => {
+  const loadGame = useCallback(async (isRefresh = false) => {
     if (!id) return;
-    setLoading(true);
+    if (!isRefresh) {
+      setLoading(true);
+    }
     try {
       const [g, r] = await Promise.all([fetchGame(id), fetchRounds(id)]);
       setGame(g);
@@ -397,67 +400,69 @@ const GamePage = () => {
       </Box>
 
       {/* Round history */}
-      <Box
-        ref={scrollRef}
-        onScroll={updateShadows}
-        sx={{
-          flex: 1,
-          overflow: "auto",
-          px: 1,
-          py: 1,
-          msOverflowStyle: "none",
-          scrollbarWidth: "none",
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
-        }}
-      >
-        <Typography
-          variant="subtitle2"
-          sx={{ mb: 1, ...sx.semiboldFont, pl: "12px" }}
+      <PullToRefresh scrollRef={scrollRef} onRefresh={() => loadGame(true)}>
+        <Box
+          ref={scrollRef}
+          onScroll={updateShadows}
+          sx={{
+            flex: 1,
+            overflow: "auto",
+            px: 1,
+            py: 1,
+            msOverflowStyle: "none",
+            scrollbarWidth: "none",
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
+          }}
         >
-          {rounds.length > 4
-            ? `${rounds.length} ${t("game.roundHistory")}`
-            : t("game.roundHistory")}
-        </Typography>
-
-        {rounds.length === 0 ? (
           <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ textAlign: "center", py: 2 }}
+            variant="subtitle2"
+            sx={{ mb: 1, ...sx.semiboldFont, pl: "12px" }}
           >
-            {t("game.noRounds")}
+            {rounds.length > 4
+              ? `${rounds.length} ${t("game.roundHistory")}`
+              : t("game.roundHistory")}
           </Typography>
-        ) : (
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1, pb: 2 }}>
-            {[...rounds].reverse().map((round, index) => {
-              const chronologicalIndex = rounds.length - 1 - index;
-              const cumulativeRounds = rounds.slice(0, chronologicalIndex + 1);
-              const cumulativeScore = cumulativeRounds.reduce(
-                (acc, r) => {
-                  const s = calculateRoundScore(r);
-                  return {
-                    team1: acc.team1 + s.team1,
-                    team2: acc.team2 + s.team2,
-                  };
-                },
-                { team1: 0, team2: 0 }
-              );
-              return (
-                <RoundCard
-                  key={round.id}
-                  round={round}
-                  playerAvatars={playerAvatars}
-                  isPlayer={isPlayer}
-                  onEditRound={openEditRound}
-                  cumulativeScore={cumulativeScore}
-                />
-              );
-            })}
-          </Box>
-        )}
-      </Box>
+
+          {rounds.length === 0 ? (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ textAlign: "center", py: 2 }}
+            >
+              {t("game.noRounds")}
+            </Typography>
+          ) : (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1, pb: 2 }}>
+              {[...rounds].reverse().map((round, index) => {
+                const chronologicalIndex = rounds.length - 1 - index;
+                const cumulativeRounds = rounds.slice(0, chronologicalIndex + 1);
+                const cumulativeScore = cumulativeRounds.reduce(
+                  (acc, r) => {
+                    const s = calculateRoundScore(r);
+                    return {
+                      team1: acc.team1 + s.team1,
+                      team2: acc.team2 + s.team2,
+                    };
+                  },
+                  { team1: 0, team2: 0 }
+                );
+                return (
+                  <RoundCard
+                    key={round.id}
+                    round={round}
+                    playerAvatars={playerAvatars}
+                    isPlayer={isPlayer}
+                    onEditRound={openEditRound}
+                    cumulativeScore={cumulativeScore}
+                  />
+                );
+              })}
+            </Box>
+          )}
+        </Box>
+      </PullToRefresh>
 
       {/* Bottom action block */}
       {isPlayer && (

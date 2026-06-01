@@ -17,6 +17,7 @@ import type { Game, PlayerSlot, RoundScore } from "../types/game";
 import NewGameDialog from "../components/NewGameDialog";
 import SearchDialog from "../components/SearchDialog";
 import GameCard from "../components/GameCard";
+import PullToRefresh from "../components/PullToRefresh";
 import * as sx from "../styles/commonStyles";
 import { shape } from "../styles/tokens";
 import { fetchPlayers } from "../services/playerService";
@@ -72,10 +73,12 @@ const HomePage = () => {
     return () => observer.disconnect();
   }, [loading, updateShadows]);
 
-  const loadGames = useCallback(async () => {
+  const loadGames = useCallback(async (isRefresh = false) => {
     if (!user) return;
-    setLoading(true);
-    setGames([]); // Clear stale/merged-looking list while loading
+    if (!isRefresh) {
+      setLoading(true);
+      setGames([]); // Clear stale/merged-looking list while loading on initial load
+    }
     try {
       let gameList: Game[];
       if (searchFilter?.type === "player") {
@@ -216,61 +219,63 @@ const HomePage = () => {
       </Box>
 
       {/* Game list */}
-      <Box
-        ref={scrollRef}
-        onScroll={updateShadows}
-        sx={{
-          flex: 1,
-          overflow: "auto",
-          px: 1,
-          py: 1,
-          msOverflowStyle: "none",
-          scrollbarWidth: "none",
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
-        }}
-      >
-        {loading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", pt: 8 }}>
-            <CircularProgress />
-          </Box>
-        ) : games.length === 0 ? (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-            }}
-          >
-            <Typography
-              variant="body1"
-              color="text.secondary"
-              sx={{ textAlign: "center", px: 4 }}
+      <PullToRefresh scrollRef={scrollRef} onRefresh={() => loadGames(true)}>
+        <Box
+          ref={scrollRef}
+          onScroll={updateShadows}
+          sx={{
+            flex: 1,
+            overflow: "auto",
+            px: 1,
+            py: 1,
+            msOverflowStyle: "none",
+            scrollbarWidth: "none",
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
+          }}
+        >
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", pt: 8 }}>
+              <CircularProgress />
+            </Box>
+          ) : games.length === 0 ? (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+              }}
             >
-              {searchFilter ? t("home.noResults") : t("home.noGames")}
-            </Typography>
-          </Box>
-        ) : (
-          <Box
-            sx={{ display: "flex", flexDirection: "column", gap: 1.5, pb: 1 }}
-          >
-            {games.map((game) => {
-              const score = scores[game.id] || { team1: 0, team2: 0 };
-              return (
-                <GameCard
-                  key={game.id}
-                  game={game}
-                  score={score}
-                  playerProfileMap={playerProfileMap}
-                  onClick={() => navigate(`/game/${game.id}`)}
-                />
-              );
-            })}
-          </Box>
-        )}
-      </Box>
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                sx={{ textAlign: "center", px: 4 }}
+              >
+                {searchFilter ? t("home.noResults") : t("home.noGames")}
+              </Typography>
+            </Box>
+          ) : (
+            <Box
+              sx={{ display: "flex", flexDirection: "column", gap: 1.5, pb: 1 }}
+            >
+              {games.map((game) => {
+                const score = scores[game.id] || { team1: 0, team2: 0 };
+                return (
+                  <GameCard
+                    key={game.id}
+                    game={game}
+                    score={score}
+                    playerProfileMap={playerProfileMap}
+                    onClick={() => navigate(`/game/${game.id}`)}
+                  />
+                );
+              })}
+            </Box>
+          )}
+        </Box>
+      </PullToRefresh>
 
       {/* Bottom bar with Start New Game and Search */}
       <Box sx={sx.dynamicBottomBar(showBottomShadow)}>
