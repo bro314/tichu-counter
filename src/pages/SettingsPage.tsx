@@ -32,7 +32,7 @@ import { useThemeMode } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
 import { AVATAR_EMOJIS } from "../constants";
 import * as sx from "../styles/commonStyles";
-import { shape } from "../styles/tokens";
+import { shape, shadows } from "../styles/tokens";
 import { useOfflineSync } from "../contexts/offlineSyncContext";
 
 const SettingsPage = () => {
@@ -166,7 +166,7 @@ const SettingsPage = () => {
           boxShadow: (theme) =>
             theme.palette.mode === "dark"
               ? "none"
-              : "0 2px 8px rgba(0,0,0,0.04)",
+              : shadows.settingsCard,
         }}
       >
         <List>
@@ -210,7 +210,7 @@ const SettingsPage = () => {
           boxShadow: (theme) =>
             theme.palette.mode === "dark"
               ? "none"
-              : "0 2px 8px rgba(0,0,0,0.04)",
+              : shadows.settingsCard,
         }}
       >
         <List>

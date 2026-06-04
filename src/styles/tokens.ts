@@ -40,6 +40,44 @@ export const colors = {
 
   // Status bar (used by Capacitor)
   statusBar: '#1A1A1A',
+
+  // Badge backgrounds
+  badgeBg: {
+    private: {
+      light: 'rgba(0, 0, 0, 0.05)',
+      dark: 'rgba(255, 255, 255, 0.08)',
+    },
+    tag: {
+      light: 'rgba(147, 51, 234, 0.08)',
+      dark: 'rgba(147, 51, 234, 0.15)',
+    },
+  },
+
+  // GameCard theme styles based on gameResult ('active' | 'won' | 'lost' | 'finished')
+  gameCard: {
+    active: {
+      bg: { light: '#FFFDF0', dark: 'rgba(245, 158, 11, 0.08)' },
+      border: { light: '#FEF3C7', dark: 'rgba(245, 158, 11, 0.25)' },
+      shadow: { light: '0 4px 14px rgba(245, 158, 11, 0.08)', dark: '0 4px 20px rgba(245, 158, 11, 0.1)' }
+    },
+    won: {
+      bg: { light: '#F0FDF4', dark: 'rgba(34, 197, 94, 0.08)' },
+      border: { light: '#DCFCE7', dark: 'rgba(34, 197, 94, 0.25)' },
+      shadow: { light: '0 4px 14px rgba(34, 197, 94, 0.08)', dark: '0 4px 20px rgba(34, 197, 94, 0.1)' }
+    },
+    lost: {
+      bg: { light: '#FEF2F2', dark: 'rgba(239, 68, 68, 0.08)' },
+      border: { light: '#FEE2E2', dark: 'rgba(239, 68, 68, 0.25)' }
+    },
+    finished: {
+      bg: { light: '#F9FAFB', dark: 'rgba(255, 255, 255, 0.02)' },
+      border: { light: '#E5E7EB', dark: 'rgba(255, 255, 255, 0.05)' }
+    },
+    hoverBg: {
+      light: 'rgba(0, 0, 0, 0.02)',
+      dark: 'rgba(255, 255, 255, 0.04)'
+    }
+  },
 } as const;
 
 // ─── Typography ───────────────────────────────────────────────
@@ -110,6 +148,20 @@ export const shadows = {
   desktopFrame: {
     light: '0 0 24px rgba(0, 0, 0, 0.15)',
     dark: '0 0 24px rgba(0, 0, 0, 0.25)',
+  },
+  /** Logo shadow on AuthPage */
+  authLogoGlow: 'drop-shadow(0 4px 16px rgba(27, 79, 114, 0.3))',
+  /** Settings page list card shadow */
+  settingsCard: '0 2px 8px rgba(0, 0, 0, 0.04)',
+  /** Header drop shadow when scrolled */
+  dynamicHeader: {
+    light: '0 8px 20px rgba(0, 0, 0, 0.24)',
+    dark: '0 8px 24px rgba(0, 0, 0, 0.8)',
+  },
+  /** Bottom action bar shadow when there is more content to scroll */
+  dynamicBottomBar: {
+    light: '0 -8px 20px rgba(0, 0, 0, 0.24)',
+    dark: '0 -8px 24px rgba(0, 0, 0, 0.8)',
   },
 } as const;
 

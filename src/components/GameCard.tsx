@@ -10,7 +10,7 @@ import CloudOffIcon from "@mui/icons-material/CloudOff";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 import * as sx from "../styles/commonStyles";
-import { shape } from "../styles/tokens";
+import { shape, colors } from "../styles/tokens";
 import type { Game, PlayerSlot } from "../types/game";
 import type { PlayerNameResolver } from "../utils/playerName";
 import { DateFormatter } from "../utils/date";
@@ -384,8 +384,8 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
                   gap: 0.25,
                   bgcolor: (theme) =>
                     theme.palette.mode === "dark"
-                      ? "rgba(255, 255, 255, 0.08)"
-                      : "rgba(0, 0, 0, 0.05)",
+                      ? colors.badgeBg.private.dark
+                      : colors.badgeBg.private.light,
                   px: 0.75,
                   py: 0.25,
                   borderRadius: "4px",
@@ -406,8 +406,8 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
                   gap: 0.25,
                   bgcolor: (theme) =>
                     theme.palette.mode === "dark"
-                      ? "rgba(147, 51, 234, 0.15)"
-                      : "rgba(147, 51, 234, 0.08)",
+                      ? colors.badgeBg.tag.dark
+                      : colors.badgeBg.tag.light,
                   px: 0.75,
                   py: 0.25,
                   borderRadius: "4px",
@@ -445,58 +445,24 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
     <Card
       sx={{
         position: "relative",
-        bgcolor: (theme) => {
-          if (gameResult === "active") {
-            return theme.palette.mode === "dark"
-              ? "rgba(245, 158, 11, 0.08)"
-              : "#FFFDF0";
-          } else if (gameResult === "won") {
-            return theme.palette.mode === "dark"
-              ? "rgba(34, 197, 94, 0.08)"
-              : "#F0FDF4";
-          } else if (gameResult === "lost") {
-            return theme.palette.mode === "dark"
-              ? "rgba(239, 68, 68, 0.08)"
-              : "#FEF2F2";
-          } else {
-            return theme.palette.mode === "dark"
-              ? "rgba(255, 255, 255, 0.02)"
-              : "#F9FAFB";
-          }
-        },
+        bgcolor: (theme) =>
+          theme.palette.mode === "dark"
+            ? colors.gameCard[gameResult].bg.dark
+            : colors.gameCard[gameResult].bg.light,
         border: 1,
-        borderColor: (theme) => {
-          if (gameResult === "active") {
-            return theme.palette.mode === "dark"
-              ? "rgba(245, 158, 11, 0.25)"
-              : "#FEF3C7";
-          } else if (gameResult === "won") {
-            return theme.palette.mode === "dark"
-              ? "rgba(34, 197, 94, 0.25)"
-              : "#DCFCE7";
-          } else if (gameResult === "lost") {
-            return theme.palette.mode === "dark"
-              ? "rgba(239, 68, 68, 0.25)"
-              : "#FEE2E2";
-          } else {
-            return theme.palette.mode === "dark"
-              ? "rgba(255, 255, 255, 0.05)"
-              : "#E5E7EB";
-          }
-        },
+        borderColor: (theme) =>
+          theme.palette.mode === "dark"
+            ? colors.gameCard[gameResult].border.dark
+            : colors.gameCard[gameResult].border.light,
         borderRadius: `${shape.borderRadius}px`,
-        boxShadow:
-          gameResult === "active"
-            ? (theme) =>
-                theme.palette.mode === "dark"
-                  ? "0 4px 20px rgba(245, 158, 11, 0.1)"
-                  : "0 4px 14px rgba(245, 158, 11, 0.08)"
-            : gameResult === "won"
-              ? (theme) =>
-                  theme.palette.mode === "dark"
-                    ? "0 4px 20px rgba(34, 197, 94, 0.1)"
-                    : "0 4px 14px rgba(34, 197, 94, 0.08)"
-              : "none",
+        boxShadow: (theme) => {
+          if (gameResult === "active" || gameResult === "won") {
+            return theme.palette.mode === "dark"
+              ? colors.gameCard[gameResult].shadow!.dark
+              : colors.gameCard[gameResult].shadow!.light;
+          }
+          return "none";
+        },
       }}
     >
       {onClick ? (
@@ -509,8 +475,8 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
             "&:hover": {
               bgcolor: (theme) =>
                 theme.palette.mode === "dark"
-                  ? "rgba(255, 255, 255, 0.04)"
-                  : "rgba(0, 0, 0, 0.02)",
+                  ? colors.gameCard.hoverBg.dark
+                  : colors.gameCard.hoverBg.light,
             },
           }}
         >
