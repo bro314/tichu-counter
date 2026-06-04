@@ -26,7 +26,6 @@ import {
 import {
   calculateTotals,
   checkWinner,
-  calculateRoundScore,
 } from "../types/game";
 import type { Game, Round, PlayerSlot } from "../types/game";
 import NewGameDialog from "../components/NewGameDialog";
@@ -215,7 +214,7 @@ const GamePage = () => {
 
   const loadGame = useCallback(async (isRefresh = false) => {
     if (!id) return;
-    
+
     if (id.startsWith('temp_')) {
       setLoading(true);
       const createOp = pendingOps.find(op => op.type === 'CREATE_GAME' && op.gameId === id);
@@ -287,7 +286,7 @@ const GamePage = () => {
     try {
       await updateGameMetadata(game.id, isPrivate, tag, note, players);
       setEditGameDialogOpen(false);
-      
+
       // Reload game and player profiles
       await loadGame(true);
 
@@ -466,7 +465,7 @@ const GamePage = () => {
         >
           <Typography
             variant="subtitle2"
-            sx={{ mb: 1, ...sx.semiboldFont, pl: "12px" }}
+            sx={{ mb: 1, pl: 1.5 }}
           >
             {rounds.length > 4
               ? `${rounds.length} ${t("game.roundHistory")}`
@@ -483,19 +482,7 @@ const GamePage = () => {
             </Typography>
           ) : (
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1, pb: 2 }}>
-              {[...rounds].reverse().map((round, index) => {
-                const chronologicalIndex = rounds.length - 1 - index;
-                const cumulativeRounds = rounds.slice(0, chronologicalIndex + 1);
-                const cumulativeScore = cumulativeRounds.reduce(
-                  (acc, r) => {
-                    const s = calculateRoundScore(r);
-                    return {
-                      team1: acc.team1 + s.team1,
-                      team2: acc.team2 + s.team2,
-                    };
-                  },
-                  { team1: 0, team2: 0 }
-                );
+              {[...rounds].reverse().map((round) => {
                 const pendingRounds = getPendingRounds(id || '');
                 const roundSyncStatus = pendingRounds[round.id]?.status;
                 return (
@@ -505,7 +492,6 @@ const GamePage = () => {
                     playerAvatars={playerAvatars}
                     isPlayer={isPlayer}
                     onEditRound={openEditRound}
-                    cumulativeScore={cumulativeScore}
                     loggedInIndex={loggedInIndex}
                     syncStatus={roundSyncStatus}
                   />
@@ -527,10 +513,7 @@ const GamePage = () => {
                 size="large"
                 startIcon={<AddIcon />}
                 onClick={openNewRound}
-                sx={{
-                  ...sx.ctaButton,
-                  flex: 1,
-                }}
+                sx={{ flex: 1 }}
               >
                 {t("game.addRound")}
               </Button>
@@ -538,18 +521,7 @@ const GamePage = () => {
                 <IconButton
                   id="edit-game-btn"
                   onClick={() => setEditGameDialogOpen(true)}
-                  sx={{
-                    bgcolor: "action.hover",
-                    border: 1,
-                    borderColor: "divider",
-                    borderRadius: `${shape.buttonRadius}px`,
-                    p: 1.5,
-                    flexShrink: 0,
-                    transition: "all 0.15s ease",
-                    "&:hover": {
-                      bgcolor: "action.selected",
-                    },
-                  }}
+                  sx={{ flexShrink: 0 }}
                 >
                   <EditIcon />
                 </IconButton>
@@ -558,16 +530,9 @@ const GamePage = () => {
                 id="delete-game-btn"
                 onClick={confirmDeleteGame}
                 sx={{
-                  bgcolor: "action.hover",
-                  border: 1,
-                  borderColor: "divider",
-                  borderRadius: `${shape.buttonRadius}px`,
-                  p: 1.5,
                   flexShrink: 0,
                   color: "error.main",
-                  transition: "all 0.15s ease",
                   "&:hover": {
-                    bgcolor: "action.selected",
                     color: "error.dark",
                   },
                 }}
@@ -584,11 +549,7 @@ const GamePage = () => {
                   size="large"
                   startIcon={<EditIcon />}
                   onClick={() => setEditGameDialogOpen(true)}
-                  sx={{
-                    py: 1,
-                    borderRadius: `${shape.buttonRadius}px`,
-                    flex: 1,
-                  }}
+                  sx={{ flex: 1 }}
                 >
                   {t("common.edit")}
                 </Button>
@@ -600,11 +561,7 @@ const GamePage = () => {
                 size="large"
                 startIcon={<DeleteIcon />}
                 onClick={confirmDeleteGame}
-                sx={{
-                  py: 1,
-                  borderRadius: `${shape.buttonRadius}px`,
-                  flex: 1,
-                }}
+                sx={{ flex: 1 }}
               >
                 {t("common.delete")}
               </Button>

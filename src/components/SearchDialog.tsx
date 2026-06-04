@@ -122,7 +122,6 @@ const SearchDialog = ({
               variant={mode === "player" ? "filled" : "outlined"}
               color={mode === "player" ? "primary" : "default"}
               onClick={() => setMode("player")}
-              sx={{ ...sx.semiboldFont }}
             />
             <Chip
               icon={<LocalOfferIcon />}
@@ -130,7 +129,6 @@ const SearchDialog = ({
               variant={mode === "tag" ? "filled" : "outlined"}
               color={mode === "tag" ? "primary" : "default"}
               onClick={() => setMode("tag")}
-              sx={{ ...sx.semiboldFont }}
             />
           </Box>
 

@@ -153,7 +153,7 @@ const SettingsPage = () => {
         overflowY: "auto",
       }}
     >
-      <Typography variant="h5" sx={{ mb: 2, ...sx.boldFont }}>
+      <Typography variant="h5" sx={{ mb: 2 }}>
         {t("settings.title")}
       </Typography>
 
@@ -264,20 +264,7 @@ const SettingsPage = () => {
         <IconButton
           id="settings-options-menu-btn"
           onClick={handleMenuOpen}
-          sx={{
-            bgcolor: "action.hover",
-            border: 1,
-            borderColor: "divider",
-            borderRadius: `${shape.buttonRadius}px`,
-            p: 1.5,
-            height: "48px",
-            width: "48px",
-            flexShrink: 0,
-            transition: "all 0.15s ease",
-            "&:hover": {
-              bgcolor: "action.selected",
-            },
-          }}
+          sx={{ flexShrink: 0 }}
         >
           <MoreVertIcon />
         </IconButton>
@@ -295,7 +282,7 @@ const SettingsPage = () => {
         <MenuItem
           id="delete-account-menu-item"
           onClick={handleDeleteConfirmOpen}
-          sx={{ color: "error.main", ...sx.semiboldFont }}
+          sx={{ color: "error.main" }}
         >
           {t("settings.deleteAccount")}
         </MenuItem>
@@ -445,7 +432,6 @@ const SettingsPage = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Error Snackbar */}
       <Snackbar
         open={errorSnackbarOpen}
         autoHideDuration={6000}
@@ -456,7 +442,7 @@ const SettingsPage = () => {
           onClose={() => setErrorSnackbarOpen(false)}
           severity="error"
           variant="filled"
-          sx={{ width: "100%", borderRadius: `${shape.buttonRadius}px` }}
+          sx={{ width: "100%" }}
         >
           {errorMessage}
         </Alert>

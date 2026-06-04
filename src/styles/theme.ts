@@ -36,33 +36,20 @@ declare module '@mui/material/styles' {
 
 /** Shared component overrides (same for both themes) */
 const sharedComponents = {
-  MuiBottomNavigation: {
-    styleOverrides: {
-      root: ({ theme }: { theme: Theme }) => ({
-        height: 64,
-        borderTop: `1px solid ${theme.palette.divider}`,
-      }),
-    },
-  },
-  MuiBottomNavigationAction: {
-    styleOverrides: {
-      root: {
-      },
-    },
-  },
-  MuiCard: {
-    styleOverrides: {
-      root: {
-      },
-    },
-  },
   MuiButton: {
     styleOverrides: {
       root: {
         textTransform: 'none' as const,
-        fontWeight: fonts.weight.semibold,
         borderRadius: shape.buttonRadius,
       },
+    },
+  },
+  MuiIconButton: {
+    styleOverrides: {
+      root: ({ theme }: { theme: Theme }) => ({
+        borderRadius: shape.buttonRadius,
+        border: `1px solid ${theme.palette.divider}`,
+      }),
     },
   },
 };
@@ -70,8 +57,6 @@ const sharedComponents = {
 /** Shared typography config */
 const typography = {
   fontFamily: fonts.family,
-  h5: { fontWeight: fonts.weight.bold },
-  h6: { fontWeight: fonts.weight.semibold },
 };
 
 export const lightTheme = createTheme({

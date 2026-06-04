@@ -102,7 +102,7 @@ const ProfileSetupPage = ({ onComplete }: ProfileSetupPageProps) => {
         mx: "auto",
       }}
     >
-      <Typography variant="h5" sx={{ mb: 4, ...sx.boldFont }}>
+      <Typography variant="h5" sx={{ mb: 4 }}>
         {t("onboarding.setupProfile")}
       </Typography>
 
@@ -187,7 +187,6 @@ const ProfileSetupPage = ({ onComplete }: ProfileSetupPageProps) => {
           fullWidth
           onClick={handleFinish}
           disabled={loading}
-          sx={sx.ctaButton}
         >
           {t("onboarding.finish")}
         </Button>

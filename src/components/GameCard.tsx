@@ -10,6 +10,7 @@ import CloudOffIcon from "@mui/icons-material/CloudOff";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 import * as sx from "../styles/commonStyles";
+import { shape } from "../styles/tokens";
 import type { Game, PlayerSlot } from "../types/game";
 import type { PlayerNameResolver } from "../utils/playerName";
 import { DateFormatter } from "../utils/date";
@@ -384,7 +385,7 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
                   bgcolor: "badgeBg.private",
                   px: 0.75,
                   py: 0.25,
-                  borderRadius: "4px",
+                  borderRadius: `${shape.buttonRadius}px`,
                   color: "text.secondary",
                 }}
               >
@@ -403,7 +404,7 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
                   bgcolor: "badgeBg.tag",
                   px: 0.75,
                   py: 0.25,
-                  borderRadius: "4px",
+                  borderRadius: `${shape.buttonRadius}px`,
                   color: "badgeBg.tagText",
                 }}
               >

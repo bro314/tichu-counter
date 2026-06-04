@@ -15,12 +15,11 @@ interface RoundCardProps {
   playerAvatars: string[];
   isPlayer: boolean;
   onEditRound: (round: Round) => void;
-  cumulativeScore: { team1: number; team2: number };
   loggedInIndex?: number;
   syncStatus?: 'saving' | 'offline';
 }
 
-const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScore, loggedInIndex, syncStatus }: RoundCardProps) => {
+const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, loggedInIndex, syncStatus }: RoundCardProps) => {
   const score = calculateRoundScore(round);
   const hasLoggedIn = loggedInIndex !== undefined && loggedInIndex !== -1;
   const avatars = hasLoggedIn ? permutePlayerArray(playerAvatars, loggedInIndex) : playerAvatars;
@@ -154,6 +153,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
               alignItems: "center",
               justifyContent: "space-between",
               gap: 1,
+              minWidth: 70,
             }}
           >
             <Box
@@ -173,7 +173,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
                   height: 18,
                 }}
               >
-                <Typography sx={sx.avatarMediumFont}>
+                <Typography sx={sx.lgEmojiNoneFont}>
                   {avatars[0]}
                 </Typography>
                 {slot1Content || <Box sx={{ width: 26, height: 18 }} />}
@@ -187,7 +187,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
                   height: 18,
                 }}
               >
-                <Typography sx={sx.avatarMediumFont}>
+                <Typography sx={sx.lgEmojiNoneFont}>
                   {avatars[1]}
                 </Typography>
                 {slot2Content || <Box sx={{ width: 26, height: 18 }} />}
@@ -196,27 +196,25 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
           </Box>
 
           {/* Round score */}
-          <Box
-            sx={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              ml: 2,
-            }}
-          >
+          <Box sx={{ flex: 1 }}>
+          </Box>
+          <Box sx={{ flex: "none", textAlign: "right", minWidth: 50 }}>
             <Typography
               variant="body2"
               sx={{ ...sx.scoreFont }}
             >
               {leftTeam === 1 ? score.team1 : score.team2}
             </Typography>
+          </Box>
+          <Box sx={{ flex: "none" }}>
             <Typography
               variant="body2"
               sx={{ ...sx.scoreFont }}
             >
-              :
+              &nbsp;:&nbsp;
             </Typography>
+          </Box>
+          <Box sx={{ flex: "none", minWidth: 50 }}>
             <Typography
               variant="body2"
               sx={{ ...sx.scoreFont }}
@@ -224,35 +222,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
               {leftTeam === 1 ? score.team2 : score.team1}
             </Typography>
           </Box>
-
-          {/* Cumulative overall score */}
-          <Box
-            sx={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              mr: 2,
-            }}
-          >
-            <Typography
-              variant="body2"
-              sx={{ ...sx.scoreFont }}
-            >
-              {leftTeam === 1 ? cumulativeScore.team1 : cumulativeScore.team2}
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{ ...sx.scoreFont }}
-            >
-              :
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{ ...sx.scoreFont }}
-            >
-              {leftTeam === 1 ? cumulativeScore.team2 : cumulativeScore.team1}
-            </Typography>
+          <Box sx={{ flex: 1 }}>
           </Box>
 
           {/* Team 2 */}
@@ -263,6 +233,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
               alignItems: "center",
               justifyContent: "flex-end",
               gap: 1,
+              minWidth: 70,
             }}
           >
             {/* Cell 2: T/GT/Victory calls (two stacked rows, avatars to the right) */}
@@ -285,7 +256,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
                 }}
               >
                 {slot3Content || <Box sx={{ width: 26, height: 18 }} />}
-                <Typography sx={sx.avatarMediumFont}>
+                <Typography sx={sx.lgEmojiNoneFont}>
                   {avatars[2]}
                 </Typography>
               </Box>
@@ -300,7 +271,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
                 }}
               >
                 {slot4Content || <Box sx={{ width: 26, height: 18 }} />}
-                <Typography sx={sx.avatarMediumFont}>
+                <Typography sx={sx.lgEmojiNoneFont}>
                   {avatars[3]}
                 </Typography>
               </Box>

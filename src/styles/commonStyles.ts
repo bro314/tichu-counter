@@ -7,8 +7,6 @@
 import type { SxProps, Theme } from "@mui/material/styles";
 import { fonts, shape } from "./tokens";
 
-// ─── Layout ───────────────────────────────────────────────────
-
 /** Full-height flex column (used by page roots) */
 export const pageRoot: SxProps<Theme> = {
   display: "flex",
@@ -46,60 +44,17 @@ export const scrollableList: SxProps<Theme> = {
   pb: 2,
 };
 
-// ─── Buttons ──────────────────────────────────────────────────
-
-/** Primary CTA button (Start New Game, Add Round) */
-export const ctaButton: SxProps<Theme> = {
-  py: 1,
-  fontSize: fonts.size.normal,
-  borderRadius: `${shape.buttonRadius}px`,
-  boxShadow: "ctaGlow",
-};
-
 /** CTA container pinned at bottom of page */
 export const ctaContainer: SxProps<Theme> = {
   p: 1,
 };
 
-// ─── Score display ────────────────────────────────────────────
-
-/** Score header wrapper (game page top section) */
-export const scoreHeader: SxProps<Theme> = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 1,
-  bgcolor: "background.paper",
-  borderBottom: 1,
-  borderColor: "divider",
-};
-
-/** Team name label in score header */
-export const teamLabel = (_color: "primary" | "secondary"): SxProps<Theme> => ({
-  fontWeight: fonts.weight.semibold,
-  fontSize: fonts.size.xs,
-  color: "text.secondary",
-});
-
-/** Colon separator between scores */
-export const scoreSeparator: SxProps<Theme> = {
-  fontWeight: fonts.weight.regular,
-  color: "text.secondary",
-  fontFamily: fonts.mono,
-};
-
-// ─── Round history ────────────────────────────────────────────
-
 /** Round history chip (Tichu, GT, 1-2) */
 export const historyChip: SxProps<Theme> = {
-  height: 18,
   fontSize: fonts.size.sm,
-  fontWeight: 600,
-  borderRadius: 0.5,
+  fontWeight: fonts.weight.semibold,
+  borderRadius: `${shape.smallRadius}px`,
   minWidth: 27,
-  "& .MuiChip-label": {
-    px: 0.5,
-  },
 };
 
 /** Timestamp / metadata text */
@@ -116,44 +71,6 @@ export const playerCard = (_isTeam1: boolean): SxProps<Theme> => ({
   p: 1,
   bgcolor: "background.paper",
 });
-
-/** Toggle chip in editor (Tichu, GT, 1st) */
-export const editorChip: SxProps<Theme> = {
-  fontSize: fonts.size.sm,
-  height: 26,
-  "&.MuiChip-outlined": {
-    bgcolor: "background.paper",
-  },
-};
-
-/** 1-2 Victory chip */
-export const victoryChip: SxProps<Theme> = {
-  height: 32,
-  fontSize: fonts.size.sm,
-  fontWeight: fonts.weight.semibold,
-  "&.MuiChip-outlined": {
-    bgcolor: "background.paper",
-  },
-};
-
-/** Score preview card */
-export const previewCard: SxProps<Theme> = {
-  p: 1,
-  mb: 2,
-  bgcolor: "action.hover",
-};
-
-// ─── Delete button ────────────────────────────────────────────
-
-/** Subtle delete icon button */
-export const deleteButton: SxProps<Theme> = {
-  ml: 0.5,
-  opacity: 0.4,
-  "&:hover": { opacity: 1 },
-  p: 1,
-};
-
-// ─── Avatar grid ──────────────────────────────────────────────
 
 /** Scrollable avatar grid container */
 export const avatarGridContainer: SxProps<Theme> = {
@@ -255,67 +172,36 @@ export const dynamicBottomBar = (showShadow: boolean): SxProps<Theme> => ({
   zIndex: 1,
 });
 
-// ─── Font Styles ──────────────────────────────────────────────
-
-/** Extrabold header font (App name header) */
-export const h6HeaderFont: SxProps<Theme> = {
-  fontWeight: fonts.weight.bold,
-  letterSpacing: fonts.letterSpacing.tight,
-};
-
-/** Large bold font (h5 titles, active card colons) */
-export const boldFont: SxProps<Theme> = {
-  fontWeight: fonts.weight.bold,
-};
-
-/** Semibold font (labels, menu items) */
-export const semiboldFont: SxProps<Theme> = {
-  fontWeight: fonts.weight.semibold,
-};
-
-/** Medium font weight (timestamps, text) */
-export const mediumFont: SxProps<Theme> = {
-  fontWeight: fonts.weight.medium,
-};
-
-/** Large emoji / flag size */
 export const lgEmojiFont: SxProps<Theme> = {
   fontSize: fonts.size.xl,
 };
 
-/** Large emoji / flag size with no line height */
 export const lgEmojiNoneFont: SxProps<Theme> = {
   fontSize: fonts.size.xl,
   lineHeight: fonts.lineHeight.none,
 };
 
-/** Standard list avatar emoji size */
 export const avatarListFont: SxProps<Theme> = {
   fontSize: fonts.size.large,
 };
 
-/** Timestamp layout for dialog toolbars */
 export const timestampFont: SxProps<Theme> = {
   color: "text.secondary",
   fontSize: fonts.size.sm,
-  fontWeight: fonts.weight.medium,
+  fontWeight: fonts.weight.regular,
   lineHeight: fonts.lineHeight.tight,
 };
 
-/** Standard badge font with uppercase text (Tag, Private badges on chip) */
 export const uppercaseBadgeFont: SxProps<Theme> = {
   fontSize: fonts.size.sm,
-  fontWeight: fonts.weight.bold,
+  fontWeight: fonts.weight.semibold,
   textTransform: "uppercase",
-  letterSpacing: fonts.letterSpacing.wide,
 };
 
-/** Smaller extrabold uppercase badge font (Private, Tag on card) */
 export const cardBadgeFont: SxProps<Theme> = {
   fontSize: fonts.size.xs,
-  fontWeight: fonts.weight.bold,
+  fontWeight: fonts.weight.semibold,
   textTransform: "uppercase",
-  letterSpacing: fonts.letterSpacing.wide,
   lineHeight: fonts.lineHeight.none,
 };
 
@@ -337,40 +223,26 @@ export const smIconFont: SxProps<Theme> = {
 
 /** Round score text */
 export const scoreFont: SxProps<Theme> = {
-  fontWeight: fonts.weight.medium,
+  fontWeight: fonts.weight.regular,
   color: "text.primary",
   fontSize: fonts.size.xl,
-  fontFamily: fonts.mono,
 };
 
 /** Large score display font (Main scoreboard) */
 export const largeScoreFont: SxProps<Theme> = {
-  fontWeight: fonts.weight.medium,
+  fontWeight: fonts.weight.regular,
   lineHeight: fonts.lineHeight.none,
-  fontFamily: fonts.mono,
 };
 
 /** Timestamp display in round history */
 export const historyTimeFont: SxProps<Theme> = {
-  fontWeight: fonts.weight.medium,
+  fontWeight: fonts.weight.regular,
   fontSize: fonts.size.sm,
   lineHeight: fonts.lineHeight.tight,
 };
 
 /** Player name in editor card */
 export const playerNameLarge: SxProps<Theme> = {
-  fontWeight: fonts.weight.medium,
+  fontWeight: fonts.weight.regular,
   fontSize: fonts.size.large,
 };
-
-/** Medium avatar font inside lists/history */
-export const avatarMediumFont: SxProps<Theme> = {
-  fontSize: fonts.size.large,
-  lineHeight: fonts.lineHeight.none,
-};
-
-/** Editor label/chip font */
-export const editorChipFont: SxProps<Theme> = {
-  fontSize: fonts.size.sm,
-};
-

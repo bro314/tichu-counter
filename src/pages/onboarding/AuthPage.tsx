@@ -124,18 +124,9 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
           onClick={() => handleLanguageChange("en")}
           sx={{
             ...sx.lgEmojiFont,
-            p: 0.5,
-            border: 1,
+            color: 'text.primary',
             borderColor: i18n.language === "en" ? "primary.main" : "divider",
             bgcolor: i18n.language === "en" ? "action.selected" : "background.paper",
-            borderRadius: "50%",
-            width: 36,
-            height: 36,
-            transition: "all 0.2s ease",
-            "&:hover": {
-              borderColor: "primary.main",
-              bgcolor: "action.hover",
-            },
           }}
         >
           🇬🇧
@@ -145,18 +136,9 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
           onClick={() => handleLanguageChange("de")}
           sx={{
             ...sx.lgEmojiFont,
-            p: 0.5,
-            border: 1,
+            color: 'text.primary',
             borderColor: i18n.language === "de" ? "primary.main" : "divider",
             bgcolor: i18n.language === "de" ? "action.selected" : "background.paper",
-            borderRadius: "50%",
-            width: 36,
-            height: 36,
-            transition: "all 0.2s ease",
-            "&:hover": {
-              borderColor: "primary.main",
-              bgcolor: "action.hover",
-            },
           }}
         >
           🇩🇪

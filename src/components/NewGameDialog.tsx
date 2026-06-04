@@ -467,8 +467,8 @@ const NewGameDialog = ({
                 setTimeout(() => {
                   const currentSelected =
                     n === 2 ? player2Ref.current :
-                    n === 3 ? player3Ref.current :
-                    player4Ref.current;
+                      n === 3 ? player3Ref.current :
+                        player4Ref.current;
 
                   if (currentSelected === null) {
                     onInputChange(game.players[n - 1].guestName || "");
@@ -504,7 +504,6 @@ const NewGameDialog = ({
           <Typography
             variant="subtitle2"
             color="text.secondary"
-            sx={{ ...sx.semiboldFont }}
           >
             {t("game.team1")}
           </Typography>
@@ -514,8 +513,8 @@ const NewGameDialog = ({
             1,
             p1,
             p1 ? `${p1.avatar} ${p1.displayName}` : "",
-            () => {},
-            () => {},
+            () => { },
+            () => { },
             [],
             true,
           )}
@@ -535,7 +534,7 @@ const NewGameDialog = ({
           <Typography
             variant="subtitle2"
             color="text.secondary"
-            sx={{ ...sx.semiboldFont, mt: 1 }}
+            sx={{ mt: 1 }}
           >
             {t("game.team2")}
           </Typography>
@@ -575,7 +574,7 @@ const NewGameDialog = ({
               }
               label={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Typography variant="body2" sx={{ ...sx.semiboldFont }}>
+                  <Typography variant="body2" >
                     {t("newGame.isPrivate")}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">

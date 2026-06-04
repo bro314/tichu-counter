@@ -21,7 +21,6 @@ import type { Game, Round, PlayerSlot } from "../types/game";
 import type { PlayerNameResolver } from "../utils/playerName";
 import { DateFormatter } from "../utils/date";
 import * as sx from "../styles/commonStyles";
-import { shape } from "../styles/tokens";
 import { permutePlayerArray } from "../utils/playerPermutation";
 
 const SlideUp = React.forwardRef(function Transition(
@@ -259,12 +258,10 @@ const RoundEditorDialog = ({
         >
           <Chip
             label={t("game.first")}
-            size="small"
             color={finishedFirst === pn ? "success" : "default"}
             variant={finishedFirst === pn ? "filled" : "outlined"}
             onClick={() => toggleFinishedFirst(pn)}
             sx={{
-              ...(sx.editorChip as any),
               flex: 1,
               minWidth: 44,
               "& .MuiChip-label": { px: 0.5 },
@@ -272,7 +269,6 @@ const RoundEditorDialog = ({
           />
           <Chip
             label={t("game.tichu")}
-            size="small"
             color={
               tichuCalls.includes(pn)
                 ? finishedFirst === pn
@@ -283,7 +279,6 @@ const RoundEditorDialog = ({
             variant={tichuCalls.includes(pn) ? "filled" : "outlined"}
             onClick={() => toggleTichu(pn)}
             sx={{
-              ...(sx.editorChip as any),
               flex: 1,
               minWidth: 44,
               "& .MuiChip-label": { px: 0.5 },
@@ -291,7 +286,6 @@ const RoundEditorDialog = ({
           />
           <Chip
             label={t("game.grandTichu")}
-            size="small"
             color={
               grandTichuCalls.includes(pn)
                 ? finishedFirst === pn
@@ -302,7 +296,6 @@ const RoundEditorDialog = ({
             variant={grandTichuCalls.includes(pn) ? "filled" : "outlined"}
             onClick={() => toggleGrandTichu(pn)}
             sx={{
-              ...(sx.editorChip as any),
               flex: 1,
               minWidth: 44,
               "& .MuiChip-label": { px: 0.5 },
@@ -324,6 +317,7 @@ const RoundEditorDialog = ({
           maxWidth: 480,
           mx: "auto",
           bgcolor: "background.default",
+          pb: 2,
         },
       }}
     >
@@ -346,7 +340,7 @@ const RoundEditorDialog = ({
           }}
         >
           <Typography
-            sx={{ ...(sx.avatarListFont as any), ...(sx.semiboldFont as any) }}
+            sx={{ ...sx.avatarListFont }}
             variant="h6"
           >
             {t("game.round")}{" "}
@@ -407,21 +401,16 @@ const RoundEditorDialog = ({
               color={oneTwoVictory === leftTeam ? "primary" : "default"}
               variant={oneTwoVictory === leftTeam ? "filled" : "outlined"}
               onClick={() => toggleOneTwoVictory(leftTeam)}
-              sx={sx.victoryChip}
             />
             <Chip
               label={`${playerAvatars[2]} ${playerAvatars[3]}  ${t("game.oneTwoVictory")}`}
               color={oneTwoVictory === rightTeam ? "primary" : "default"}
               variant={oneTwoVictory === rightTeam ? "filled" : "outlined"}
               onClick={() => toggleOneTwoVictory(rightTeam)}
-              sx={sx.victoryChip}
             />
           </Box>
           {validationError && (
-            <Alert
-              severity="warning"
-              sx={{ mb: 2, ...(sx.editorChipFont as any) }}
-            >
+            <Alert severity="warning" sx={{ mb: 2 }}>
               {validationError}
             </Alert>
           )}
@@ -430,11 +419,10 @@ const RoundEditorDialog = ({
               <Typography
                 variant="caption"
                 sx={{
-                  ...(sx.semiboldFont as any),
                   mb: 0.5,
                   display: "block",
-                  ...(sx.avatarListFont as any),
                   textAlign: "center",
+                  ...sx.avatarListFont as any,
                 }}
               >
                 {t("game.cardPoints")}
@@ -489,7 +477,11 @@ const RoundEditorDialog = ({
             size="small"
             sx={{ mb: 2 }}
           />
-          <Card variant="outlined" sx={sx.previewCard}>
+          <Card variant="outlined" sx={{
+            p: 2,
+            mb: 2,
+            bgcolor: "action.hover",
+          }}>
             <Box
               sx={{
                 display: "flex",
@@ -512,7 +504,7 @@ const RoundEditorDialog = ({
               variant="contained"
               size="large"
               onClick={handleSaveClick}
-              sx={{ py: 1.3, flex: 1 }}
+              sx={{ flex: 1 }}
             >
               {t("common.save")}
             </Button>
@@ -520,7 +512,7 @@ const RoundEditorDialog = ({
               variant="outlined"
               size="large"
               onClick={onClose}
-              sx={{ py: 1.3, px: 3, whiteSpace: "nowrap" }}
+              sx={{ px: 3, whiteSpace: "nowrap" }}
             >
               {t("common.cancel")}
             </Button>
@@ -529,13 +521,7 @@ const RoundEditorDialog = ({
                 color="error"
                 onClick={onDeleteClick}
                 sx={{
-                  border: 1,
-                  borderColor: "divider",
-                  borderRadius: `${shape.buttonRadius}px`,
-                  p: 1.5,
-                  transition: "all 0.15s ease",
                   "&:hover": {
-                    bgcolor: "action.hover",
                     color: "error.main",
                   },
                 }}

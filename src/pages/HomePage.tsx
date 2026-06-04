@@ -40,7 +40,7 @@ const HomePage = () => {
   const { pendingOps, isOnline, queueOperation, getGameSyncStatus } = useOfflineSync();
 
   const [serverGames, setServerGames] = useState<Game[]>([]);
-  
+
   const games = useMemo(() => {
     return mergeGames(serverGames, pendingOps);
   }, [serverGames, pendingOps]);
@@ -193,7 +193,7 @@ const HomePage = () => {
                 borderRadius: `${shape.borderRadius}px`,
               }}
             />
-            <Typography variant="h6" sx={{ ...sx.h6HeaderFont }}>
+            <Typography variant="h6" >
               {t("app.name")}
             </Typography>
           </Box>
@@ -329,7 +329,7 @@ const HomePage = () => {
           size="large"
           startIcon={<PlayArrowIcon />}
           onClick={() => setDialogOpen(true)}
-          sx={{ ...sx.ctaButton, flex: 1 }}
+          sx={{ flex: 1 }}
         >
           {t("home.newGame")}
         </Button>
@@ -340,12 +340,7 @@ const HomePage = () => {
           startIcon={<SearchIcon />}
           onClick={() => setSearchDialogOpen(true)}
           disabled={!isOnline}
-          sx={{
-            py: 1.5,
-            borderRadius: `${shape.buttonRadius}px`,
-            minWidth: 0,
-            px: 2,
-          }}
+          sx={{ minWidth: 0 }}
         >
           {t("home.search")}
         </Button>

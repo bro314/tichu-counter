@@ -142,6 +142,9 @@ function AppShell() {
         sx={{
           flexShrink: 0,
           bgcolor: 'background.paper',
+          height: 64,
+          borderTop: '1px solid',
+          borderColor: 'divider',
         }}
       >
         <BottomNavigationAction
@@ -204,13 +207,13 @@ function App() {
     if (!Capacitor.isNativePlatform() && window.location.pathname !== '/') {
       window.history.replaceState({}, '', '/');
     }
-    content = <AuthPage onAuthSuccess={() => {}} />;
+    content = <AuthPage onAuthSuccess={() => { }} />;
   } else if (!hasCompletedOnboarding) {
     // Authenticated but no profile yet → show profile setup
     if (!Capacitor.isNativePlatform() && window.location.pathname !== '/') {
       window.history.replaceState({}, '', '/');
     }
-    content = <ProfileSetupPage onComplete={() => {}} />;
+    content = <ProfileSetupPage onComplete={() => { }} />;
   } else {
     // Fully authenticated and onboarded → show main app
     const path = window.location.pathname;
