@@ -49,8 +49,8 @@ const typography = {
 export const lightTheme = createTheme({
   palette: {
     mode: 'light',
-    primary: colors.team1,
-    secondary: colors.team2,
+    primary: colors.primary,
+    secondary: colors.secondary,
     background: colors.bg.light,
   },
   typography,
@@ -61,8 +61,8 @@ export const lightTheme = createTheme({
 export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
-    primary: colors.team1.dm,
-    secondary: colors.team2.dm,
+    primary: colors.primary.dm,
+    secondary: colors.secondary.dm,
     background: colors.bg.dark,
   },
   typography,

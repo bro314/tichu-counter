@@ -8,14 +8,14 @@
 // ─── Color Palette ────────────────────────────────────────────
 export const colors = {
   // Team colors
-  team1: {
+  primary: {
     main: '#1B4F72',
     light: '#4A89B0',
     dark: '#113248',
     // Dark mode variants
     dm: { main: '#5dade2', light: '#85c1e9', dark: '#1B4F72' },
   },
-  team2: {
+  secondary: {
     main: '#EC1C24',
     light: '#F1948A',
     dark: '#7B1113',
@@ -163,14 +163,6 @@ export const shadows = {
     light: '0 -8px 20px rgba(0, 0, 0, 0.24)',
     dark: '0 -8px 24px rgba(0, 0, 0, 0.8)',
   },
-} as const;
-
-// ─── Gradients ────────────────────────────────────────────────
-export const gradients = {
-  /** Slider track */
-  sliderTrack: `linear-gradient(90deg, ${colors.team1.main}, ${colors.team2.main})`,
-  /** Auth page logo */
-  authLogo: `linear-gradient(135deg, ${colors.team1.main} 0%, ${colors.team2.main} 100%)`,
 } as const;
 
 // ─── Component-specific sizes ─────────────────────────────────
