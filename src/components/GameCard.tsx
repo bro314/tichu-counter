@@ -10,7 +10,6 @@ import CloudOffIcon from "@mui/icons-material/CloudOff";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 import * as sx from "../styles/commonStyles";
-import { shape } from "../styles/tokens";
 import type { Game, PlayerSlot } from "../types/game";
 import type { PlayerNameResolver } from "../utils/playerName";
 import { DateFormatter } from "../utils/date";
@@ -433,16 +432,7 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
   );
 
   return (
-    <Card
-      sx={{
-        position: "relative",
-        bgcolor: `gameCard.${gameResult}.bg`,
-        border: 1,
-        borderColor: `gameCard.${gameResult}.border`,
-        borderRadius: `${shape.borderRadius}px`,
-        boxShadow: `gameCard.${gameResult}.shadow`,
-      }}
-    >
+    <Card sx={{ position: "relative" }}>
       {onClick ? (
         <CardActionArea
           onClick={onClick}
@@ -451,7 +441,7 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
             display: "block",
             textAlign: "inherit",
             "&:hover": {
-              bgcolor: "gameCard.hoverBg",
+              bgcolor: "action.hover",
             },
           }}
         >

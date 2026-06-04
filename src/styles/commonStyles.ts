@@ -224,7 +224,7 @@ export const appFrame: SxProps<Theme> = {
   "@media (min-width: 400px)": {
     borderLeft: "1px solid",
     borderRight: "1px solid",
-    borderColor: "desktopBorder",
+    borderColor: "divider",
     boxShadow: "desktopFrameShadow",
   },
 };

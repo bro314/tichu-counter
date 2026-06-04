@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, type Theme } from '@mui/material/styles';
 import { fonts, shape } from './tokens';
 
 // Declare custom properties on MUI's Palette
@@ -8,13 +8,6 @@ declare module '@mui/material/styles' {
       private: string;
       tag: string;
       tagText: string;
-    };
-    gameCard: {
-      active: { bg: string; border: string; shadow: string };
-      won: { bg: string; border: string; shadow: string };
-      lost: { bg: string; border: string; shadow: string };
-      finished: { bg: string; border: string; shadow: string };
-      hoverBg: string;
     };
     desktopBg: string;
     desktopBorder: string;
@@ -31,13 +24,6 @@ declare module '@mui/material/styles' {
       tag?: string;
       tagText?: string;
     };
-    gameCard?: {
-      active?: { bg?: string; border?: string; shadow?: string };
-      won?: { bg?: string; border?: string; shadow?: string };
-      lost?: { bg?: string; border?: string; shadow?: string };
-      finished?: { bg?: string; border?: string; shadow?: string };
-      hoverBg?: string;
-    };
     desktopBg?: string;
     desktopBorder?: string;
     desktopFrameShadow?: string;
@@ -49,36 +35,24 @@ declare module '@mui/material/styles' {
 }
 
 /** Shared component overrides (same for both themes) */
-const sharedComponents = (mode: 'light' | 'dark') => ({
+const sharedComponents = {
   MuiBottomNavigation: {
     styleOverrides: {
-      root: {
+      root: ({ theme }: { theme: Theme }) => ({
         height: 64,
-        borderTop: mode === 'light'
-          ? '1px solid rgba(0, 0, 0, 0.08)'
-          : '1px solid rgba(255, 255, 255, 0.08)',
-      },
+        borderTop: `1px solid ${theme.palette.divider}`,
+      }),
     },
   },
   MuiBottomNavigationAction: {
     styleOverrides: {
       root: {
-        minWidth: 60,
-        '&.Mui-selected': {
-          fontSize: fonts.size.xl,
-        },
       },
     },
   },
   MuiCard: {
     styleOverrides: {
       root: {
-        boxShadow: mode === 'light'
-          ? '0 4px 16px rgba(0, 0, 0, 0.08)'
-          : '0 4px 20px rgba(0, 0, 0, 0.4)',
-        border: mode === 'light'
-          ? '1px solid #E0E0E0'
-          : '1px solid rgba(255, 255, 255, 0.12)',
       },
     },
   },
@@ -91,7 +65,7 @@ const sharedComponents = (mode: 'light' | 'dark') => ({
       },
     },
   },
-});
+};
 
 /** Shared typography config */
 const typography = {
@@ -117,37 +91,11 @@ export const lightTheme = createTheme({
       default: '#F9FAFB',
       paper: '#FFFFFF',
     },
-
     badgeBg: {
       private: 'rgba(0, 0, 0, 0.05)',
       tag: 'rgba(147, 51, 234, 0.08)',
       tagText: 'rgb(126, 34, 206)',
     },
-
-    gameCard: {
-      active: {
-        bg: '#FFFFFF',
-        border: '#E0E0E0',
-        shadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
-      },
-      won: {
-        bg: '#FFFFFF',
-        border: '#E0E0E0',
-        shadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
-      },
-      lost: {
-        bg: '#FFFFFF',
-        border: '#E0E0E0',
-        shadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
-      },
-      finished: {
-        bg: '#FFFFFF',
-        border: '#E0E0E0',
-        shadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
-      },
-      hoverBg: 'rgba(0, 0, 0, 0.02)',
-    },
-
     desktopBg: '#E5E7EB',
     desktopBorder: 'rgba(0, 0, 0, 0.06)',
     desktopFrameShadow: '0 0 24px rgba(0, 0, 0, 0.15)',
@@ -158,7 +106,7 @@ export const lightTheme = createTheme({
   },
   typography,
   shape: { borderRadius: shape.borderRadius },
-  components: sharedComponents('light'),
+  components: sharedComponents,
 });
 
 export const darkTheme = createTheme({
@@ -184,31 +132,6 @@ export const darkTheme = createTheme({
       tag: 'rgba(147, 51, 234, 0.15)',
       tagText: 'rgb(216, 180, 254)',
     },
-
-    gameCard: {
-      active: {
-        bg: '#1A1A1A',
-        border: 'rgba(255, 255, 255, 0.12)',
-        shadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
-      },
-      won: {
-        bg: '#1A1A1A',
-        border: 'rgba(255, 255, 255, 0.12)',
-        shadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
-      },
-      lost: {
-        bg: '#1A1A1A',
-        border: 'rgba(255, 255, 255, 0.12)',
-        shadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
-      },
-      finished: {
-        bg: '#1A1A1A',
-        border: 'rgba(255, 255, 255, 0.12)',
-        shadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
-      },
-      hoverBg: 'rgba(255, 255, 255, 0.04)',
-    },
-
     desktopBg: '#121212',
     desktopBorder: 'rgba(255, 255, 255, 0.05)',
     desktopFrameShadow: '0 0 24px rgba(0, 0, 0, 0.25)',
@@ -219,5 +142,5 @@ export const darkTheme = createTheme({
   },
   typography,
   shape: { borderRadius: shape.borderRadius },
-  components: sharedComponents('dark'),
+  components: sharedComponents,
 });
