@@ -1,6 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import { Capacitor } from '@capacitor/core';
 import { App as CapApp } from '@capacitor/app';
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -17,12 +19,15 @@ import SettingsPage from './pages/SettingsPage';
 import AuthPage from './pages/onboarding/AuthPage';
 import ProfileSetupPage from './pages/onboarding/ProfileSetupPage';
 import { appFrame, desktopOuter } from './styles/commonStyles';
+import { OfflineSyncProvider, useOfflineSync } from './contexts/offlineSyncContext';
 
 /** Main app shell shown after auth + onboarding */
 function AppShell() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const { hasAnyUnsavedData } = useOfflineSync();
+  const [backSnackbarOpen, setBackSnackbarOpen] = useState(false);
 
   // Handle native hardware and gesture back button (Android)
   useEffect(() => {
@@ -31,6 +36,9 @@ function AppShell() {
     let active = true;
     const listenerPromise = CapApp.addListener('backButton', () => {
       if (!active) return;
+      if (hasAnyUnsavedData()) {
+        setBackSnackbarOpen(true);
+      }
       if (location.pathname === '/') {
         CapApp.exitApp();
       } else {
@@ -44,7 +52,18 @@ function AppShell() {
         handle.remove();
       });
     };
-  }, [location.pathname, navigate]);
+  }, [location.pathname, navigate, hasAnyUnsavedData]);
+
+  // Toast on tab change or back/forward browser navigation
+  const prevPathRef = useRef(location.pathname);
+  useEffect(() => {
+    if (location.pathname !== prevPathRef.current) {
+      if (hasAnyUnsavedData()) {
+        setBackSnackbarOpen(true);
+      }
+      prevPathRef.current = location.pathname;
+    }
+  }, [location.pathname, hasAnyUnsavedData]);
 
   // Derive tab index from current pathname
   const getTabIndex = useCallback(() => {
@@ -141,6 +160,21 @@ function AppShell() {
           icon={<SettingsIcon />}
         />
       </BottomNavigation>
+
+      <Snackbar
+        open={backSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setBackSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          severity="info"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {t("game.syncPendingToast")}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
@@ -187,11 +221,13 @@ function App() {
   }
 
   return (
-    <Box sx={desktopOuter}>
-      <Box sx={appFrame}>
-        {content}
+    <OfflineSyncProvider>
+      <Box sx={desktopOuter}>
+        <Box sx={appFrame}>
+          {content}
+        </Box>
       </Box>
-    </Box>
+    </OfflineSyncProvider>
   );
 }
 

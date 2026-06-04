@@ -1,17 +1,19 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SearchIcon from "@mui/icons-material/Search";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import CloseIcon from "@mui/icons-material/Close";
+import CloudOffIcon from "@mui/icons-material/CloudOff";
 import Chip from "@mui/material/Chip";
 import { useAuth } from "../contexts/AuthContext";
-import { createGame, fetchUserGames, searchGamesByPlayer, searchGamesByTag } from "../services/gameService";
+import { fetchUserGames, searchGamesByPlayer, searchGamesByTag } from "../services/gameService";
 import { calculateTotals } from "../types/game";
 import type { Game, PlayerSlot, RoundScore } from "../types/game";
 import NewGameDialog from "../components/NewGameDialog";
@@ -24,6 +26,7 @@ import { fetchPlayers } from "../services/playerService";
 import appIconImg from "../assets/app-icon.png";
 import type { RegisteredPlayer } from "../services/playerService";
 import type { PlayerNameResolver } from "../utils/playerName";
+import { useOfflineSync, mergeGames } from "../contexts/offlineSyncContext";
 
 type SearchFilter =
   | { type: "player"; player: RegisteredPlayer }
@@ -34,9 +37,22 @@ const HomePage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, profile } = useAuth();
+  const { pendingOps, isOnline, queueOperation, getGameSyncStatus } = useOfflineSync();
 
-  const [games, setGames] = useState<Game[]>([]);
-  const [scores, setScores] = useState<Record<string, RoundScore>>({});
+  const [serverGames, setServerGames] = useState<Game[]>([]);
+  
+  const games = useMemo(() => {
+    return mergeGames(serverGames, pendingOps);
+  }, [serverGames, pendingOps]);
+
+  const scores = useMemo(() => {
+    const scoreMap: Record<string, RoundScore> = {};
+    for (const g of games) {
+      scoreMap[g.id] = calculateTotals(g.rounds || []);
+    }
+    return scoreMap;
+  }, [games]);
+
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
@@ -77,7 +93,7 @@ const HomePage = () => {
     if (!user) return;
     if (!isRefresh) {
       setLoading(true);
-      setGames([]); // Clear stale/merged-looking list while loading on initial load
+      setServerGames([]); // Clear stale/merged-looking list while loading on initial load
     }
     try {
       let gameList: Game[];
@@ -88,14 +104,7 @@ const HomePage = () => {
       } else {
         gameList = await fetchUserGames(user.uid);
       }
-      setGames(gameList);
-
-      // Compute scores directly from the embedded rounds in each game doc
-      const scoreMap: Record<string, RoundScore> = {};
-      for (const game of gameList) {
-        scoreMap[game.id] = calculateTotals(game.rounds || []);
-      }
-      setScores(scoreMap);
+      setServerGames(gameList);
 
       // Collect all player UIDs from the user's games
       const uids: string[] = [];
@@ -124,6 +133,12 @@ const HomePage = () => {
     loadGames();
   }, [loadGames]);
 
+  useEffect(() => {
+    if (!isOnline) {
+      setSearchFilter(null);
+    }
+  }, [isOnline]);
+
   const handleCreateGame = async (
     players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
     isPrivate?: boolean,
@@ -131,13 +146,21 @@ const HomePage = () => {
     note?: string,
   ) => {
     if (!user) return;
-    try {
-      const gameId = await createGame(user.uid, players, isPrivate, tag, note);
-      setDialogOpen(false);
-      navigate(`/game/${gameId}`);
-    } catch (err) {
-      console.error("Failed to create game:", err);
-    }
+    const tempGameId = 'temp_' + Math.random().toString(36).substring(2, 15);
+    queueOperation({
+      gameId: tempGameId,
+      type: 'CREATE_GAME',
+      gameData: {
+        createdBy: user.uid,
+        players,
+        isPrivate: isPrivate || false,
+        tag: tag?.trim() || '',
+        note: note?.trim() || '',
+        createdAt: new Date().toISOString(),
+      }
+    });
+    setDialogOpen(false);
+    navigate(`/game/${tempGameId}`);
   };
 
   return (
@@ -218,6 +241,25 @@ const HomePage = () => {
         </Box>
       </Box>
 
+      {/* Sync Status Banner */}
+      {(!isOnline || pendingOps.length > 0) && (
+        <Alert
+          severity="info"
+          icon={isOnline ? undefined : <CloudOffIcon />}
+          sx={{
+            mx: 2,
+            mt: 1,
+            borderRadius: `${shape.borderRadius}px`,
+          }}
+        >
+          {isOnline
+            ? t("game.syncBannerOnlineOps", { count: pendingOps.length })
+            : pendingOps.length > 0
+              ? t("game.syncBannerOfflineOps", { count: pendingOps.length })
+              : t("game.syncBannerOffline")}
+        </Alert>
+      )}
+
       {/* Game list */}
       <PullToRefresh scrollRef={scrollRef} onRefresh={() => loadGames(true)}>
         <Box
@@ -262,12 +304,14 @@ const HomePage = () => {
             >
               {games.map((game) => {
                 const score = scores[game.id] || { team1: 0, team2: 0 };
+                const syncStatus = getGameSyncStatus(game.id);
                 return (
                   <GameCard
                     key={game.id}
                     game={game}
                     score={score}
                     playerProfileMap={playerProfileMap}
+                    syncStatus={syncStatus}
                     onClick={() => navigate(`/game/${game.id}`)}
                   />
                 );
@@ -295,6 +339,7 @@ const HomePage = () => {
           size="large"
           startIcon={<SearchIcon />}
           onClick={() => setSearchDialogOpen(true)}
+          disabled={!isOnline}
           sx={{
             py: 1.5,
             borderRadius: `${shape.buttonRadius}px`,

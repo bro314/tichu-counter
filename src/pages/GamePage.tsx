@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
@@ -15,15 +15,11 @@ import DialogActions from "@mui/material/DialogActions";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloudOffIcon from "@mui/icons-material/CloudOff";
 import { useAuth } from "../contexts/AuthContext";
 import {
   fetchGame,
   fetchRounds,
-  addRound,
-  deleteRound,
-  updateRound,
-  updateGameStatus,
-  createGame,
   deleteGame,
   updateGameMetadata,
 } from "../services/gameService";
@@ -42,12 +38,14 @@ import type { PlayerNameResolver } from "../utils/playerName";
 import { fetchPlayers } from "../services/playerService";
 import * as sx from "../styles/commonStyles";
 import { shape } from "../styles/tokens";
+import { useOfflineSync, mergeRounds } from "../contexts/offlineSyncContext";
 
 /** Shown when /game is visited with no game ID — auto-opens new game dialog */
 function NoGameFallback() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { queueOperation } = useOfflineSync();
 
   const handleCreateGame = async (
     players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot],
@@ -56,9 +54,21 @@ function NoGameFallback() {
     note?: string,
   ) => {
     if (!user) return;
-    const gameId = await createGame(user.uid, players, isPrivate, tag, note);
-    localStorage.setItem("lastGameId", gameId);
-    navigate(`/game/${gameId}`, { replace: true });
+    const tempGameId = 'temp_' + Math.random().toString(36).substring(2, 15);
+    queueOperation({
+      gameId: tempGameId,
+      type: 'CREATE_GAME',
+      gameData: {
+        createdBy: user.uid,
+        players,
+        isPrivate: isPrivate || false,
+        tag: tag?.trim() || '',
+        note: note?.trim() || '',
+        createdAt: new Date().toISOString(),
+      }
+    });
+    localStorage.setItem("lastGameId", tempGameId);
+    navigate(`/game/${tempGameId}`, { replace: true });
   };
 
   return (
@@ -90,9 +100,23 @@ const GamePage = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
 
+  const { pendingOps, isOnline, queueOperation, getPendingRounds, tempToRealIds, hasUnsavedData, getGameSyncStatus } = useOfflineSync();
+
   const [game, setGame] = useState<Game | null>(null);
-  const [rounds, setRounds] = useState<Round[]>([]);
+  const [serverRounds, setServerRounds] = useState<Round[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Derive rounds (merge server rounds with local pending operations for this game)
+  const rounds = useMemo(() => {
+    return mergeRounds(serverRounds, pendingOps.filter((op) => op.gameId === id));
+  }, [serverRounds, pendingOps, id]);
+
+  // Redirect if a pending temp game ID gets resolved to a real game ID
+  useEffect(() => {
+    if (id && tempToRealIds[id]) {
+      navigate(`/game/${tempToRealIds[id]}`, { replace: true });
+    }
+  }, [id, tempToRealIds, navigate]);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editGameDialogOpen, setEditGameDialogOpen] = useState(false);
@@ -191,13 +215,39 @@ const GamePage = () => {
 
   const loadGame = useCallback(async (isRefresh = false) => {
     if (!id) return;
+    
+    if (id.startsWith('temp_')) {
+      setLoading(true);
+      const createOp = pendingOps.find(op => op.type === 'CREATE_GAME' && op.gameId === id);
+      if (createOp && createOp.gameData) {
+        const localGame: Game = {
+          id: id,
+          createdBy: createOp.gameData.createdBy,
+          createdAt: new Date(createOp.gameData.createdAt),
+          status: 'active',
+          players: createOp.gameData.players,
+          playerUids: createOp.gameData.players.map(p => p.uid).filter((uid): uid is string => uid !== null),
+          isPrivate: createOp.gameData.isPrivate,
+          tag: createOp.gameData.tag,
+          note: createOp.gameData.note,
+          rounds: [],
+        };
+        setGame(localGame);
+        setServerRounds([]);
+      } else {
+        setGame(null);
+      }
+      setLoading(false);
+      return;
+    }
+
     if (!isRefresh) {
       setLoading(true);
     }
     try {
       const [g, r] = await Promise.all([fetchGame(id), fetchRounds(id)]);
       setGame(g);
-      setRounds(r);
+      setServerRounds(r);
       // Fetch profiles for registered players in this game
       if (g) {
         const uids = g.players.map((p) => p.uid).filter((uid): uid is string => uid !== null);
@@ -221,7 +271,7 @@ const GamePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [id, t]);
+  }, [id, t, pendingOps]);
 
   useEffect(() => {
     loadGame();
@@ -281,11 +331,11 @@ const GamePage = () => {
 
   // --- Editor logic ---
   const openNewRound = async () => {
-    if (id) {
+    if (id && !id.startsWith('temp_')) {
       try {
         const [g, r] = await Promise.all([fetchGame(id), fetchRounds(id)]);
         if (g) setGame(g);
-        setRounds(r);
+        setServerRounds(r);
       } catch (err) {
         console.error("Failed to sync before adding round:", err);
       }
@@ -296,10 +346,15 @@ const GamePage = () => {
 
   const openEditRound = async (round: Round) => {
     if (id) {
+      if (id.startsWith('temp_')) {
+        setEditingRound(round);
+        setEditorOpen(true);
+        return;
+      }
       try {
         const [g, r] = await Promise.all([fetchGame(id), fetchRounds(id)]);
         if (g) setGame(g);
-        setRounds(r);
+        setServerRounds(r);
 
         const syncedRound = r.find((refRound) => refRound.id === round.id);
         setEditingRound(syncedRound || round);
@@ -316,40 +371,23 @@ const GamePage = () => {
 
   const handleSaveRound = async (data: Omit<Round, "id" | "createdAt">) => {
     if (!id) return;
-    try {
-      let newRounds: Round[];
-      if (editingRound) {
-        await updateRound(id, editingRound.id, data);
-        newRounds = rounds.map((r) =>
-          r.id === editingRound.id ? { ...r, ...data } : r,
-        );
-      } else {
-        const roundId = await addRound(id, data);
-        newRounds = [
-          ...rounds,
-          { ...data, id: roundId, createdAt: new Date() },
-        ];
-      }
-      setRounds(newRounds);
-      closeEditor();
-
-      const newTotals = calculateTotals(newRounds);
-      const w = checkWinner(newTotals);
-      if (w !== 0 && game.status !== "finished") {
-        await updateGameStatus(id, "finished");
-        setGame((prev) => (prev ? { ...prev, status: "finished" } : prev));
-      } else if (w === 0 && game.status === "finished") {
-        await updateGameStatus(id, "active");
-        setGame((prev) => (prev ? { ...prev, status: "active" } : prev));
-      }
-    } catch (err) {
-      console.error("Failed to save round:", err);
-      setSnackbar({
-        open: true,
-        message: t("game.errorAddRound"),
-        severity: "error",
+    if (editingRound) {
+      queueOperation({
+        gameId: id,
+        type: 'UPDATE_ROUND',
+        roundId: editingRound.id,
+        roundData: data,
+      });
+    } else {
+      const roundId = Math.random().toString(36).substring(2, 15);
+      queueOperation({
+        gameId: id,
+        type: 'ADD_ROUND',
+        roundId: roundId,
+        roundData: data,
       });
     }
+    closeEditor();
   };
 
   const handleDeleteClick = () => {
@@ -358,30 +396,13 @@ const GamePage = () => {
 
   const handleConfirmDeleteRound = async () => {
     if (!id || !editingRound) return;
-    try {
-      await deleteRound(id, editingRound.id);
-      const newRounds = rounds.filter((r) => r.id !== editingRound.id);
-      setRounds(newRounds);
-      setDeleteRoundDialogOpen(false);
-      closeEditor();
-      const newTotals = calculateTotals(newRounds);
-      const w = checkWinner(newTotals);
-      if (w !== 0 && game.status !== "finished") {
-        await updateGameStatus(id, "finished");
-        setGame((prev) => (prev ? { ...prev, status: "finished" } : prev));
-      } else if (w === 0 && game.status === "finished") {
-        await updateGameStatus(id, "active");
-        setGame((prev) => (prev ? { ...prev, status: "active" } : prev));
-      }
-    } catch (err) {
-      console.error("Failed to delete round:", err);
-      setDeleteRoundDialogOpen(false);
-      setSnackbar({
-        open: true,
-        message: t("game.errorDeleteRound"),
-        severity: "error",
-      });
-    }
+    queueOperation({
+      gameId: id,
+      type: 'DELETE_ROUND',
+      roundId: editingRound.id,
+    });
+    setDeleteRoundDialogOpen(false);
+    closeEditor();
   };
 
   // ==================== RENDER ====================
@@ -402,9 +423,29 @@ const GamePage = () => {
           game={game}
           score={totals}
           playerProfileMap={playerProfiles}
+          syncStatus={getGameSyncStatus(game.id)}
           onClick={loadGame}
         />
       </Box>
+
+      {/* Sync Status Banner */}
+      {(!isOnline || pendingOps.filter(op => op.gameId === id).length > 0) && (
+        <Alert
+          severity="info"
+          icon={isOnline ? undefined : <CloudOffIcon />}
+          sx={{
+            mx: 2,
+            mt: 1,
+            borderRadius: `${shape.borderRadius}px`,
+          }}
+        >
+          {isOnline
+            ? t("game.syncBannerOnlineOps", { count: pendingOps.filter(op => op.gameId === id).length })
+            : pendingOps.filter(op => op.gameId === id).length > 0
+              ? t("game.syncBannerOfflineOps", { count: pendingOps.filter(op => op.gameId === id).length })
+              : t("game.syncBannerOffline")}
+        </Alert>
+      )}
 
       {/* Round history */}
       <PullToRefresh scrollRef={scrollRef} onRefresh={() => loadGame(true)}>
@@ -455,6 +496,8 @@ const GamePage = () => {
                   },
                   { team1: 0, team2: 0 }
                 );
+                const pendingRounds = getPendingRounds(id || '');
+                const roundSyncStatus = pendingRounds[round.id]?.status;
                 return (
                   <RoundCard
                     key={round.id}
@@ -464,6 +507,7 @@ const GamePage = () => {
                     onEditRound={openEditRound}
                     cumulativeScore={cumulativeScore}
                     loggedInIndex={loggedInIndex}
+                    syncStatus={roundSyncStatus}
                   />
                 );
               })}
@@ -490,24 +534,26 @@ const GamePage = () => {
               >
                 {t("game.addRound")}
               </Button>
-              <IconButton
-                id="edit-game-btn"
-                onClick={() => setEditGameDialogOpen(true)}
-                sx={{
-                  bgcolor: "action.hover",
-                  border: 1,
-                  borderColor: "divider",
-                  borderRadius: `${shape.buttonRadius}px`,
-                  p: 1.5,
-                  flexShrink: 0,
-                  transition: "all 0.15s ease",
-                  "&:hover": {
-                    bgcolor: "action.selected",
-                  },
-                }}
-              >
-                <EditIcon />
-              </IconButton>
+              {!hasUnsavedData(id || '') && (
+                <IconButton
+                  id="edit-game-btn"
+                  onClick={() => setEditGameDialogOpen(true)}
+                  sx={{
+                    bgcolor: "action.hover",
+                    border: 1,
+                    borderColor: "divider",
+                    borderRadius: `${shape.buttonRadius}px`,
+                    p: 1.5,
+                    flexShrink: 0,
+                    transition: "all 0.15s ease",
+                    "&:hover": {
+                      bgcolor: "action.selected",
+                    },
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              )}
               <IconButton
                 id="delete-game-btn"
                 onClick={confirmDeleteGame}
@@ -531,20 +577,22 @@ const GamePage = () => {
             </>
           ) : (
             <>
-              <Button
-                id="edit-game-btn"
-                variant="outlined"
-                size="large"
-                startIcon={<EditIcon />}
-                onClick={() => setEditGameDialogOpen(true)}
-                sx={{
-                  py: 1,
-                  borderRadius: `${shape.buttonRadius}px`,
-                  flex: 1,
-                }}
-              >
-                {t("common.edit")}
-              </Button>
+              {!hasUnsavedData(id || '') && (
+                <Button
+                  id="edit-game-btn"
+                  variant="outlined"
+                  size="large"
+                  startIcon={<EditIcon />}
+                  onClick={() => setEditGameDialogOpen(true)}
+                  sx={{
+                    py: 1,
+                    borderRadius: `${shape.buttonRadius}px`,
+                    flex: 1,
+                  }}
+                >
+                  {t("common.edit")}
+                </Button>
+              )}
               <Button
                 id="delete-game-btn"
                 variant="outlined"

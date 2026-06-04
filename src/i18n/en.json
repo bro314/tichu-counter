@@ -60,7 +60,11 @@
     "editGame": "Edit Game",
     "gameUpdated": "Game settings updated successfully.",
     "deleteRoundTitle": "Delete Round",
-    "deleteRoundConfirm": "Are you sure you want to delete this round?"
+    "deleteRoundConfirm": "Are you sure you want to delete this round?",
+    "syncPendingToast": "Unsaved changes. They will sync in the background.",
+    "syncBannerOffline": "Offline. But you can keep playing!",
+    "syncBannerOfflineOps": "Offline. Waiting for connection to sync.",
+    "syncBannerOnlineOps": "Syncing {{count}} pending operations ..."
   },
   "newGame": {
     "title": "New Game",
@@ -93,7 +97,9 @@
     "deleteAccount": "Delete Account",
     "deleteAccountConfirmTitle": "Delete Account",
     "deleteAccountConfirmMessage": "Are you sure you want to delete your account? This action is permanent and cannot be undone.",
-    "deleteAccountReauth": "For security reasons, you must have logged in recently to delete your account. Please sign out and sign back in, then try again."
+    "deleteAccountReauth": "For security reasons, you must have logged in recently to delete your account. Please sign out and sign back in, then try again.",
+    "signOutUnsavedConfirmTitle": "Unsaved Changes",
+    "signOutUnsavedConfirmMessage": "You have unsaved changes. Signing out will discard them. Are you sure you want to sign out?"
   },
   "auth": {
     "signIn": "Sign In",

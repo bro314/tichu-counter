@@ -3,6 +3,8 @@ import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
+import CloudOffIcon from "@mui/icons-material/CloudOff";
 import { calculateRoundScore } from "../types/game";
 import type { Round } from "../types/game";
 import * as sx from "../styles/commonStyles";
@@ -15,9 +17,10 @@ interface RoundCardProps {
   onEditRound: (round: Round) => void;
   cumulativeScore: { team1: number; team2: number };
   loggedInIndex?: number;
+  syncStatus?: 'saving' | 'offline';
 }
 
-const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScore, loggedInIndex }: RoundCardProps) => {
+const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScore, loggedInIndex, syncStatus }: RoundCardProps) => {
   const score = calculateRoundScore(round);
   const hasLoggedIn = loggedInIndex !== undefined && loggedInIndex !== -1;
   const avatars = hasLoggedIn ? permutePlayerArray(playerAvatars, loggedInIndex) : playerAvatars;
@@ -111,7 +114,25 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
 
 
   return (
-    <Card variant="outlined" sx={{ overflow: "visible" }}>
+    <Card variant="outlined" sx={{ overflow: "visible", position: "relative" }}>
+      {syncStatus && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 4,
+            right: 4,
+            zIndex: 2,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          {syncStatus === 'saving' ? (
+            <CircularProgress size={10} sx={{ color: 'warning.main' }} />
+          ) : (
+            <CloudOffIcon sx={{ fontSize: 12, color: 'warning.main' }} />
+          )}
+        </Box>
+      )}
       <CardActionArea
         onClick={isPlayer ? () => onEditRound(round) : undefined}
         disabled={!isPlayer}

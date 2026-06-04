@@ -33,12 +33,14 @@ import { useAuth } from "../contexts/AuthContext";
 import { AVATAR_EMOJIS } from "../constants";
 import * as sx from "../styles/commonStyles";
 import { shape } from "../styles/tokens";
+import { useOfflineSync } from "../contexts/offlineSyncContext";
 
 const SettingsPage = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { mode, setMode } = useThemeMode();
   const { profile, updateProfile, signOut, deleteAccount } = useAuth();
+  const { hasAnyUnsavedData, clearPendingQueue } = useOfflineSync();
 
   const [avatarDialogOpen, setAvatarDialogOpen] = useState(false);
   const [nameDialogOpen, setNameDialogOpen] = useState(false);
@@ -46,6 +48,7 @@ const SettingsPage = () => {
 
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [signOutUnsavedDialogOpen, setSignOutUnsavedDialogOpen] = useState(false);
 
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -122,6 +125,17 @@ const SettingsPage = () => {
   };
 
   const handleSignOut = async () => {
+    if (hasAnyUnsavedData()) {
+      setSignOutUnsavedDialogOpen(true);
+    } else {
+      navigate("/", { replace: true });
+      await signOut();
+    }
+  };
+
+  const handleConfirmSignOut = async () => {
+    setSignOutUnsavedDialogOpen(false);
+    clearPendingQueue();
     navigate("/", { replace: true });
     await signOut();
   };
@@ -322,6 +336,39 @@ const SettingsPage = () => {
             color="error"
           >
             {t("common.delete")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Sign Out Unsaved Changes Warning Dialog */}
+      <Dialog
+        open={signOutUnsavedDialogOpen}
+        onClose={() => setSignOutUnsavedDialogOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>{t("settings.signOutUnsavedConfirmTitle")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {t("settings.signOutUnsavedConfirmMessage")}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button
+            id="cancel-sign-out-unsaved-btn"
+            onClick={() => setSignOutUnsavedDialogOpen(false)}
+            variant="outlined"
+            color="inherit"
+          >
+            {t("common.cancel")}
+          </Button>
+          <Button
+            id="confirm-sign-out-unsaved-btn"
+            onClick={handleConfirmSignOut}
+            variant="contained"
+            color="error"
+          >
+            {t("settings.signOut")}
           </Button>
         </DialogActions>
       </Dialog>

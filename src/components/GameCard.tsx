@@ -3,8 +3,10 @@ import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
 import LockIcon from "@mui/icons-material/Lock";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import CloudOffIcon from "@mui/icons-material/CloudOff";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 import * as sx from "../styles/commonStyles";
@@ -19,9 +21,10 @@ interface GameCardProps {
   score: { team1: number; team2: number };
   playerProfileMap: Map<string, PlayerNameResolver>;
   onClick?: () => void;
+  syncStatus?: 'saving' | 'offline';
 }
 
-const GameCard = ({ game, score, playerProfileMap, onClick }: GameCardProps) => {
+const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCardProps) => {
   const { t, i18n } = useTranslation();
   const { user, profile } = useAuth();
 
@@ -168,23 +171,41 @@ const GameCard = ({ game, score, playerProfileMap, onClick }: GameCardProps) => 
           </Typography>
         </Box>
 
-        {/* Right side: Date (line 1) & Time (line 2) */}
+        {/* Right side: Date & Time, and sync status */}
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-            gap: 0,
+            alignItems: "center",
+            gap: 1.2,
             flex: 1,
+            justifyContent: "flex-end",
             minWidth: 0,
           }}
         >
-          <Typography sx={{ ...sx.timestampFont, whiteSpace: "nowrap" }}>
-            {formatDateOnly(game.createdAt)}
-          </Typography>
-          <Typography sx={{ ...sx.timestampFont, whiteSpace: "nowrap" }}>
-            {formatTimeOnly(game.createdAt)}
-          </Typography>
+          {syncStatus && (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              {syncStatus === 'saving' ? (
+                <CircularProgress size={12} sx={{ color: 'warning.main' }} />
+              ) : (
+                <CloudOffIcon sx={{ fontSize: 16, color: 'warning.main' }} />
+              )}
+            </Box>
+          )}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+              gap: 0,
+            }}
+          >
+            <Typography sx={{ ...sx.timestampFont, whiteSpace: "nowrap" }}>
+              {formatDateOnly(game.createdAt)}
+            </Typography>
+            <Typography sx={{ ...sx.timestampFont, whiteSpace: "nowrap" }}>
+              {formatTimeOnly(game.createdAt)}
+            </Typography>
+          </Box>
         </Box>
       </Box>
 
