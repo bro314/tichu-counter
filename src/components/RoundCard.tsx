@@ -114,7 +114,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, cumulativeScor
 
 
   return (
-    <Card variant="outlined" sx={{ overflow: "visible", position: "relative" }}>
+    <Card sx={{ overflow: "visible", position: "relative" }}>
       {syncStatus && (
         <Box
           sx={{

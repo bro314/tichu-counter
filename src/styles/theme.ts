@@ -74,8 +74,11 @@ const sharedComponents = (mode: 'light' | 'dark') => ({
     styleOverrides: {
       root: {
         boxShadow: mode === 'light'
-          ? '0 2px 12px rgba(0, 0, 0, 0.08)'
-          : '0 2px 12px rgba(0, 0, 0, 0.3)',
+          ? '0 4px 16px rgba(0, 0, 0, 0.08)'
+          : '0 4px 20px rgba(0, 0, 0, 0.4)',
+        border: mode === 'light'
+          ? '1px solid #E0E0E0'
+          : '1px solid rgba(255, 255, 255, 0.12)',
       },
     },
   },
@@ -124,23 +127,23 @@ export const lightTheme = createTheme({
     gameCard: {
       active: {
         bg: '#FFFFFF',
-        border: '#E5E7EB',
-        shadow: 'none',
+        border: '#E0E0E0',
+        shadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
       },
       won: {
         bg: '#FFFFFF',
-        border: '#E5E7EB',
-        shadow: 'none',
+        border: '#E0E0E0',
+        shadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
       },
       lost: {
         bg: '#FFFFFF',
-        border: '#E5E7EB',
-        shadow: 'none',
+        border: '#E0E0E0',
+        shadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
       },
       finished: {
         bg: '#FFFFFF',
-        border: '#E5E7EB',
-        shadow: 'none',
+        border: '#E0E0E0',
+        shadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
       },
       hoverBg: 'rgba(0, 0, 0, 0.02)',
     },
@@ -185,23 +188,23 @@ export const darkTheme = createTheme({
     gameCard: {
       active: {
         bg: '#1A1A1A',
-        border: 'rgba(255, 255, 255, 0.05)',
-        shadow: 'none',
+        border: 'rgba(255, 255, 255, 0.12)',
+        shadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
       },
       won: {
         bg: '#1A1A1A',
-        border: 'rgba(255, 255, 255, 0.05)',
-        shadow: 'none',
+        border: 'rgba(255, 255, 255, 0.12)',
+        shadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
       },
       lost: {
         bg: '#1A1A1A',
-        border: 'rgba(255, 255, 255, 0.05)',
-        shadow: 'none',
+        border: 'rgba(255, 255, 255, 0.12)',
+        shadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
       },
       finished: {
         bg: '#1A1A1A',
-        border: 'rgba(255, 255, 255, 0.05)',
-        shadow: 'none',
+        border: 'rgba(255, 255, 255, 0.12)',
+        shadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
       },
       hoverBg: 'rgba(255, 255, 255, 0.04)',
     },
