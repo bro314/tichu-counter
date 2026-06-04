@@ -23,7 +23,6 @@ declare module '@mui/material/styles' {
     dynamicBottomBarShadow: string;
     settingsCardShadow: string;
     ctaGlow: string;
-    authLogoGlow: string;
   }
 
   interface PaletteOptions {
@@ -46,7 +45,6 @@ declare module '@mui/material/styles' {
     dynamicBottomBarShadow?: string;
     settingsCardShadow?: string;
     ctaGlow?: string;
-    authLogoGlow?: string;
   }
 }
 
@@ -113,8 +111,8 @@ export const lightTheme = createTheme({
       dark: '#7B1113',
     },
     background: {
-      default: '#F9F6F0',
-      paper: '#FFF8E1',
+      default: '#F9FAFB',
+      paper: '#FFFFFF',
     },
 
     badgeBg: {
@@ -147,14 +145,13 @@ export const lightTheme = createTheme({
       hoverBg: 'rgba(0, 0, 0, 0.02)',
     },
 
-    desktopBg: '#EFEBE4',
+    desktopBg: '#E5E7EB',
     desktopBorder: 'rgba(0, 0, 0, 0.06)',
     desktopFrameShadow: '0 0 24px rgba(0, 0, 0, 0.15)',
     dynamicHeaderShadow: '0 8px 20px rgba(0, 0, 0, 0.24)',
     dynamicBottomBarShadow: '0 -8px 20px rgba(0, 0, 0, 0.24)',
     settingsCardShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
     ctaGlow: '0 4px 14px rgba(26, 115, 232, 0.4)',
-    authLogoGlow: 'drop-shadow(0 4px 16px rgba(27, 79, 114, 0.3))',
   },
   typography,
   shape: { borderRadius: shape.borderRadius },
@@ -216,7 +213,6 @@ export const darkTheme = createTheme({
     dynamicBottomBarShadow: '0 -8px 24px rgba(0, 0, 0, 0.8)',
     settingsCardShadow: 'none',
     ctaGlow: '0 4px 14px rgba(26, 115, 232, 0.4)',
-    authLogoGlow: 'drop-shadow(0 4px 16px rgba(27, 79, 114, 0.3))',
   },
   typography,
   shape: { borderRadius: shape.borderRadius },

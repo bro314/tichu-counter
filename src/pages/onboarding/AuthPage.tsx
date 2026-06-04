@@ -173,7 +173,6 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
           mb: 2.5,
           display: "block",
           mx: "auto",
-          filter: (theme) => theme.palette.authLogoGlow,
         }}
       />
       <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
