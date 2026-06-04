@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { colors, fonts, shape, shadows } from './tokens';
+import { fonts, shape, shadows } from './tokens';
 
 // Declare custom properties on MUI's Palette
 declare module '@mui/material/styles' {
@@ -94,42 +94,53 @@ const typography = {
 export const lightTheme = createTheme({
   palette: {
     mode: 'light',
-    primary: colors.primary,
-    secondary: colors.secondary,
-    background: colors.bg.light,
+    primary: {
+      main: '#1B4F72',
+      light: '#4A89B0',
+      dark: '#113248',
+    },
+    secondary: {
+      main: '#EC1C24',
+      light: '#F1948A',
+      dark: '#7B1113',
+    },
+    background: {
+      default: '#F9F6F0',
+      paper: '#FFF8E1',
+    },
 
     badgeBg: {
-      private: colors.badgeBg.private.light,
-      tag: colors.badgeBg.tag.light,
+      private: 'rgba(0, 0, 0, 0.05)',
+      tag: 'rgba(147, 51, 234, 0.08)',
       tagText: 'rgb(126, 34, 206)',
     },
 
     gameCard: {
       active: {
-        bg: colors.gameCard.active.bg.light,
-        border: colors.gameCard.active.border.light,
-        shadow: colors.gameCard.active.shadow.light,
+        bg: '#FFFDF0',
+        border: '#FEF3C7',
+        shadow: '0 4px 14px rgba(245, 158, 11, 0.08)',
       },
       won: {
-        bg: colors.gameCard.won.bg.light,
-        border: colors.gameCard.won.border.light,
-        shadow: colors.gameCard.won.shadow.light,
+        bg: '#F0FDF4',
+        border: '#DCFCE7',
+        shadow: '0 4px 14px rgba(34, 197, 94, 0.08)',
       },
       lost: {
-        bg: colors.gameCard.lost.bg.light,
-        border: colors.gameCard.lost.border.light,
+        bg: '#FEF2F2',
+        border: '#FEE2E2',
         shadow: 'none',
       },
       finished: {
-        bg: colors.gameCard.finished.bg.light,
-        border: colors.gameCard.finished.border.light,
+        bg: '#F9FAFB',
+        border: '#E5E7EB',
         shadow: 'none',
       },
-      hoverBg: colors.gameCard.hoverBg.light,
+      hoverBg: 'rgba(0, 0, 0, 0.02)',
     },
 
-    desktopBg: colors.desktopBg.light,
-    desktopBorder: colors.desktopBorder.light,
+    desktopBg: '#EFEBE4',
+    desktopBorder: 'rgba(0, 0, 0, 0.06)',
     desktopFrameShadow: shadows.desktopFrame.light,
     dynamicHeaderShadow: shadows.dynamicHeader.light,
     dynamicBottomBarShadow: shadows.dynamicBottomBar.light,
@@ -143,42 +154,53 @@ export const lightTheme = createTheme({
 export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
-    primary: colors.primary.dm,
-    secondary: colors.secondary.dm,
-    background: colors.bg.dark,
+    primary: {
+      main: '#5dade2',
+      light: '#85c1e9',
+      dark: '#1B4F72',
+    },
+    secondary: {
+      main: '#ff6f61',
+      light: '#ff9a8b',
+      dark: '#EC1C24',
+    },
+    background: {
+      default: '#121212',
+      paper: '#1A1A1A',
+    },
 
     badgeBg: {
-      private: colors.badgeBg.private.dark,
-      tag: colors.badgeBg.tag.dark,
+      private: 'rgba(255, 255, 255, 0.08)',
+      tag: 'rgba(147, 51, 234, 0.15)',
       tagText: 'rgb(216, 180, 254)',
     },
 
     gameCard: {
       active: {
-        bg: colors.gameCard.active.bg.dark,
-        border: colors.gameCard.active.border.dark,
-        shadow: colors.gameCard.active.shadow.dark,
+        bg: 'rgba(245, 158, 11, 0.08)',
+        border: 'rgba(245, 158, 11, 0.25)',
+        shadow: '0 4px 20px rgba(245, 158, 11, 0.1)',
       },
       won: {
-        bg: colors.gameCard.won.bg.dark,
-        border: colors.gameCard.won.border.dark,
-        shadow: colors.gameCard.won.shadow.dark,
+        bg: 'rgba(34, 197, 94, 0.08)',
+        border: 'rgba(34, 197, 94, 0.25)',
+        shadow: '0 4px 20px rgba(34, 197, 94, 0.1)',
       },
       lost: {
-        bg: colors.gameCard.lost.bg.dark,
-        border: colors.gameCard.lost.border.dark,
+        bg: 'rgba(239, 68, 68, 0.08)',
+        border: 'rgba(239, 68, 68, 0.25)',
         shadow: 'none',
       },
       finished: {
-        bg: colors.gameCard.finished.bg.dark,
-        border: colors.gameCard.finished.border.dark,
+        bg: 'rgba(255, 255, 255, 0.02)',
+        border: 'rgba(255, 255, 255, 0.05)',
         shadow: 'none',
       },
-      hoverBg: colors.gameCard.hoverBg.dark,
+      hoverBg: 'rgba(255, 255, 255, 0.04)',
     },
 
-    desktopBg: colors.desktopBg.dark,
-    desktopBorder: colors.desktopBorder.dark,
+    desktopBg: '#121212',
+    desktopBorder: 'rgba(255, 255, 255, 0.05)',
     desktopFrameShadow: shadows.desktopFrame.dark,
     dynamicHeaderShadow: shadows.dynamicHeader.dark,
     dynamicBottomBarShadow: shadows.dynamicBottomBar.dark,
