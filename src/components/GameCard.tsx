@@ -10,7 +10,7 @@ import CloudOffIcon from "@mui/icons-material/CloudOff";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 import * as sx from "../styles/commonStyles";
-import { shape, colors } from "../styles/tokens";
+import { shape } from "../styles/tokens";
 import type { Game, PlayerSlot } from "../types/game";
 import type { PlayerNameResolver } from "../utils/playerName";
 import { DateFormatter } from "../utils/date";
@@ -382,10 +382,7 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 0.25,
-                  bgcolor: (theme) =>
-                    theme.palette.mode === "dark"
-                      ? colors.badgeBg.private.dark
-                      : colors.badgeBg.private.light,
+                  bgcolor: "badgeBg.private",
                   px: 0.75,
                   py: 0.25,
                   borderRadius: "4px",
@@ -404,17 +401,11 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 0.25,
-                  bgcolor: (theme) =>
-                    theme.palette.mode === "dark"
-                      ? colors.badgeBg.tag.dark
-                      : colors.badgeBg.tag.light,
+                  bgcolor: "badgeBg.tag",
                   px: 0.75,
                   py: 0.25,
                   borderRadius: "4px",
-                  color: (theme) =>
-                    theme.palette.mode === "dark"
-                      ? "rgb(216, 180, 254)"
-                      : "rgb(126, 34, 206)",
+                  color: "badgeBg.tagText",
                 }}
               >
                 <LocalOfferIcon sx={{ ...sx.smIconFont }} />
@@ -445,24 +436,11 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
     <Card
       sx={{
         position: "relative",
-        bgcolor: (theme) =>
-          theme.palette.mode === "dark"
-            ? colors.gameCard[gameResult].bg.dark
-            : colors.gameCard[gameResult].bg.light,
+        bgcolor: `gameCard.${gameResult}.bg`,
         border: 1,
-        borderColor: (theme) =>
-          theme.palette.mode === "dark"
-            ? colors.gameCard[gameResult].border.dark
-            : colors.gameCard[gameResult].border.light,
+        borderColor: `gameCard.${gameResult}.border`,
         borderRadius: `${shape.borderRadius}px`,
-        boxShadow: (theme) => {
-          if (gameResult === "active" || gameResult === "won") {
-            return theme.palette.mode === "dark"
-              ? colors.gameCard[gameResult].shadow!.dark
-              : colors.gameCard[gameResult].shadow!.light;
-          }
-          return "none";
-        },
+        boxShadow: `gameCard.${gameResult}.shadow`,
       }}
     >
       {onClick ? (
@@ -473,10 +451,7 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
             display: "block",
             textAlign: "inherit",
             "&:hover": {
-              bgcolor: (theme) =>
-                theme.palette.mode === "dark"
-                  ? colors.gameCard.hoverBg.dark
-                  : colors.gameCard.hoverBg.light,
+              bgcolor: "gameCard.hoverBg",
             },
           }}
         >

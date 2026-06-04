@@ -5,7 +5,7 @@
  * When the design changes, update here — all consumers update.
  */
 import type { SxProps, Theme } from "@mui/material/styles";
-import { fonts, shadows, shape, colors } from "./tokens";
+import { fonts, shadows, shape } from "./tokens";
 
 // ─── Layout ───────────────────────────────────────────────────
 
@@ -189,10 +189,7 @@ export const avatarItemLarge = (selected: boolean): SxProps<Theme> => ({
 export const desktopOuter: SxProps<Theme> = {
   width: "100%",
   height: "100%",
-  bgcolor: (theme) =>
-    theme.palette.mode === "dark"
-      ? colors.desktopBg.dark
-      : colors.desktopBg.light,
+  bgcolor: "desktopBg",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -212,14 +209,10 @@ export const appFrame: SxProps<Theme> = {
   boxShadow: "none",
   position: "relative",
   "@media (min-width: 400px)": {
-    borderLeft: (theme) =>
-      `1px solid ${theme.palette.mode === "dark" ? colors.desktopBorder.dark : colors.desktopBorder.light}`,
-    borderRight: (theme) =>
-      `1px solid ${theme.palette.mode === "dark" ? colors.desktopBorder.dark : colors.desktopBorder.light}`,
-    boxShadow: (theme) =>
-      theme.palette.mode === "dark"
-        ? shadows.desktopFrame.dark
-        : shadows.desktopFrame.light,
+    borderLeft: "1px solid",
+    borderRight: "1px solid",
+    borderColor: "desktopBorder",
+    boxShadow: "desktopFrameShadow",
   },
 };
 
@@ -230,12 +223,7 @@ export const dynamicHeader = (showShadow: boolean): SxProps<Theme> => ({
   bgcolor: "background.default",
   borderBottom: 1,
   borderColor: "divider",
-  boxShadow: showShadow
-    ? (theme) =>
-      theme.palette.mode === "dark"
-        ? shadows.dynamicHeader.dark
-        : shadows.dynamicHeader.light
-    : "none",
+  boxShadow: showShadow ? "dynamicHeaderShadow" : "none",
   position: "relative",
   zIndex: 1,
 });
@@ -249,12 +237,7 @@ export const dynamicBottomBar = (showShadow: boolean): SxProps<Theme> => ({
   bgcolor: "background.default",
   borderTop: 1,
   borderColor: "divider",
-  boxShadow: showShadow
-    ? (theme) =>
-      theme.palette.mode === "dark"
-        ? shadows.dynamicBottomBar.dark
-        : shadows.dynamicBottomBar.light
-    : "none",
+  boxShadow: showShadow ? "dynamicBottomBarShadow" : "none",
   position: "relative",
   zIndex: 1,
 });

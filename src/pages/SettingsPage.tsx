@@ -32,7 +32,7 @@ import { useThemeMode } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
 import { AVATAR_EMOJIS } from "../constants";
 import * as sx from "../styles/commonStyles";
-import { shape, shadows } from "../styles/tokens";
+import { shape } from "../styles/tokens";
 import { useOfflineSync } from "../contexts/offlineSyncContext";
 
 const SettingsPage = () => {
@@ -163,10 +163,7 @@ const SettingsPage = () => {
           mb: 2,
           borderRadius: `${shape.borderRadius}px`,
           borderColor: "divider",
-          boxShadow: (theme) =>
-            theme.palette.mode === "dark"
-              ? "none"
-              : shadows.settingsCard,
+          boxShadow: "settingsCardShadow",
         }}
       >
         <List>
@@ -207,10 +204,7 @@ const SettingsPage = () => {
           mb: 2,
           borderRadius: `${shape.borderRadius}px`,
           borderColor: "divider",
-          boxShadow: (theme) =>
-            theme.palette.mode === "dark"
-              ? "none"
-              : shadows.settingsCard,
+          boxShadow: "settingsCardShadow",
         }}
       >
         <List>
