@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { fonts, shape, shadows } from './tokens';
+import { fonts, shape } from './tokens';
 
 // Declare custom properties on MUI's Palette
 declare module '@mui/material/styles' {
@@ -22,6 +22,8 @@ declare module '@mui/material/styles' {
     dynamicHeaderShadow: string;
     dynamicBottomBarShadow: string;
     settingsCardShadow: string;
+    ctaGlow: string;
+    authLogoGlow: string;
   }
 
   interface PaletteOptions {
@@ -43,6 +45,8 @@ declare module '@mui/material/styles' {
     dynamicHeaderShadow?: string;
     dynamicBottomBarShadow?: string;
     settingsCardShadow?: string;
+    ctaGlow?: string;
+    authLogoGlow?: string;
   }
 }
 
@@ -52,7 +56,9 @@ const sharedComponents = (mode: 'light' | 'dark') => ({
     styleOverrides: {
       root: {
         height: 64,
-        borderTop: shadows.navBorder[mode],
+        borderTop: mode === 'light'
+          ? '1px solid rgba(0, 0, 0, 0.08)'
+          : '1px solid rgba(255, 255, 255, 0.08)',
       },
     },
   },
@@ -69,7 +75,9 @@ const sharedComponents = (mode: 'light' | 'dark') => ({
   MuiCard: {
     styleOverrides: {
       root: {
-        boxShadow: shadows.card[mode],
+        boxShadow: mode === 'light'
+          ? '0 2px 12px rgba(0, 0, 0, 0.08)'
+          : '0 2px 12px rgba(0, 0, 0, 0.3)',
       },
     },
   },
@@ -141,10 +149,12 @@ export const lightTheme = createTheme({
 
     desktopBg: '#EFEBE4',
     desktopBorder: 'rgba(0, 0, 0, 0.06)',
-    desktopFrameShadow: shadows.desktopFrame.light,
-    dynamicHeaderShadow: shadows.dynamicHeader.light,
-    dynamicBottomBarShadow: shadows.dynamicBottomBar.light,
-    settingsCardShadow: shadows.settingsCard,
+    desktopFrameShadow: '0 0 24px rgba(0, 0, 0, 0.15)',
+    dynamicHeaderShadow: '0 8px 20px rgba(0, 0, 0, 0.24)',
+    dynamicBottomBarShadow: '0 -8px 20px rgba(0, 0, 0, 0.24)',
+    settingsCardShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+    ctaGlow: '0 4px 14px rgba(26, 115, 232, 0.4)',
+    authLogoGlow: 'drop-shadow(0 4px 16px rgba(27, 79, 114, 0.3))',
   },
   typography,
   shape: { borderRadius: shape.borderRadius },
@@ -201,10 +211,12 @@ export const darkTheme = createTheme({
 
     desktopBg: '#121212',
     desktopBorder: 'rgba(255, 255, 255, 0.05)',
-    desktopFrameShadow: shadows.desktopFrame.dark,
-    dynamicHeaderShadow: shadows.dynamicHeader.dark,
-    dynamicBottomBarShadow: shadows.dynamicBottomBar.dark,
+    desktopFrameShadow: '0 0 24px rgba(0, 0, 0, 0.25)',
+    dynamicHeaderShadow: '0 8px 24px rgba(0, 0, 0, 0.8)',
+    dynamicBottomBarShadow: '0 -8px 24px rgba(0, 0, 0, 0.8)',
     settingsCardShadow: 'none',
+    ctaGlow: '0 4px 14px rgba(26, 115, 232, 0.4)',
+    authLogoGlow: 'drop-shadow(0 4px 16px rgba(27, 79, 114, 0.3))',
   },
   typography,
   shape: { borderRadius: shape.borderRadius },

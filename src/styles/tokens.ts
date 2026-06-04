@@ -60,38 +60,8 @@ export const spacing = {
   navHeight: 64,
 } as const;
 
-// ─── Shadows ──────────────────────────────────────────────────
-export const shadows = {
-  card: {
-    light: '0 2px 12px rgba(0, 0, 0, 0.08)',
-    dark: '0 2px 12px rgba(0, 0, 0, 0.3)',
-  },
-  /** Primary CTA glow */
-  ctaGlow: `0 4px 14px rgba(26, 115, 232, 0.4)`,
-  /** Subtle borders for nav bar */
-  navBorder: {
-    light: '1px solid rgba(0, 0, 0, 0.08)',
-    dark: '1px solid rgba(255, 255, 255, 0.08)',
-  },
-  desktopFrame: {
-    light: '0 0 24px rgba(0, 0, 0, 0.15)',
-    dark: '0 0 24px rgba(0, 0, 0, 0.25)',
-  },
-  /** Logo shadow on AuthPage */
-  authLogoGlow: 'drop-shadow(0 4px 16px rgba(27, 79, 114, 0.3))',
-  /** Settings page list card shadow */
-  settingsCard: '0 2px 8px rgba(0, 0, 0, 0.04)',
-  /** Header drop shadow when scrolled */
-  dynamicHeader: {
-    light: '0 8px 20px rgba(0, 0, 0, 0.24)',
-    dark: '0 8px 24px rgba(0, 0, 0, 0.8)',
-  },
-  /** Bottom action bar shadow when there is more content to scroll */
-  dynamicBottomBar: {
-    light: '0 -8px 20px rgba(0, 0, 0, 0.24)',
-    dark: '0 -8px 24px rgba(0, 0, 0, 0.8)',
-  },
-} as const;
+// Note: Shadows have been inlined directly into theme.ts
+// to support automatic light/dark theme switching and clean styling.
 
 // ─── Component-specific sizes ─────────────────────────────────
 export const componentSizes = {

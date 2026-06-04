@@ -5,7 +5,7 @@
  * When the design changes, update here — all consumers update.
  */
 import type { SxProps, Theme } from "@mui/material/styles";
-import { fonts, shadows, shape } from "./tokens";
+import { fonts, shape } from "./tokens";
 
 // ─── Layout ───────────────────────────────────────────────────
 
@@ -14,7 +14,20 @@ export const pageRoot: SxProps<Theme> = {
   display: "flex",
   flexDirection: "column",
   height: "100%",
-  overflow: "auto",
+  width: "100%",
+  overflow: "hidden",
+  bgcolor: "background.default",
+  position: "relative",
+};
+
+/** Scrollable content area */
+export const contentArea: SxProps<Theme> = {
+  flex: 1,
+  overflowY: "auto",
+  display: "flex",
+  flexDirection: "column",
+  gap: 1,
+  pb: 2,
 };
 
 /** Centered content (loading spinners, empty states) */
@@ -40,7 +53,7 @@ export const ctaButton: SxProps<Theme> = {
   py: 1,
   fontSize: fonts.size.normal,
   borderRadius: `${shape.buttonRadius}px`,
-  boxShadow: shadows.ctaGlow,
+  boxShadow: "ctaGlow",
 };
 
 /** CTA container pinned at bottom of page */

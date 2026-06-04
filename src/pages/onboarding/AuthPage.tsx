@@ -13,7 +13,6 @@ import { useAuth } from "../../contexts/AuthContext";
 import logoImg from "../../assets/logo.png";
 import { Capacitor } from "@capacitor/core";
 import * as sx from "../../styles/commonStyles";
-import { shadows } from "../../styles/tokens";
 
 interface AuthPageProps {
   onAuthSuccess: () => void;
@@ -174,7 +173,7 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
           mb: 2.5,
           display: "block",
           mx: "auto",
-          filter: shadows.authLogoGlow,
+          filter: (theme) => theme.palette.authLogoGlow,
         }}
       />
       <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
