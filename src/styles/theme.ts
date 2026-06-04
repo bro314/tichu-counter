@@ -123,22 +123,22 @@ export const lightTheme = createTheme({
 
     gameCard: {
       active: {
-        bg: '#FFFDF0',
-        border: '#FEF3C7',
-        shadow: '0 4px 14px rgba(245, 158, 11, 0.08)',
+        bg: '#FFFFFF',
+        border: '#E5E7EB',
+        shadow: 'none',
       },
       won: {
-        bg: '#F0FDF4',
-        border: '#DCFCE7',
-        shadow: '0 4px 14px rgba(34, 197, 94, 0.08)',
+        bg: '#FFFFFF',
+        border: '#E5E7EB',
+        shadow: 'none',
       },
       lost: {
-        bg: '#FEF2F2',
-        border: '#FEE2E2',
+        bg: '#FFFFFF',
+        border: '#E5E7EB',
         shadow: 'none',
       },
       finished: {
-        bg: '#F9FAFB',
+        bg: '#FFFFFF',
         border: '#E5E7EB',
         shadow: 'none',
       },
@@ -184,22 +184,22 @@ export const darkTheme = createTheme({
 
     gameCard: {
       active: {
-        bg: 'rgba(245, 158, 11, 0.08)',
-        border: 'rgba(245, 158, 11, 0.25)',
-        shadow: '0 4px 20px rgba(245, 158, 11, 0.1)',
+        bg: '#1A1A1A',
+        border: 'rgba(255, 255, 255, 0.05)',
+        shadow: 'none',
       },
       won: {
-        bg: 'rgba(34, 197, 94, 0.08)',
-        border: 'rgba(34, 197, 94, 0.25)',
-        shadow: '0 4px 20px rgba(34, 197, 94, 0.1)',
+        bg: '#1A1A1A',
+        border: 'rgba(255, 255, 255, 0.05)',
+        shadow: 'none',
       },
       lost: {
-        bg: 'rgba(239, 68, 68, 0.08)',
-        border: 'rgba(239, 68, 68, 0.25)',
+        bg: '#1A1A1A',
+        border: 'rgba(255, 255, 255, 0.05)',
         shadow: 'none',
       },
       finished: {
-        bg: 'rgba(255, 255, 255, 0.02)',
+        bg: '#1A1A1A',
         border: 'rgba(255, 255, 255, 0.05)',
         shadow: 'none',
       },

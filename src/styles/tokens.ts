@@ -5,9 +5,6 @@
  * and they propagate everywhere automatically.
  */
 
-// Note: Color palette tokens have been inlined directly into theme.ts
-// to leverage MUI's automatic dark/light theme switching.
-
 // ─── Typography ───────────────────────────────────────────────
 export const fonts = {
   family: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
