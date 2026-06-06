@@ -228,6 +228,7 @@ export const scoreFont: SxProps<Theme> = {
   fontWeight: fonts.weight.regular,
   color: "text.primary",
   fontSize: fonts.size.xl,
+  lineHeight: fonts.lineHeight.none,
 };
 
 /** Large score display font (Main scoreboard) */

@@ -463,15 +463,6 @@ const GamePage = () => {
             },
           }}
         >
-          <Typography
-            variant="subtitle2"
-            sx={{ mb: 1, pl: 1 }}
-          >
-            {rounds.length > 4
-              ? `${rounds.length} ${t("game.roundHistory")}`
-              : t("game.roundHistory")}
-          </Typography>
-
           {rounds.length === 0 ? (
             <Typography
               variant="body2"
@@ -485,10 +476,13 @@ const GamePage = () => {
               {[...rounds].reverse().map((round) => {
                 const pendingRounds = getPendingRounds(id || '');
                 const roundSyncStatus = pendingRounds[round.id]?.status;
+                const roundIndex = rounds.findIndex((r) => r.id === round.id);
+                const roundNumber = roundIndex !== -1 ? roundIndex + 1 : 1;
                 return (
                   <RoundCard
                     key={round.id}
                     round={round}
+                    roundNumber={roundNumber}
                     playerAvatars={playerAvatars}
                     isPlayer={isPlayer}
                     onEditRound={openEditRound}

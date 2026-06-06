@@ -14,6 +14,8 @@ declare module '@mui/material/styles' {
     desktopFrameShadow: string;
     dynamicHeaderShadow: string;
     dynamicBottomBarShadow: string;
+    roundChipBg: string;
+    roundChipText: string;
   }
 
   interface PaletteOptions {
@@ -27,6 +29,8 @@ declare module '@mui/material/styles' {
     desktopFrameShadow?: string;
     dynamicHeaderShadow?: string;
     dynamicBottomBarShadow?: string;
+    roundChipBg?: string;
+    roundChipText?: string;
   }
 }
 
@@ -82,6 +86,8 @@ export const lightTheme = createTheme({
     desktopFrameShadow: '0 0 24px rgba(0, 0, 0, 0.15)',
     dynamicHeaderShadow: '0 8px 20px rgba(0, 0, 0, 0.24)',
     dynamicBottomBarShadow: '0 -8px 20px rgba(0, 0, 0, 0.24)',
+    roundChipBg: 'rgba(0, 0, 0, 0.55)',
+    roundChipText: '#FFFFFF',
   },
   typography,
   shape: { borderRadius: shape.borderRadius },
@@ -116,6 +122,8 @@ export const darkTheme = createTheme({
     desktopFrameShadow: '0 0 24px rgba(0, 0, 0, 0.25)',
     dynamicHeaderShadow: '0 8px 24px rgba(0, 0, 0, 0.8)',
     dynamicBottomBarShadow: '0 -8px 24px rgba(0, 0, 0, 0.8)',
+    roundChipBg: 'rgba(255, 255, 255, 0.55)',
+    roundChipText: '#121212',
   },
   typography,
   shape: { borderRadius: shape.borderRadius },

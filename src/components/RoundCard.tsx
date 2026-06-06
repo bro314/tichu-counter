@@ -12,6 +12,7 @@ import { permutePlayerArray } from "../utils/playerPermutation";
 
 interface RoundCardProps {
   round: Round;
+  roundNumber: number;
   playerAvatars: string[];
   isPlayer: boolean;
   onEditRound: (round: Round) => void;
@@ -19,7 +20,7 @@ interface RoundCardProps {
   syncStatus?: 'saving' | 'offline';
 }
 
-const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, loggedInIndex, syncStatus }: RoundCardProps) => {
+const RoundCard = ({ round, roundNumber, playerAvatars, isPlayer, onEditRound, loggedInIndex, syncStatus }: RoundCardProps) => {
   const score = calculateRoundScore(round);
   const hasLoggedIn = loggedInIndex !== undefined && loggedInIndex !== -1;
   const avatars = hasLoggedIn ? permutePlayerArray(playerAvatars, loggedInIndex) : playerAvatars;
@@ -196,33 +197,40 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, loggedInIndex,
           </Box>
 
           {/* Round score */}
-          <Box sx={{ flex: 1 }}>
-          </Box>
-          <Box sx={{ flex: "none", textAlign: "right", minWidth: 50 }}>
-            <Typography
-              variant="body2"
-              sx={{ ...sx.scoreFont }}
-            >
-              {leftTeam === 1 ? score.team1 : score.team2}
-            </Typography>
-          </Box>
-          <Box sx={{ flex: "none" }}>
-            <Typography
-              variant="body2"
-              sx={{ ...sx.scoreFont }}
-            >
-              &nbsp;:&nbsp;
-            </Typography>
-          </Box>
-          <Box sx={{ flex: "none", minWidth: 50 }}>
-            <Typography
-              variant="body2"
-              sx={{ ...sx.scoreFont }}
-            >
-              {leftTeam === 1 ? score.team2 : score.team1}
-            </Typography>
-          </Box>
-          <Box sx={{ flex: 1 }}>
+          <Box
+            sx={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Chip
+              label={`${roundNumber}`}
+              size="small"
+              sx={{
+                ...sx.historyChip,
+                bgcolor: "roundChipBg",
+                color: "roundChipText",
+                mb: 0.75,
+              }}
+            />
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Box sx={{ minWidth: 40, textAlign: "right" }}>
+                <Typography variant="body2" sx={sx.scoreFont}>
+                  {leftTeam === 1 ? score.team1 : score.team2}
+                </Typography>
+              </Box>
+              <Typography variant="body2" sx={sx.scoreFont}>
+                &nbsp;:&nbsp;
+              </Typography>
+              <Box sx={{ minWidth: 40, textAlign: "left" }}>
+                <Typography variant="body2" sx={sx.scoreFont}>
+                  {leftTeam === 1 ? score.team2 : score.team1}
+                </Typography>
+              </Box>
+            </Box>
           </Box>
 
           {/* Team 2 */}
