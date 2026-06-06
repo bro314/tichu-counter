@@ -218,7 +218,7 @@ const RoundEditorDialog = ({
     const isTeam1Layout = loggedInIndex !== -1 ? ((playerIndex ^ loggedInIndex) < 2) : (pn <= 2);
     const { displayName, avatar } = getPlayerDetails(game.players[playerIndex]);
     return (
-      <Card key={`player-dialog-${pn}`} sx={sx.playerCard(isTeam1Layout)}>
+      <Card elevation={2} key={`player-dialog-${pn}`} sx={sx.playerCard(isTeam1Layout)}>
         <Box
           sx={{
             display: "flex",
@@ -387,27 +387,24 @@ const RoundEditorDialog = ({
             {renderPlayerCardInDialog(loggedInIndex !== -1 ? (2 ^ loggedInIndex) : 2)}
             {renderPlayerCardInDialog(loggedInIndex !== -1 ? (1 ^ loggedInIndex) : 1)}
             {renderPlayerCardInDialog(loggedInIndex !== -1 ? (3 ^ loggedInIndex) : 3)}
-          </Box>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 1,
-              mb: 2,
-            }}
-          >
-            <Chip
-              label={`${playerAvatars[0]} ${playerAvatars[1]}  ${t("game.oneTwoVictory")}`}
-              color={oneTwoVictory === leftTeam ? "primary" : "default"}
-              variant={oneTwoVictory === leftTeam ? "filled" : "outlined"}
-              onClick={() => toggleOneTwoVictory(leftTeam)}
-            />
-            <Chip
-              label={`${playerAvatars[2]} ${playerAvatars[3]}  ${t("game.oneTwoVictory")}`}
-              color={oneTwoVictory === rightTeam ? "primary" : "default"}
-              variant={oneTwoVictory === rightTeam ? "filled" : "outlined"}
-              onClick={() => toggleOneTwoVictory(rightTeam)}
-            />
+            <Card elevation={2} sx={{ p: 1, display: "flex" }}>
+              <Chip
+                label={`${playerAvatars[0]} ${playerAvatars[1]}  ${t("game.oneTwoVictory")}`}
+                color={oneTwoVictory === leftTeam ? "primary" : "default"}
+                variant={oneTwoVictory === leftTeam ? "filled" : "outlined"}
+                onClick={() => toggleOneTwoVictory(leftTeam)}
+                sx={{ flex: 1 }}
+              />
+            </Card>
+            <Card elevation={2} sx={{ p: 1, display: "flex" }}>
+              <Chip
+                label={`${playerAvatars[2]} ${playerAvatars[3]}  ${t("game.oneTwoVictory")}`}
+                color={oneTwoVictory === rightTeam ? "primary" : "default"}
+                variant={oneTwoVictory === rightTeam ? "filled" : "outlined"}
+                onClick={() => toggleOneTwoVictory(rightTeam)}
+                sx={{ flex: 1 }}
+              />
+            </Card>
           </Box>
           {validationError && (
             <Alert severity="warning" sx={{ mb: 2 }}>
@@ -415,7 +412,7 @@ const RoundEditorDialog = ({
             </Alert>
           )}
           {oneTwoVictory === 0 && (
-            <>
+            <Card elevation={2} sx={{ p: 1, display: "block" }}>
               <Typography
                 variant="caption"
                 sx={{
@@ -460,7 +457,7 @@ const RoundEditorDialog = ({
                   {leftTeam === 1 ? 100 - team1CardPoints : team1CardPoints}
                 </Typography>
               </Box>
-            </>
+            </Card>
           )}
         </Box>
 
@@ -477,11 +474,7 @@ const RoundEditorDialog = ({
             size="small"
             sx={{ mb: 2 }}
           />
-          <Card variant="outlined" sx={{
-            p: 2,
-            mb: 2,
-            bgcolor: "action.hover",
-          }}>
+          <Card elevation={2} sx={{ p: 2, mb: 2 }}>
             <Box
               sx={{
                 display: "flex",
@@ -498,7 +491,7 @@ const RoundEditorDialog = ({
               </Typography>
             </Box>
           </Card>
-          <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
+          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
             <Button
               id="save-round-btn"
               variant="contained"

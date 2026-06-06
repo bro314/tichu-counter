@@ -16,6 +16,7 @@ import { auth, db } from '../firebase';
 import { Capacitor } from '@capacitor/core';
 import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
 import { AppleSignIn, SignInScope } from '@capawesome/capacitor-apple-sign-in';
+import { clearPlayerCache } from '../services/playerService';
 
 export interface UserProfile {
   displayName: string;
@@ -135,6 +136,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     await firebaseSignOut(auth);
     setProfile(null);
+    clearPlayerCache();
     localStorage.clear();
   };
 
@@ -185,6 +187,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await deleteUser(user);
       setProfile(null);
+      clearPlayerCache();
       localStorage.clear();
     } catch (err) {
       if (userProfile) {

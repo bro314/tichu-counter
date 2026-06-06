@@ -148,7 +148,7 @@ const SettingsPage = () => {
         height: "100%",
         width: "100%",
         boxSizing: "border-box",
-        px: 2,
+        px: 1,
         pt: 2,
         overflowY: "auto",
       }}
@@ -158,15 +158,13 @@ const SettingsPage = () => {
       </Typography>
 
       <Card
-        variant="outlined"
+        elevation={2}
         sx={{
-          mb: 2,
+          mb: 1,
           borderRadius: `${shape.borderRadius}px`,
-          borderColor: "divider",
-          boxShadow: "settingsCardShadow",
         }}
       >
-        <List>
+        <List dense>
           {/* Avatar */}
           <ListItem
             sx={{ cursor: "pointer" }}
@@ -199,15 +197,13 @@ const SettingsPage = () => {
       </Card>
 
       <Card
-        variant="outlined"
+        elevation={2}
         sx={{
-          mb: 2,
+          mb: 1,
           borderRadius: `${shape.borderRadius}px`,
-          borderColor: "divider",
-          boxShadow: "settingsCardShadow",
         }}
       >
-        <List>
+        <List dense>
           {/* Language */}
           <ListItem>
             <ListItemIcon>
@@ -249,15 +245,15 @@ const SettingsPage = () => {
         </List>
       </Card>
 
-      <Box sx={{ mt: "auto", pb: 2, display: "flex", gap: 1.5, alignItems: "center" }}>
+      <Box sx={{ mt: "auto", pb: 1, display: "flex", gap: 1, alignItems: "center" }}>
         <Button
           id="sign-out-btn"
           variant="outlined"
+          size="large"
           color="error"
           fullWidth
           startIcon={<LogoutIcon />}
           onClick={handleSignOut}
-          sx={{ py: 1.2, height: "48px" }}
         >
           {t("settings.signOut")}
         </Button>

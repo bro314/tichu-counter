@@ -54,7 +54,9 @@ export const historyChip: SxProps<Theme> = {
   fontSize: fonts.size.sm,
   fontWeight: fonts.weight.semibold,
   borderRadius: `${shape.smallRadius}px`,
-  minWidth: 27,
+  minWidth: 30,
+  height: 20,
+  "& .MuiChip-label": { p: 0 },
 };
 
 /** Timestamp / metadata text */
@@ -126,7 +128,7 @@ export const desktopOuter: SxProps<Theme> = {
 };
 
 /** Responsive app frame container for centered phone feel */
-export const appFrame: SxProps<Theme> = {
+export const appFrame: SxProps<Theme> = (theme) => ({
   display: "flex",
   flexDirection: "column",
   height: "100%",
@@ -142,32 +144,32 @@ export const appFrame: SxProps<Theme> = {
     borderLeft: "1px solid",
     borderRight: "1px solid",
     borderColor: "divider",
-    boxShadow: "desktopFrameShadow",
+    boxShadow: theme.palette.desktopFrameShadow,
   },
-};
+});
 
 /** Top header container with bottom border and dynamic downwards shadow */
-export const dynamicHeader = (showShadow: boolean): SxProps<Theme> => ({
+export const dynamicHeader = (showShadow: boolean): SxProps<Theme> => (theme) => ({
   p: 1,
   flexShrink: 0,
   bgcolor: "background.default",
   borderBottom: 1,
   borderColor: "divider",
-  boxShadow: showShadow ? "dynamicHeaderShadow" : "none",
+  boxShadow: showShadow ? theme.palette.dynamicHeaderShadow : "none",
   position: "relative",
   zIndex: 1,
 });
 
 /** Bottom actions container with top border and dynamic upwards shadow */
-export const dynamicBottomBar = (showShadow: boolean): SxProps<Theme> => ({
+export const dynamicBottomBar = (showShadow: boolean): SxProps<Theme> => (theme) => ({
   p: 1,
   display: "flex",
-  gap: 1.5,
+  gap: 1,
   alignItems: "center",
   bgcolor: "background.default",
   borderTop: 1,
   borderColor: "divider",
-  boxShadow: showShadow ? "dynamicBottomBarShadow" : "none",
+  boxShadow: showShadow ? theme.palette.dynamicBottomBarShadow : "none",
   position: "relative",
   zIndex: 1,
 });
@@ -231,6 +233,7 @@ export const scoreFont: SxProps<Theme> = {
 /** Large score display font (Main scoreboard) */
 export const largeScoreFont: SxProps<Theme> = {
   fontWeight: fonts.weight.regular,
+  fontSize: fonts.size.xxxl,
   lineHeight: fonts.lineHeight.none,
 };
 
@@ -245,4 +248,5 @@ export const historyTimeFont: SxProps<Theme> = {
 export const playerNameLarge: SxProps<Theme> = {
   fontWeight: fonts.weight.regular,
   fontSize: fonts.size.large,
+  lineHeight: fonts.lineHeight.tight,
 };

@@ -14,8 +14,6 @@ declare module '@mui/material/styles' {
     desktopFrameShadow: string;
     dynamicHeaderShadow: string;
     dynamicBottomBarShadow: string;
-    settingsCardShadow: string;
-    ctaGlow: string;
   }
 
   interface PaletteOptions {
@@ -29,8 +27,6 @@ declare module '@mui/material/styles' {
     desktopFrameShadow?: string;
     dynamicHeaderShadow?: string;
     dynamicBottomBarShadow?: string;
-    settingsCardShadow?: string;
-    ctaGlow?: string;
   }
 }
 
@@ -86,8 +82,6 @@ export const lightTheme = createTheme({
     desktopFrameShadow: '0 0 24px rgba(0, 0, 0, 0.15)',
     dynamicHeaderShadow: '0 8px 20px rgba(0, 0, 0, 0.24)',
     dynamicBottomBarShadow: '0 -8px 20px rgba(0, 0, 0, 0.24)',
-    settingsCardShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-    ctaGlow: '0 4px 14px rgba(26, 115, 232, 0.4)',
   },
   typography,
   shape: { borderRadius: shape.borderRadius },
@@ -122,8 +116,6 @@ export const darkTheme = createTheme({
     desktopFrameShadow: '0 0 24px rgba(0, 0, 0, 0.25)',
     dynamicHeaderShadow: '0 8px 24px rgba(0, 0, 0, 0.8)',
     dynamicBottomBarShadow: '0 -8px 24px rgba(0, 0, 0, 0.8)',
-    settingsCardShadow: 'none',
-    ctaGlow: '0 4px 14px rgba(26, 115, 232, 0.4)',
   },
   typography,
   shape: { borderRadius: shape.borderRadius },

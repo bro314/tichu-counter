@@ -7,6 +7,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 import LockIcon from "@mui/icons-material/Lock";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import CloudOffIcon from "@mui/icons-material/CloudOff";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 import * as sx from "../styles/commonStyles";
@@ -93,121 +97,21 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
     return t("home.finished");
   };
 
+  const getLabelIcon = () => {
+    if (gameResult === "active") return <PlayArrowIcon sx={{ ...sx.smIconFont }} />;
+    if (gameResult === "won") return <EmojiEventsIcon sx={{ ...sx.smIconFont }} />;
+    if (gameResult === "lost") return <CancelIcon sx={{ ...sx.smIconFont }} />;
+    return <CheckCircleIcon sx={{ ...sx.smIconFont }} />;
+  };
+
+  const createdDate = new Date(game.createdAt);
+  const isRecent = new Date().getTime() - createdDate.getTime() < 24 * 60 * 60 * 1000;
+
   const formatDateOnly = (date: Date) => DateFormatter.formatDateOnly(date, i18n.language);
   const formatTimeOnly = (date: Date) => DateFormatter.formatTimeOnly(date);
 
   const cardContent = (
     <CardContent sx={{ py: 1, px: 1, "&:last-child": { pb: 1.5 } }}>
-      {/* Status, score and timestamp */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          mb: 0.5,
-        }}
-      >
-        {/* Left side: Status */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "flex-start",
-            flex: 1,
-            minWidth: 0,
-          }}
-        >
-          <Typography
-            variant="caption"
-            sx={{
-              ...sx.uppercaseBadgeFont,
-              color: getLabelColor(),
-            }}
-          >
-            {getLabelText()}
-          </Typography>
-        </Box>
-
-        {/* Middle: Large Score */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-            px: 1,
-          }}
-        >
-          <Typography
-            variant="h4"
-            sx={{
-              ...sx.largeScoreFont,
-              flex: 1,
-              minWidth: "82px",
-              textAlign: "right",
-            }}
-          >
-            {displayScore.team1}
-          </Typography>
-          <Typography
-            variant="h4"
-            sx={{
-              ...sx.largeScoreFont,
-              flexShrink: 0,
-              textAlign: "center",
-            }}
-          >
-            :
-          </Typography>
-          <Typography
-            variant="h4"
-            sx={{
-              ...sx.largeScoreFont,
-              flex: 1,
-              minWidth: "82px",
-              textAlign: "left",
-            }}
-          >
-            {displayScore.team2}
-          </Typography>
-        </Box>
-
-        {/* Right side: Date & Time, and sync status */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1.2,
-            flex: 1,
-            justifyContent: "flex-end",
-            minWidth: 0,
-          }}
-        >
-          {syncStatus && (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              {syncStatus === 'saving' ? (
-                <CircularProgress size={12} sx={{ color: 'warning.main' }} />
-              ) : (
-                <CloudOffIcon sx={{ fontSize: 16, color: 'warning.main' }} />
-              )}
-            </Box>
-          )}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              gap: 0,
-            }}
-          >
-            <Typography sx={{ ...sx.timestampFont, whiteSpace: "nowrap" }}>
-              {formatDateOnly(game.createdAt)}
-            </Typography>
-            <Typography sx={{ ...sx.timestampFont, whiteSpace: "nowrap" }}>
-              {formatTimeOnly(game.createdAt)}
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
 
       {/* Teams display without the score */}
       <Box
@@ -216,6 +120,7 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
           alignItems: "center",
           justifyContent: "space-between",
           gap: 1,
+          mb: 1,
         }}
       >
         {/* Team 1: 2 lines with avatars */}
@@ -356,84 +261,200 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
         </Box>
       </Box>
 
-      {/* Bottom Row: Optional Game Note & Tags */}
-      {(game.note || game.isPrivate || game.tag) && (
+      {/* Score Row */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 0.5,
+        }}
+      >
+        {/* Left side: Spacer to keep score centered */}
+        <Box sx={{ flex: 1 }} />
+
+        {/* Middle: Large Score */}
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
-            gap: 1,
-            mt: 1,
+            justifyContent: "center",
+            flexShrink: 0,
+            px: 1,
           }}
         >
-          {/* Tags on the left */}
-          <Box
+          <Typography
+            variant="h4"
             sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 0.5,
-              flexShrink: 0,
+              ...sx.largeScoreFont,
+              flex: 1,
+              minWidth: "82px",
+              textAlign: "right",
             }}
           >
-            {game.isPrivate && (
-              <Box
-                sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 0.25,
-                  bgcolor: "badgeBg.private",
-                  px: 0.75,
-                  py: 0.25,
-                  borderRadius: `${shape.buttonRadius}px`,
-                  color: "text.secondary",
-                }}
-              >
-                <LockIcon sx={{ ...sx.smIconFont }} />
-                <Typography variant="caption" sx={{ ...sx.cardBadgeFont }}>
-                  {t("game.private")}
-                </Typography>
-              </Box>
-            )}
-            {game.tag && (
-              <Box
-                sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 0.25,
-                  bgcolor: "badgeBg.tag",
-                  px: 0.75,
-                  py: 0.25,
-                  borderRadius: `${shape.buttonRadius}px`,
-                  color: "badgeBg.tagText",
-                }}
-              >
-                <LocalOfferIcon sx={{ ...sx.smIconFont }} />
-                <Typography variant="caption" sx={{ ...sx.cardBadgeFont }}>
-                  {game.tag}
-                </Typography>
-              </Box>
-            )}
+            {displayScore.team1}
+          </Typography>
+          <Typography
+            variant="h4"
+            sx={{
+              ...sx.largeScoreFont,
+              flex: "none",
+              textAlign: "center",
+            }}
+          >
+            &nbsp;:&nbsp;
+          </Typography>
+          <Typography
+            variant="h4"
+            sx={{
+              ...sx.largeScoreFont,
+              flex: 1,
+              minWidth: "82px",
+              textAlign: "left",
+            }}
+          >
+            {displayScore.team2}
+          </Typography>
+        </Box>
+
+        {/* Right side: Spacer to keep score centered */}
+        <Box sx={{ flex: 1 }} />
+      </Box>
+
+      {/* Tags & Date/Time Row */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 1,
+          mt: 1,
+        }}
+      >
+        {/* Tags on the left (including Status) */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0.5,
+            flexShrink: 0,
+          }}
+        >
+          {/* Status Badge */}
+          <Box
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 0.25,
+              bgcolor: (theme) => {
+                const color = getLabelColor();
+                let hexColor = "";
+                if (color === "warning.main") hexColor = theme.palette.warning.main;
+                else if (color === "success.main") hexColor = theme.palette.success.main;
+                else if (color === "error.main") hexColor = theme.palette.error.main;
+                else hexColor = theme.palette.text.disabled;
+                return `${hexColor}1A`; // ~10% opacity
+              },
+              px: 0.75,
+              py: 0.25,
+              borderRadius: `${shape.buttonRadius}px`,
+              color: getLabelColor(),
+            }}
+          >
+            {getLabelIcon()}
+            <Typography variant="caption" sx={{ ...sx.cardBadgeFont, fontWeight: "bold" }}>
+              {getLabelText()}
+            </Typography>
           </Box>
 
-          {/* Note on the right */}
-          <Box sx={{ flex: 1, minWidth: 0, textAlign: "right" }}>
-            {game.note && (
-              <Typography
-                variant="caption"
-                sx={{ ...sx.metaText, fontStyle: "italic" }}
-              >
-                {game.note}
+          {game.isPrivate && (
+            <Box
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 0.25,
+                bgcolor: "badgeBg.private",
+                px: 0.75,
+                py: 0.25,
+                borderRadius: `${shape.buttonRadius}px`,
+                color: "text.secondary",
+              }}
+            >
+              <LockIcon sx={{ ...sx.smIconFont }} />
+              <Typography variant="caption" sx={{ ...sx.cardBadgeFont }}>
+                {t("game.private")}
               </Typography>
-            )}
-          </Box>
+            </Box>
+          )}
+          {game.tag && (
+            <Box
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 0.25,
+                bgcolor: "badgeBg.tag",
+                px: 0.75,
+                py: 0.25,
+                borderRadius: `${shape.buttonRadius}px`,
+                color: "badgeBg.tagText",
+              }}
+            >
+              <LocalOfferIcon sx={{ ...sx.smIconFont }} />
+              <Typography variant="caption" sx={{ ...sx.cardBadgeFont }}>
+                {game.tag}
+              </Typography>
+            </Box>
+          )}
+        </Box>
+
+        {/* Date & Time, and sync status on the right */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            justifyContent: "flex-end",
+            minWidth: 0,
+          }}
+        >
+          {syncStatus && (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              {syncStatus === 'saving' ? (
+                <CircularProgress size={12} sx={{ color: 'warning.main' }} />
+              ) : (
+                <CloudOffIcon sx={{ fontSize: 16, color: 'warning.main' }} />
+              )}
+            </Box>
+          )}
+          <Typography sx={{ ...sx.timestampFont, whiteSpace: "nowrap" }}>
+            {isRecent ? formatTimeOnly(createdDate) : formatDateOnly(createdDate)}
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* Note Row */}
+      {game.note && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            mt: 0.75,
+            ml: 0.5,
+          }}
+        >
+          <Typography
+            variant="caption"
+            sx={{ ...sx.metaText, fontStyle: "italic", textAlign: "left" }}
+          >
+            {game.note}
+          </Typography>
         </Box>
       )}
     </CardContent>
   );
 
   return (
-    <Card sx={{ position: "relative" }}>
+    <Card elevation={2} sx={{ position: "relative" }}>
       {onClick ? (
         <CardActionArea
           onClick={onClick}

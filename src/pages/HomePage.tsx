@@ -300,7 +300,7 @@ const HomePage = () => {
             </Box>
           ) : (
             <Box
-              sx={{ display: "flex", flexDirection: "column", gap: 1.5, pb: 1 }}
+              sx={{ display: "flex", flexDirection: "column", gap: 1, pb: 1 }}
             >
               {games.map((game) => {
                 const score = scores[game.id] || { team1: 0, team2: 0 };

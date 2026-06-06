@@ -10,6 +10,11 @@ export interface RegisteredPlayer {
 // Global, in-memory cache of resolved player profiles
 const resolvedPlayersCache = new Map<string, RegisteredPlayer>();
 
+/** Clear global in-memory cache of resolved player profiles */
+export function clearPlayerCache(): void {
+  resolvedPlayersCache.clear();
+}
+
 /** Fetch specific registered user profiles by their UIDs using cache when possible */
 export async function fetchPlayers(uids: string[]): Promise<RegisteredPlayer[]> {
   const uniqueUids = Array.from(new Set(uids)).filter(Boolean);

@@ -113,7 +113,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, loggedInIndex,
 
 
   return (
-    <Card sx={{ overflow: "visible", position: "relative" }}>
+    <Card elevation={2} sx={{ overflow: "visible", position: "relative" }}>
       {syncStatus && (
         <Box
           sx={{
@@ -160,7 +160,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, loggedInIndex,
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                gap: 1,
+                gap: 0,
                 flexShrink: 0,
               }}
             >
@@ -170,13 +170,13 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, loggedInIndex,
                   display: "flex",
                   alignItems: "center",
                   gap: 1,
-                  height: 18,
+                  height: 24,
                 }}
               >
                 <Typography sx={sx.lgEmojiNoneFont}>
                   {avatars[0]}
                 </Typography>
-                {slot1Content || <Box sx={{ width: 26, height: 18 }} />}
+                {slot1Content || <Box sx={{ width: 26, height: 24 }} />}
               </Box>
               {/* Player 2 Row */}
               <Box
@@ -184,13 +184,13 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, loggedInIndex,
                   display: "flex",
                   alignItems: "center",
                   gap: 1,
-                  height: 18,
+                  height: 24,
                 }}
               >
                 <Typography sx={sx.lgEmojiNoneFont}>
                   {avatars[1]}
                 </Typography>
-                {slot2Content || <Box sx={{ width: 26, height: 18 }} />}
+                {slot2Content || <Box sx={{ width: 26, height: 24 }} />}
               </Box>
             </Box>
           </Box>
@@ -241,7 +241,7 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, loggedInIndex,
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                gap: 1,
+                gap: 0,
                 flexShrink: 0,
               }}
             >
@@ -252,10 +252,10 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, loggedInIndex,
                   alignItems: "center",
                   gap: 1,
                   justifyContent: "flex-end",
-                  height: 18,
+                  height: 24,
                 }}
               >
-                {slot3Content || <Box sx={{ width: 26, height: 18 }} />}
+                {slot3Content || <Box sx={{ width: 26, height: 24 }} />}
                 <Typography sx={sx.lgEmojiNoneFont}>
                   {avatars[2]}
                 </Typography>
@@ -267,10 +267,10 @@ const RoundCard = ({ round, playerAvatars, isPlayer, onEditRound, loggedInIndex,
                   alignItems: "center",
                   gap: 1,
                   justifyContent: "flex-end",
-                  height: 18,
+                  height: 24,
                 }}
               >
-                {slot4Content || <Box sx={{ width: 26, height: 18 }} />}
+                {slot4Content || <Box sx={{ width: 26, height: 24 }} />}
                 <Typography sx={sx.lgEmojiNoneFont}>
                   {avatars[3]}
                 </Typography>

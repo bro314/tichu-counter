@@ -465,7 +465,7 @@ const GamePage = () => {
         >
           <Typography
             variant="subtitle2"
-            sx={{ mb: 1, pl: 1.5 }}
+            sx={{ mb: 1, pl: 1 }}
           >
             {rounds.length > 4
               ? `${rounds.length} ${t("game.roundHistory")}`
