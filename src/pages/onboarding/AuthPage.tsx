@@ -157,9 +157,6 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
           mx: "auto",
         }}
       />
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
-        {t("onboarding.welcome")}
-      </Typography>
 
       {/* Error alert */}
       {error && (

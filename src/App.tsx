@@ -13,6 +13,8 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from './contexts/AuthContext';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import { darkTheme } from './styles/theme';
 import HomePage from './pages/HomePage';
 import GamePage from './pages/GamePage';
 import SettingsPage from './pages/SettingsPage';
@@ -207,7 +209,17 @@ function App() {
     if (!Capacitor.isNativePlatform() && window.location.pathname !== '/') {
       window.history.replaceState({}, '', '/');
     }
-    content = <AuthPage onAuthSuccess={() => { }} />;
+    return (
+      <OfflineSyncProvider>
+        <MuiThemeProvider theme={darkTheme}>
+          <Box sx={desktopOuter}>
+            <Box sx={appFrame}>
+              <AuthPage onAuthSuccess={() => { }} />
+            </Box>
+          </Box>
+        </MuiThemeProvider>
+      </OfflineSyncProvider>
+    );
   } else if (!hasCompletedOnboarding) {
     // Authenticated but no profile yet → show profile setup
     if (!Capacitor.isNativePlatform() && window.location.pathname !== '/') {
