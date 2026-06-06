@@ -92,8 +92,8 @@ export const avatarGridContainer: SxProps<Theme> = {
 /** Avatar grid layout */
 export const avatarGrid: SxProps<Theme> = {
   display: "grid",
-  gridTemplateColumns: "repeat(6, 1fr)",
-  gap: 1,
+  gridTemplateColumns: "repeat(auto-fill, minmax(48px, 1fr))",
+  gap: 0.5,
 };
 
 /** Individual avatar item */
@@ -114,7 +114,7 @@ export const avatarItem = (selected: boolean): SxProps<Theme> => ({
 export const avatarItemLarge = (selected: boolean): SxProps<Theme> => ({
   ...avatarItem(selected),
   fontSize: fonts.size.xxxl,
-  py: 1,
+  p: 0,
 });
 
 /** Outer desktop page framing background */

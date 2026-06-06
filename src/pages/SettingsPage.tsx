@@ -359,29 +359,6 @@ const SettingsPage = () => {
       >
         <DialogTitle>{t("onboarding.chooseAvatar")}</DialogTitle>
         <DialogContent sx={{ pt: 1 }}>
-          <TextField
-            id="custom-emoji-input"
-            label={t("settings.customEmoji")}
-            value={
-              AVATAR_EMOJIS.includes(profile?.avatar || "")
-                ? ""
-                : profile?.avatar || ""
-            }
-            onChange={(e) => {
-              const val = e.target.value;
-              if (val) {
-                const chars = Array.from(val.trim());
-                const lastChar = chars[chars.length - 1];
-                if (lastChar) handleAvatarSelect(lastChar);
-              } else {
-                handleAvatarSelect("");
-              }
-            }}
-            fullWidth
-            size="small"
-            placeholder={t("settings.customEmojiPlaceholder")}
-            sx={{ mt: 1, mb: 3 }}
-          />
           <Box sx={sx.avatarGrid}>
             {AVATAR_EMOJIS.map((emoji) => (
               <Box
