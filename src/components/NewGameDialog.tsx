@@ -492,14 +492,14 @@ const NewGameDialog = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle>{editMode ? t("newGame.editTitle") : t("newGame.title")}</DialogTitle>
-      <DialogContent>
+      <DialogTitle sx={{ px: 2, py: 2 }}>{editMode ? t("newGame.editTitle") : t("newGame.title")}</DialogTitle>
+      <DialogContent sx={{ px: 2, py: 0 }}>
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}
           </Alert>
         )}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
           {/* Team 1 header */}
           <Typography
             variant="subtitle2"
@@ -534,7 +534,6 @@ const NewGameDialog = ({
           <Typography
             variant="subtitle2"
             color="text.secondary"
-            sx={{ mt: 1 }}
           >
             {t("game.team2")}
           </Typography>
@@ -562,7 +561,7 @@ const NewGameDialog = ({
           )}
 
           {/* Privacy setting */}
-          <FormControl component="fieldset" variant="standard" sx={{ mt: 1 }}>
+          <FormControl component="fieldset" variant="standard" sx={{ ml: 1.5 }}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -612,7 +611,6 @@ const NewGameDialog = ({
                 {...params}
                 label={t("newGame.tagLabel")}
                 placeholder={t("newGame.tagPlaceholder")}
-                sx={{ mt: 1 }}
               />
             )}
           />
@@ -629,11 +627,10 @@ const NewGameDialog = ({
             }}
             size="small"
             fullWidth
-            sx={{ mt: 1 }}
           />
         </Box>
       </DialogContent>
-      <DialogActions sx={{ px: 3, pb: 2 }}>
+      <DialogActions sx={{ px: 2, py: 2 }}>
         <Button onClick={onClose}>{t("common.cancel")}</Button>
         <Button id="create-game-btn" variant="contained" onClick={handleStartOrSave}>
           {editMode ? t("common.save") : t("newGame.start")}

@@ -188,6 +188,18 @@ const GamePage = () => {
     return () => observer.disconnect();
   }, [loading, updateShadows]);
 
+  // Auto-scroll to bottom of rounds list on initial load or changes (adds/edits/deletes)
+  useEffect(() => {
+    if (rounds.length > 0) {
+      const timeoutId = setTimeout(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+      }, 50);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [rounds]);
+
   const getPlayerDetails = useCallback(
     (slot: PlayerSlot) => {
       const isCurrentUser = slot.uid === user?.uid;
@@ -414,36 +426,43 @@ const GamePage = () => {
         overflow: "hidden",
         height: "100%",
         minHeight: 0,
+        position: "relative",
       }}
     >
-      {/* Game Card Header (mostly identical to HomePage game card) */}
-      <Box sx={sx.dynamicHeader(showTopShadow)}>
-        <GameCard
-          game={game}
-          score={totals}
-          playerProfileMap={playerProfiles}
-          syncStatus={getGameSyncStatus(game.id)}
-          onClick={loadGame}
-        />
-      </Box>
+      {/* Top dynamic scroll shadow */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 32,
+          zIndex: 10,
+          background: (theme) => showTopShadow
+            ? `linear-gradient(to bottom, rgba(0,0,0,0.4), transparent)`
+            : "transparent",
+          pointerEvents: "none",
+          transition: "background 0.15s ease",
+        }}
+      />
 
       {/* Sync Status Banner */}
       {(!isOnline || pendingOps.filter(op => op.gameId === id).length > 0) && (
-        <Alert
-          severity="info"
-          icon={isOnline ? undefined : <CloudOffIcon />}
-          sx={{
-            mx: 2,
-            mt: 1,
-            borderRadius: `${shape.borderRadius}px`,
-          }}
-        >
-          {isOnline
-            ? t("game.syncBannerOnlineOps", { count: pendingOps.filter(op => op.gameId === id).length })
-            : pendingOps.filter(op => op.gameId === id).length > 0
-              ? t("game.syncBannerOfflineOps", { count: pendingOps.filter(op => op.gameId === id).length })
-              : t("game.syncBannerOffline")}
-        </Alert>
+        <Box sx={{ p: 1, bgcolor: "background.default", flexShrink: 0 }}>
+          <Alert
+            severity="info"
+            icon={isOnline ? undefined : <CloudOffIcon />}
+            sx={{
+              borderRadius: `${shape.borderRadius}px`,
+            }}
+          >
+            {isOnline
+              ? t("game.syncBannerOnlineOps", { count: pendingOps.filter(op => op.gameId === id).length })
+              : pendingOps.filter(op => op.gameId === id).length > 0
+                ? t("game.syncBannerOfflineOps", { count: pendingOps.filter(op => op.gameId === id).length })
+                : t("game.syncBannerOffline")}
+          </Alert>
+        </Box>
       )}
 
       {/* Round history */}
@@ -454,8 +473,9 @@ const GamePage = () => {
           sx={{
             flex: 1,
             overflow: "auto",
+            display: "flex",
+            flexDirection: "column",
             px: 1,
-            py: 1,
             msOverflowStyle: "none",
             scrollbarWidth: "none",
             "&::-webkit-scrollbar": {
@@ -467,17 +487,25 @@ const GamePage = () => {
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{ textAlign: "center", py: 2 }}
+              sx={{ textAlign: "center", py: 2, m: "auto" }}
             >
               {t("game.noRounds")}
             </Typography>
           ) : (
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1, pb: 2 }}>
-              {[...rounds].reverse().map((round) => {
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 1,
+                minHeight: "100%",
+                pb: 0,
+              }}
+            >
+              <Box sx={{ flex: 1 }} />
+              {rounds.map((round, index) => {
                 const pendingRounds = getPendingRounds(id || '');
                 const roundSyncStatus = pendingRounds[round.id]?.status;
-                const roundIndex = rounds.findIndex((r) => r.id === round.id);
-                const roundNumber = roundIndex !== -1 ? roundIndex + 1 : 1;
+                const roundNumber = index + 1;
                 return (
                   <RoundCard
                     key={round.id}
@@ -491,14 +519,50 @@ const GamePage = () => {
                   />
                 );
               })}
+              <Box sx={{ height: "1px", flexShrink: 0 }} />
             </Box>
           )}
         </Box>
       </PullToRefresh>
 
+      {/* Game Card (placed below rounds, above action buttons) */}
+      <Box
+        sx={{
+          px: 1,
+          pt: 1,
+          pb: 0.5,
+          flexShrink: 0,
+          bgcolor: "background.default",
+          borderTop: 1,
+          borderColor: "divider",
+          boxShadow: (theme) => showBottomShadow ? theme.palette.dynamicBottomBarShadow : "none",
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+        <GameCard
+          game={game}
+          score={totals}
+          playerProfileMap={playerProfiles}
+          syncStatus={getGameSyncStatus(game.id)}
+          onClick={loadGame}
+        />
+      </Box>
+
       {/* Bottom action block */}
       {isPlayer && (
-        <Box sx={sx.dynamicBottomBar(showBottomShadow)}>
+        <Box
+          sx={{
+            p: 1,
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+            bgcolor: "background.default",
+            flexShrink: 0,
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
           {!isGameOver ? (
             <>
               <Button
