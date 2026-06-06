@@ -200,6 +200,7 @@ const HomePage = () => {
                 fontFamily: fonts.display,
                 fontWeight: 400,
                 fontSize: "1.5rem",
+                lineHeight: 1,
               }}
             >
               {t("app.name")}
@@ -227,6 +228,7 @@ const HomePage = () => {
               sx={{
                 ...sx.uppercaseBadgeFont,
                 maxWidth: 180,
+                px: 0.75,
               }}
             />
           ) : (
@@ -242,6 +244,7 @@ const HomePage = () => {
                 sx={{
                   ...sx.uppercaseBadgeFont,
                   maxWidth: 180,
+                  px: 0.75,
                 }}
               />
             )
