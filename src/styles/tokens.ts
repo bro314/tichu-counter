@@ -4,6 +4,7 @@
 
 export const fonts = {
   family: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+  display: '"Anton", sans-serif',
   mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace',
   weight: {
     regular: 400,

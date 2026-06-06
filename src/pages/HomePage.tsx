@@ -21,7 +21,7 @@ import SearchDialog from "../components/SearchDialog";
 import GameCard from "../components/GameCard";
 import PullToRefresh from "../components/PullToRefresh";
 import * as sx from "../styles/commonStyles";
-import { shape } from "../styles/tokens";
+import { shape, fonts } from "../styles/tokens";
 import { fetchPlayers } from "../services/playerService";
 import appIconImg from "../assets/app-icon.png";
 import type { RegisteredPlayer } from "../services/playerService";
@@ -181,19 +181,27 @@ const HomePage = () => {
             justifyContent: "space-between",
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Box
               component="img"
               src={appIconImg}
               alt="Dragon's Count"
               sx={{
-                width: 40,
-                height: 40,
+                width: 30,
+                height: 30,
                 objectFit: "contain",
                 borderRadius: `${shape.borderRadius}px`,
+                boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.4)",
               }}
             />
-            <Typography variant="h6" >
+            <Typography
+              variant="h6"
+              sx={{
+                fontFamily: fonts.display,
+                fontWeight: 400,
+                fontSize: "1.5rem",
+              }}
+            >
               {t("app.name")}
             </Typography>
           </Box>

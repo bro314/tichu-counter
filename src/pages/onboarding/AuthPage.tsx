@@ -106,14 +106,15 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
         px: 3,
         width: 400,
         mx: "auto",
+        color: "text.primary",
       }}
     >
       {/* Floating Language Switcher */}
       <Box
         sx={{
           position: "absolute",
-          top: 16,
-          right: 16,
+          top: 24,
+          right: 24,
           display: "flex",
           gap: 1.5,
           zIndex: 10,
@@ -215,9 +216,8 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
         </Button>
       )}
 
-      {/* Divider */}
       <Divider sx={{ width: "100%", mb: 2 }}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
           {t("auth.orDivider")}
         </Typography>
       </Divider>
@@ -273,9 +273,8 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
         </Button>
       </Box>
 
-      {/* Toggle sign in / sign up */}
       <Box sx={{ mt: 3, display: "flex", alignItems: "center", gap: 0.5 }}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
           {isSignUp ? t("auth.hasAccount") : t("auth.noAccount")}
         </Typography>
         <Button
