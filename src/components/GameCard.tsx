@@ -331,16 +331,16 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
           mt: 1,
         }}
       >
-        {/* Tags on the left (including Status) */}
+        {/* Left box: status tag only */}
         <Box
           sx={{
+            flex: 1,
             display: "flex",
+            justifyContent: "flex-start",
             alignItems: "center",
-            gap: 0.5,
-            flexShrink: 0,
+            minWidth: 0,
           }}
         >
-          {/* Status Badge */}
           <Box
             sx={{
               display: "inline-flex",
@@ -366,7 +366,17 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
               {getLabelText()}
             </Typography>
           </Box>
+        </Box>
 
+        {/* Middle box: private tag and game tag */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0.5,
+            flexShrink: 0,
+          }}
+        >
           {game.isPrivate && (
             <Box
               sx={{
@@ -407,9 +417,10 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
           )}
         </Box>
 
-        {/* Date & Time, and sync status on the right */}
+        {/* Right box: date/time */}
         <Box
           sx={{
+            flex: 1,
             display: "flex",
             alignItems: "center",
             gap: 1,
