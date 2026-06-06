@@ -438,7 +438,7 @@ const GamePage = () => {
           right: 0,
           height: 32,
           zIndex: 10,
-          background: (theme) => showTopShadow
+          background: showTopShadow
             ? `linear-gradient(to bottom, rgba(0,0,0,0.4), transparent)`
             : "transparent",
           pointerEvents: "none",
