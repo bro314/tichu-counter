@@ -6,9 +6,11 @@ import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import CloudOffIcon from "@mui/icons-material/CloudOff";
 import { calculateRoundScore } from "../types/game";
-import type { Round } from "../types/game";
+import type { Round, RoundScore } from "../types/game";
+import { DateFormatter } from "../utils/date";
 import * as sx from "../styles/commonStyles";
 import { permutePlayerArray } from "../utils/playerPermutation";
+import { shape } from "../styles/tokens";
 
 interface RoundCardProps {
   round: Round;
@@ -18,9 +20,10 @@ interface RoundCardProps {
   onEditRound: (round: Round) => void;
   loggedInIndex?: number;
   syncStatus?: 'saving' | 'offline';
+  cumulativeScore: RoundScore;
 }
 
-const RoundCard = ({ round, roundNumber, playerAvatars, isPlayer, onEditRound, loggedInIndex, syncStatus }: RoundCardProps) => {
+const RoundCard = ({ round, roundNumber, playerAvatars, isPlayer, onEditRound, loggedInIndex, syncStatus, cumulativeScore }: RoundCardProps) => {
   const score = calculateRoundScore(round);
   const hasLoggedIn = loggedInIndex !== undefined && loggedInIndex !== -1;
   const avatars = hasLoggedIn ? permutePlayerArray(playerAvatars, loggedInIndex) : playerAvatars;
@@ -207,19 +210,47 @@ const RoundCard = ({ round, roundNumber, playerAvatars, isPlayer, onEditRound, l
               gap: 0.5,
             }}
           >
-            <Box sx={{ height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Chip
-                label={`${roundNumber}`}
-                size="small"
-                sx={{
-                  ...sx.historyChip,
-                  bgcolor: "roundChipBg",
-                  color: "roundChipText",
-                }}
-              />
+            <Box
+              sx={{
+                width: "100%",
+                height: 24,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                border: 1,
+                borderColor: "divider",
+                borderRadius: `${shape.borderRadius}px`,
+                gap: 0,
+              }}
+            >
+              <Box sx={{ minWidth: 60, textAlign: "left", pl: 1.5 }}>
+                <Typography variant="caption" sx={{ ...sx.timestampFont, flex: "none" }}>
+                  R{roundNumber}
+                </Typography>
+              </Box>
+              <Box sx={{ minWidth: 90, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Box sx={{ minWidth: 35, textAlign: "right" }}>
+                  <Typography variant="caption" sx={sx.timestampFont}>
+                    {leftTeam === 1 ? cumulativeScore.team1 : cumulativeScore.team2}
+                  </Typography>
+                </Box>
+                <Typography variant="caption" sx={sx.timestampFont}>
+                  &nbsp;:&nbsp;
+                </Typography>
+                <Box sx={{ minWidth: 35, textAlign: "left" }}>
+                  <Typography variant="caption" sx={sx.timestampFont}>
+                    {leftTeam === 1 ? cumulativeScore.team2 : cumulativeScore.team1}
+                  </Typography>
+                </Box>
+              </Box>
+              <Box sx={{ minWidth: 60, textAlign: "right", pr: 1.5 }}>
+                <Typography variant="caption" sx={{ ...sx.timestampFont, flex: "none" }}>
+                  {DateFormatter.formatTimeOnly(new Date(round.createdAt))}
+                </Typography>
+              </Box>
             </Box>
             <Box sx={{ height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Box sx={{ minWidth: 40, textAlign: "right" }}>
+              <Box sx={{ minWidth: 60, textAlign: "right" }}>
                 <Typography variant="body2" sx={sx.scoreFont}>
                   {leftTeam === 1 ? score.team1 : score.team2}
                 </Typography>
@@ -227,7 +258,7 @@ const RoundCard = ({ round, roundNumber, playerAvatars, isPlayer, onEditRound, l
               <Typography variant="body2" sx={sx.scoreFont}>
                 &nbsp;:&nbsp;
               </Typography>
-              <Box sx={{ minWidth: 40, textAlign: "left" }}>
+              <Box sx={{ minWidth: 60, textAlign: "left" }}>
                 <Typography variant="body2" sx={sx.scoreFont}>
                   {leftTeam === 1 ? score.team2 : score.team1}
                 </Typography>

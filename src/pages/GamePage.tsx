@@ -520,6 +520,7 @@ const GamePage = () => {
                     onEditRound={openEditRound}
                     loggedInIndex={loggedInIndex}
                     syncStatus={roundSyncStatus}
+                    cumulativeScore={calculateTotals(rounds.slice(0, index + 1))}
                   />
                 );
               })}
