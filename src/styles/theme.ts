@@ -54,10 +54,15 @@ const sharedComponents = {
   },
   MuiDialog: {
     styleOverrides: {
-      paper: {
-        width: 'calc(min(var(--max-screen-width), 100vw) - 32px)',
-        margin: '16px',
-      },
+      paper: ({ ownerState }: { ownerState: any }) => ({
+        ...(ownerState.fullScreen ? {
+          maxWidth: 'var(--max-screen-width)',
+        } : {
+          width: 'calc(min(var(--max-screen-width), 100vw) - 32px)',
+          margin: '16px',
+          maxHeight: 'calc(100vh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom))',
+        }),
+      }),
     },
   },
 };

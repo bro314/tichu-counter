@@ -318,7 +318,7 @@ const RoundEditorDialog = ({
           position: "relative",
           borderBottom: "none",
           pt: "env(safe-area-inset-top)",
-          pb: "env(safe-area-inset-bottom)",
+          pb: 0,
         }}
         color="default"
         elevation={0}
@@ -363,7 +363,8 @@ const RoundEditorDialog = ({
           flexDirection: "column",
           flex: 1,
           overflow: "auto",
-          p: 1,
+          p: 2,
+          pb: "calc(16px + env(safe-area-inset-bottom))",
         }}
       >
         {/* TOP: Player cards + 1-2 Victory + Slider */}

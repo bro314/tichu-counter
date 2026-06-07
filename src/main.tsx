@@ -12,12 +12,6 @@ import App from './App';
 if (Capacitor.isNativePlatform()) {
   document.body.classList.add('capacitor');
 
-  import('@capacitor/status-bar').then(({ StatusBar, Style }) => {
-    StatusBar.setStyle({ style: Style.Dark });
-    // Color is defined in styles/tokens.ts
-    StatusBar.setBackgroundColor({ color: '#0d1117' });
-  });
-
   import('@capacitor/splash-screen').then(({ SplashScreen }) => {
     SplashScreen.hide();
   });

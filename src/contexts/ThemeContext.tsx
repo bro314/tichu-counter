@@ -3,6 +3,8 @@ import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { lightTheme, darkTheme } from '../styles/theme';
 
+import { Capacitor } from '@capacitor/core';
+
 type ThemeMode = 'light' | 'dark';
 
 interface ThemeContextType {
@@ -27,6 +29,20 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     localStorage.setItem('theme', mode);
+
+    if (Capacitor.isNativePlatform()) {
+      import('@capacitor/status-bar').then(({ StatusBar, Style }) => {
+        if (mode === 'dark') {
+          StatusBar.setStyle({ style: Style.Dark });
+          StatusBar.setBackgroundColor({ color: '#121212' }); // darkTheme background.default
+        } else {
+          StatusBar.setStyle({ style: Style.Light });
+          StatusBar.setBackgroundColor({ color: '#F9FAFB' }); // lightTheme background.default
+        }
+      }).catch((err) => {
+        console.error('Failed to update Capacitor StatusBar:', err);
+      });
+    }
   }, [mode]);
 
   const toggleTheme = () => {
