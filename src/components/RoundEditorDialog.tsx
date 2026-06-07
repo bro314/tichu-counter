@@ -434,8 +434,8 @@ const RoundEditorDialog = ({
                 </Typography>
                 <Slider
                   id="card-points-slider"
-                  value={leftTeam === 1 ? 100 - team1CardPoints : team1CardPoints}
-                  onChange={(_, v) => setTeam1CardPoints(leftTeam === 1 ? 100 - (v as number) : (v as number))}
+                  value={leftTeam === 1 ? team1CardPoints : 100 - team1CardPoints}
+                  onChange={(_, v) => setTeam1CardPoints(leftTeam === 1 ? (v as number) : 100 - (v as number))}
                   min={-25}
                   max={125}
                   step={5}
