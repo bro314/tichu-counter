@@ -177,50 +177,52 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
       )}
 
       {/* Platform-specific Social Login */}
-      {Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios' ? (
-        <Button
-          id="apple-sign-in-btn"
-          variant="contained"
-          size="large"
-          fullWidth
-          startIcon={<AppleIcon />}
-          onClick={handleAppleAuth}
-          disabled={loading}
-          sx={{
-            py: 1.3,
-            mb: 2,
-            bgcolor: "#000000",
-            color: "#ffffff",
-            "&:hover": {
-              bgcolor: "#1c1c1e",
-            },
-          }}
-        >
-          {t("auth.appleSignIn")}
-        </Button>
-      ) : (
-        <Button
-          id="google-sign-in-btn"
-          variant="outlined"
-          size="large"
-          fullWidth
-          startIcon={<GoogleIcon />}
-          onClick={handleGoogleAuth}
-          disabled={loading}
-          sx={{
-            py: 1.3,
-            mb: 2,
-            borderColor: "divider",
-            color: "text.primary",
-            "&:hover": {
-              borderColor: "primary.main",
-              bgcolor: "action.hover",
-            },
-          }}
-        >
-          {t("auth.googleSignIn")}
-        </Button>
-      )}
+      <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 1.5, mb: 2 }}>
+        {(!Capacitor.isNativePlatform() || Capacitor.getPlatform() === 'android') && (
+          <Button
+            id="google-sign-in-btn"
+            variant="outlined"
+            size="large"
+            fullWidth
+            startIcon={<GoogleIcon />}
+            onClick={handleGoogleAuth}
+            disabled={loading}
+            sx={{
+              py: 1.3,
+              borderColor: "divider",
+              color: "text.primary",
+              "&:hover": {
+                borderColor: "primary.main",
+                bgcolor: "action.hover",
+              },
+            }}
+          >
+            {t("auth.googleSignIn")}
+          </Button>
+        )}
+
+        {(!Capacitor.isNativePlatform() || Capacitor.getPlatform() === 'ios') && (
+          <Button
+            id="apple-sign-in-btn"
+            variant="contained"
+            size="large"
+            fullWidth
+            startIcon={<AppleIcon />}
+            onClick={handleAppleAuth}
+            disabled={loading}
+            sx={{
+              py: 1.3,
+              bgcolor: "#000000",
+              color: "#ffffff",
+              "&:hover": {
+                bgcolor: "#1c1c1e",
+              },
+            }}
+          >
+            {t("auth.appleSignIn")}
+          </Button>
+        )}
+      </Box>
 
       <Divider sx={{ width: "100%", mb: 2 }}>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
