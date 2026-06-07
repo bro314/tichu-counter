@@ -59,8 +59,19 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setResolvedTheme(e.matches ? 'dark' : 'light');
     };
 
-    mediaQuery.addEventListener('change', handler);
-    return () => mediaQuery.removeEventListener('change', handler);
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handler);
+    } else {
+      mediaQuery.addListener(handler);
+    }
+
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', handler);
+      } else {
+        mediaQuery.removeListener(handler);
+      }
+    };
   }, [themeSetting]);
 
   // Persist preference to localStorage
@@ -72,12 +83,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
       import('@capacitor/status-bar').then(({ StatusBar, Style }) => {
-        if (resolvedTheme === 'dark') {
-          StatusBar.setStyle({ style: Style.Dark });
-          StatusBar.setBackgroundColor({ color: '#121212' }); // darkTheme background.default
-        } else {
-          StatusBar.setStyle({ style: Style.Light });
-          StatusBar.setBackgroundColor({ color: '#F9FAFB' }); // lightTheme background.default
+        StatusBar.setStyle({ style: resolvedTheme === 'dark' ? Style.Dark : Style.Light });
+        
+        // setBackgroundColor is only supported on Android
+        if (Capacitor.getPlatform() === 'android') {
+          StatusBar.setBackgroundColor({ color: resolvedTheme === 'dark' ? '#121212' : '#F9FAFB' });
         }
       }).catch((err) => {
         console.error('Failed to update Capacitor StatusBar:', err);

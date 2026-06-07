@@ -1,5 +1,6 @@
+import { Capacitor } from '@capacitor/core';
 import { initializeApp } from 'firebase/app';
-import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, browserPopupRedirectResolver } from 'firebase/auth';
+import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, browserPopupRedirectResolver, inMemoryPersistence, type Auth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -15,12 +16,36 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Auth explicitly with dynamic persistence fallbacks
-// (IndexedDB -> LocalStorage). This prevents crashes and SecurityErrors under
-// custom native schemes like capacitor:// on iOS.
-export const auth = initializeAuth(app, {
-  persistence: [indexedDBLocalPersistence, browserLocalPersistence],
-  popupRedirectResolver: browserPopupRedirectResolver,
-});
+// (LocalStorage preferred on iOS to avoid IndexedDB hangs on WebKit/WKWebView).
+const isNative = Capacitor.isNativePlatform();
+const platform = Capacitor.getPlatform();
 
+const persistenceMode = (isNative && platform === 'ios')
+  ? [browserLocalPersistence]
+  : [indexedDBLocalPersistence, browserLocalPersistence];
+
+let auth: Auth;
+try {
+  const authOptions: any = {
+    persistence: persistenceMode,
+  };
+  if (!isNative) {
+    authOptions.popupRedirectResolver = browserPopupRedirectResolver;
+  }
+  auth = initializeAuth(app, authOptions);
+} catch (error) {
+  console.error('Error initializing Firebase Auth:', error);
+  // Fallback to in-memory persistence if others fail
+  try {
+    auth = initializeAuth(app, {
+      persistence: [inMemoryPersistence],
+    });
+  } catch (innerError) {
+    console.error('Critical error initializing fallback Auth:', innerError);
+  }
+}
+
+export { auth };
 export const db = getFirestore(app);
 export default app;
+
