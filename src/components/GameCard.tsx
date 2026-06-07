@@ -19,6 +19,7 @@ import type { Game, PlayerSlot } from "../types/game";
 import type { PlayerNameResolver } from "../utils/playerName";
 import { DateFormatter } from "../utils/date";
 import { permutePlayerArray } from "../utils/playerPermutation";
+import TeamPlayerBlock from "./TeamPlayerBlock";
 
 interface GameCardProps {
   game: Game;
@@ -123,144 +124,11 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
           mb: 1,
         }}
       >
-        {/* Team 1: 2 lines with avatars */}
-        <Box
-          sx={{
-            flex: 1,
-            minWidth: 0,
-            display: "flex",
-            flexDirection: "column",
-            gap: 0.5,
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              width: "100%",
-              minWidth: 0,
-            }}
-          >
-            <Typography
-              sx={{
-                ...sx.lgEmojiNoneFont,
-                flexShrink: 0,
-              }}
-            >
-              {p1.avatar}
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                ...sx.playerNameLarge,
-                minWidth: 0,
-              }}
-              noWrap
-            >
-              {p1.displayName}
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              width: "100%",
-              minWidth: 0,
-            }}
-          >
-            <Typography
-              sx={{
-                ...sx.lgEmojiNoneFont,
-                flexShrink: 0,
-              }}
-            >
-              {p2.avatar}
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                ...sx.playerNameLarge,
-                minWidth: 0,
-              }}
-              noWrap
-            >
-              {p2.displayName}
-            </Typography>
-          </Box>
-        </Box>
+        {/* Team 1 */}
+        <TeamPlayerBlock player1={p1} player2={p2} align="left" />
 
-        {/* Team 2: 2 lines with avatars (aligned right) */}
-        <Box
-          sx={{
-            flex: 1,
-            minWidth: 0,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-            gap: 0.5,
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              justifyContent: "flex-end",
-              width: "100%",
-              minWidth: 0,
-            }}
-          >
-            <Typography
-              variant="body1"
-              sx={{
-                ...sx.playerNameLarge,
-                minWidth: 0,
-              }}
-              noWrap
-            >
-              {p3.displayName}
-            </Typography>
-            <Typography
-              sx={{
-                ...sx.lgEmojiNoneFont,
-                flexShrink: 0,
-              }}
-            >
-              {p3.avatar}
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              justifyContent: "flex-end",
-              width: "100%",
-              minWidth: 0,
-            }}
-          >
-            <Typography
-              variant="body1"
-              sx={{
-                ...sx.playerNameLarge,
-                minWidth: 0,
-              }}
-              noWrap
-            >
-              {p4.displayName}
-            </Typography>
-            <Typography
-              sx={{
-                ...sx.lgEmojiNoneFont,
-                flexShrink: 0,
-              }}
-            >
-              {p4.avatar}
-            </Typography>
-          </Box>
-        </Box>
+        {/* Team 2 */}
+        <TeamPlayerBlock player1={p3} player2={p4} align="right" />
       </Box>
 
       {/* Score Row */}

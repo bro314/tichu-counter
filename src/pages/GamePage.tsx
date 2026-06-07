@@ -15,6 +15,7 @@ import DialogActions from "@mui/material/DialogActions";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ShowChartIcon from "@mui/icons-material/ShowChart";
 import CloudOffIcon from "@mui/icons-material/CloudOff";
 import { useAuth } from "../contexts/AuthContext";
 import {
@@ -33,6 +34,7 @@ import RoundEditorDialog from "../components/RoundEditorDialog";
 import GameCard from "../components/GameCard";
 import RoundCard from "../components/RoundCard";
 import PullToRefresh from "../components/PullToRefresh";
+import ScoreProgressDialog from "../components/ScoreProgressDialog";
 import type { PlayerNameResolver } from "../utils/playerName";
 import { fetchPlayers } from "../services/playerService";
 import * as sx from "../styles/commonStyles";
@@ -120,6 +122,7 @@ const GamePage = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editGameDialogOpen, setEditGameDialogOpen] = useState(false);
   const [deleteRoundDialogOpen, setDeleteRoundDialogOpen] = useState(false);
+  const [chartOpen, setChartOpen] = useState(false);
 
   const confirmDeleteGame = () => {
     setDeleteDialogOpen(true);
@@ -336,9 +339,10 @@ const GamePage = () => {
   const isGameOver = winner !== 0 || game.status === "finished";
   const isPlayer = game.players.some((p) => p.uid === user?.uid);
   const loggedInIndex = game ? game.players.findIndex((p) => p.uid === user?.uid) : -1;
-  const playerAvatars = game.players.map(
-    (slot) => getPlayerDetails(slot).avatar,
+  const resolvedPlayers = game.players.map(
+    (slot) => getPlayerDetails(slot),
   );
+  const playerAvatars = resolvedPlayers.map((p) => p.avatar);
 
   // --- Editor logic ---
   const openNewRound = async () => {
@@ -575,6 +579,15 @@ const GamePage = () => {
               >
                 {t("game.addRound")}
               </Button>
+              {rounds.length > 0 && (
+                <IconButton
+                  id="score-progress-btn"
+                  onClick={() => setChartOpen(true)}
+                  sx={{ flexShrink: 0 }}
+                >
+                  <ShowChartIcon />
+                </IconButton>
+              )}
               {!hasUnsavedData(id || '') && (
                 <IconButton
                   id="edit-game-btn"
@@ -600,6 +613,18 @@ const GamePage = () => {
             </>
           ) : (
             <>
+              {rounds.length > 0 && (
+                <Button
+                  id="score-progress-btn-finished"
+                  variant="outlined"
+                  size="large"
+                  startIcon={<ShowChartIcon />}
+                  onClick={() => setChartOpen(true)}
+                  sx={{ flex: 1 }}
+                >
+                  {t("game.scoreProgress")}
+                </Button>
+              )}
               {!hasUnsavedData(id || '') && (
                 <Button
                   id="edit-game-btn"
@@ -627,6 +652,14 @@ const GamePage = () => {
           )}
         </Box>
       )}
+
+      <ScoreProgressDialog
+        open={chartOpen}
+        onClose={() => setChartOpen(false)}
+        rounds={rounds}
+        players={resolvedPlayers}
+        loggedInIndex={loggedInIndex}
+      />
 
       <RoundEditorDialog
         open={editorOpen}

@@ -64,7 +64,9 @@
     "syncPendingToast": "Ungespeicherte Änderungen. Sie werden im Hintergrund synchronisiert.",
     "syncBannerOffline": "Offline. Du kannst aber weiterspielen!",
     "syncBannerOfflineOps": "Offline. Warten auf Verbindung zur Synchronisierung.",
-    "syncBannerOnlineOps": "Synchronisiere {{count}} ausstehende Änderungen ..."
+    "syncBannerOnlineOps": "Synchronisiere {{count}} ausstehende Änderungen ...",
+    "scoreProgress": "Graph",
+    "scoreProgressClose": "Schließen"
   },
   "newGame": {
     "title": "Neues Spiel",

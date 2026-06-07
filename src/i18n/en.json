@@ -64,7 +64,9 @@
     "syncPendingToast": "Unsaved changes. They will sync in the background.",
     "syncBannerOffline": "Offline. But you can keep playing!",
     "syncBannerOfflineOps": "Offline. Waiting for connection to sync.",
-    "syncBannerOnlineOps": "Syncing {{count}} pending operations ..."
+    "syncBannerOnlineOps": "Syncing {{count}} pending operations ...",
+    "scoreProgress": "Graph",
+    "scoreProgressClose": "Close"
   },
   "newGame": {
     "title": "New Game",

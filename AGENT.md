@@ -163,4 +163,8 @@ Future agents should be aware of these requirements and changes to maintain cons
 - **Building Mobile**: `npm run mob` (which runs `vite build` and `npx cap sync`)
 - **Deploying Live (Firebase)**: `npm run deploy` (deploys to hosting: `tichu-counter-2c9ff.web.app`)
 
+## Test Account
+- **Email**: `ben@test.de`
+- **Password**: `testben`
+
 Always maintain the premium feel, use defined tokens in `commonStyles.ts`, consume colors exclusively from the MUI theme palette (never hardcode mode-dependent colors inline), and respect the responsive mobile-first constraints (e.g., `--max-screen-width` CSS custom property on the app frame).
