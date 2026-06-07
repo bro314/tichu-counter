@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -10,6 +10,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import AppleIcon from "@mui/icons-material/Apple";
 import IconButton from "@mui/material/IconButton";
 import { useAuth } from "../../contexts/AuthContext";
+import { useThemeMode } from "../../contexts/ThemeContext";
 import logoImg from "../../assets/logo.png";
 import { Capacitor } from "@capacitor/core";
 import * as sx from "../../styles/commonStyles";
@@ -21,6 +22,11 @@ interface AuthPageProps {
 const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
   const { t, i18n } = useTranslation();
   const { signIn, signUp, signInWithGoogle, signInWithApple } = useAuth();
+  const { setMode } = useThemeMode();
+
+  useEffect(() => {
+    setMode("dark");
+  }, [setMode]);
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");

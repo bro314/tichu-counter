@@ -24,11 +24,11 @@ const Router = Capacitor.isNativePlatform() ? HashRouter : BrowserRouter;
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Router>
-      <ThemeProvider>
-        <AuthProvider>
+      <AuthProvider>
+        <ThemeProvider>
           <App />
-        </AuthProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </AuthProvider>
     </Router>
   </StrictMode>,
 );

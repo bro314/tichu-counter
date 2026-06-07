@@ -11,7 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import { useAuth } from "../../contexts/AuthContext";
-import { useThemeMode } from "../../contexts/ThemeContext";
+import { useThemeMode, type ThemeSetting } from "../../contexts/ThemeContext";
 import Alert from "@mui/material/Alert";
 import { AVATAR_EMOJIS } from "../../constants";
 import * as sx from "../../styles/commonStyles";
@@ -23,7 +23,7 @@ interface ProfileSetupPageProps {
 const ProfileSetupPage = ({ onComplete }: ProfileSetupPageProps) => {
   const { t, i18n } = useTranslation();
   const { user, updateProfile } = useAuth();
-  const { mode, setMode } = useThemeMode();
+  const { setMode } = useThemeMode();
 
   const [displayName, setDisplayName] = useState(() => {
     if (user?.displayName) return user.displayName;
@@ -47,7 +47,7 @@ const ProfileSetupPage = ({ onComplete }: ProfileSetupPageProps) => {
     return AVATAR_EMOJIS[idx] || "🦊";
   });
   const [language, setLanguage] = useState(i18n.language);
-  const [theme, setTheme] = useState(mode);
+  const [theme, setTheme] = useState<ThemeSetting>("system");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,9 +59,9 @@ const ProfileSetupPage = ({ onComplete }: ProfileSetupPageProps) => {
 
   const handleThemeChange = (
     _: React.MouseEvent<HTMLElement>,
-    newTheme: string | null,
+    newTheme: ThemeSetting | null,
   ) => {
-    if (newTheme === "light" || newTheme === "dark") {
+    if (newTheme === "light" || newTheme === "dark" || newTheme === "system") {
       setTheme(newTheme);
       setMode(newTheme);
     }
@@ -170,6 +170,9 @@ const ProfileSetupPage = ({ onComplete }: ProfileSetupPageProps) => {
         fullWidth
         sx={{ mb: 4 }}
       >
+        <ToggleButton value="system" sx={{ py: 1.2 }}>
+          ⚙️ {t("settings.systemTheme")}
+        </ToggleButton>
         <ToggleButton value="light" sx={{ py: 1.2 }}>
           ☀️ {t("settings.lightTheme")}
         </ToggleButton>

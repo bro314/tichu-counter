@@ -7,7 +7,6 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import Switch from "@mui/material/Switch";
 import LanguageIcon from "@mui/icons-material/Language";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
@@ -38,7 +37,7 @@ import { useOfflineSync } from "../contexts/offlineSyncContext";
 const SettingsPage = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { mode, setMode } = useThemeMode();
+  const { themeSetting } = useThemeMode();
   const { profile, updateProfile, signOut, deleteAccount } = useAuth();
   const { hasAnyUnsavedData, clearPendingQueue } = useOfflineSync();
 
@@ -92,10 +91,8 @@ const SettingsPage = () => {
     await updateProfile({ language: lang });
   };
 
-  const handleThemeToggle = async () => {
-    const newMode = mode === "dark" ? "light" : "dark";
-    setMode(newMode);
-    await updateProfile({ theme: newMode });
+  const handleThemeChange = async (newTheme: "light" | "dark" | "system") => {
+    await updateProfile({ theme: newTheme });
   };
 
   const handleAvatarSelect = async (emoji: string) => {
@@ -228,19 +225,19 @@ const SettingsPage = () => {
             <ListItemIcon>
               <DarkModeIcon />
             </ListItemIcon>
-            <ListItemText
-              primary={t("settings.theme")}
-              secondary={
-                mode === "dark"
-                  ? t("settings.darkTheme")
-                  : t("settings.lightTheme")
-              }
-            />
-            <Switch
-              id="theme-toggle"
-              checked={mode === "dark"}
-              onChange={handleThemeToggle}
-            />
+            <ListItemText primary={t("settings.theme")} />
+            <Select
+              id="theme-select"
+              value={themeSetting}
+              onChange={(e) => handleThemeChange(e.target.value as any)}
+              size="small"
+              variant="outlined"
+              sx={{ minWidth: 100 }}
+            >
+              <MenuItem value="system">{t("settings.systemTheme")}</MenuItem>
+              <MenuItem value="light">{t("settings.lightTheme")}</MenuItem>
+              <MenuItem value="dark">{t("settings.darkTheme")}</MenuItem>
+            </Select>
           </ListItem>
         </List>
       </Card>

@@ -89,6 +89,7 @@
     "theme": "Design",
     "lightTheme": "Hell",
     "darkTheme": "Dunkel",
+    "systemTheme": "System",
     "avatar": "Avatar",
     "displayName": "Name",
     "signOut": "Abmelden",
