@@ -223,7 +223,7 @@ const RoundCard = ({ round, roundNumber, playerAvatars, isPlayer, onEditRound, l
                 gap: 0,
               }}
             >
-              <Box sx={{ minWidth: 60, textAlign: "left", pl: 1.5 }}>
+              <Box sx={{ minWidth: 45, textAlign: "left", pl: 1.25 }}>
                 <Typography variant="caption" sx={{ ...sx.timestampFont, flex: "none" }}>
                   R{roundNumber}
                 </Typography>
@@ -243,7 +243,7 @@ const RoundCard = ({ round, roundNumber, playerAvatars, isPlayer, onEditRound, l
                   </Typography>
                 </Box>
               </Box>
-              <Box sx={{ minWidth: 60, textAlign: "right", pr: 1.5 }}>
+              <Box sx={{ minWidth: 45, textAlign: "right", pr: 1.25 }}>
                 <Typography variant="caption" sx={{ ...sx.timestampFont, flex: "none" }}>
                   {DateFormatter.formatTimeOnly(new Date(round.createdAt))}
                 </Typography>
