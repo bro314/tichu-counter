@@ -491,7 +491,7 @@ const NewGameDialog = ({
   const p1 = player1 || currentUserPlayer;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+    <Dialog open={open} onClose={onClose}>
       <DialogTitle sx={{ px: 2, py: 2 }}>{editMode ? t("newGame.editTitle") : t("newGame.title")}</DialogTitle>
       <DialogContent sx={{ px: 2, py: 0 }}>
         {error && (

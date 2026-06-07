@@ -645,8 +645,6 @@ const GamePage = () => {
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
-        maxWidth="xs"
-        fullWidth
       >
         <DialogTitle>{t("home.deleteConfirmTitle")}</DialogTitle>
         <DialogContent>
@@ -668,8 +666,6 @@ const GamePage = () => {
       <Dialog
         open={deleteRoundDialogOpen}
         onClose={() => setDeleteRoundDialogOpen(false)}
-        maxWidth="xs"
-        fullWidth
       >
         <DialogTitle>{t("game.deleteRoundTitle")}</DialogTitle>
         <DialogContent>

@@ -288,8 +288,6 @@ const SettingsPage = () => {
       <Dialog
         open={deleteDialogOpen}
         onClose={handleDeleteConfirmClose}
-        maxWidth="xs"
-        fullWidth
       >
         <DialogTitle>{t("settings.deleteAccountConfirmTitle")}</DialogTitle>
         <DialogContent>
@@ -321,8 +319,6 @@ const SettingsPage = () => {
       <Dialog
         open={signOutUnsavedDialogOpen}
         onClose={() => setSignOutUnsavedDialogOpen(false)}
-        maxWidth="xs"
-        fullWidth
       >
         <DialogTitle>{t("settings.signOutUnsavedConfirmTitle")}</DialogTitle>
         <DialogContent>
@@ -354,8 +350,6 @@ const SettingsPage = () => {
       <Dialog
         open={avatarDialogOpen}
         onClose={() => setAvatarDialogOpen(false)}
-        maxWidth="xs"
-        fullWidth
       >
         <DialogTitle>{t("onboarding.chooseAvatar")}</DialogTitle>
         <DialogContent sx={{ pt: 1 }}>
@@ -377,8 +371,6 @@ const SettingsPage = () => {
       <Dialog
         open={nameDialogOpen}
         onClose={() => setNameDialogOpen(false)}
-        maxWidth="xs"
-        fullWidth
       >
         <DialogTitle>{t("settings.displayName")}</DialogTitle>
         <DialogContent>

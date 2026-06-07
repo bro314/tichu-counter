@@ -161,7 +161,7 @@ const RoundCard = ({ round, roundNumber, playerAvatars, isPlayer, onEditRound, l
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                gap: 0,
+                gap: 0.5,
                 flexShrink: 0,
               }}
             >
@@ -204,19 +204,21 @@ const RoundCard = ({ round, roundNumber, playerAvatars, isPlayer, onEditRound, l
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
+              gap: 0.5,
             }}
           >
-            <Chip
-              label={`${roundNumber}`}
-              size="small"
-              sx={{
-                ...sx.historyChip,
-                bgcolor: "roundChipBg",
-                color: "roundChipText",
-                mb: 0.75,
-              }}
-            />
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Box sx={{ height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Chip
+                label={`${roundNumber}`}
+                size="small"
+                sx={{
+                  ...sx.historyChip,
+                  bgcolor: "roundChipBg",
+                  color: "roundChipText",
+                }}
+              />
+            </Box>
+            <Box sx={{ height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Box sx={{ minWidth: 40, textAlign: "right" }}>
                 <Typography variant="body2" sx={sx.scoreFont}>
                   {leftTeam === 1 ? score.team1 : score.team2}
@@ -249,7 +251,7 @@ const RoundCard = ({ round, roundNumber, playerAvatars, isPlayer, onEditRound, l
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                gap: 0,
+                gap: 0.5,
                 flexShrink: 0,
               }}
             >

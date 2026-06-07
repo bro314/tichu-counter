@@ -98,7 +98,7 @@ const ProfileSetupPage = ({ onComplete }: ProfileSetupPageProps) => {
         overflow: "auto",
         px: 3,
         py: 4,
-        maxWidth: 480,
+        maxWidth: "var(--max-screen-width)",
         mx: "auto",
       }}
     >

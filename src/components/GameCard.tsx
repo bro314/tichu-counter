@@ -130,6 +130,7 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
             minWidth: 0,
             display: "flex",
             flexDirection: "column",
+            gap: 0.5,
           }}
         >
           <Box
@@ -198,6 +199,7 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
             display: "flex",
             flexDirection: "column",
             alignItems: "flex-end",
+            gap: 0.5,
           }}
         >
           <Box

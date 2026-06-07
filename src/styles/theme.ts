@@ -52,6 +52,14 @@ const sharedComponents = {
       }),
     },
   },
+  MuiDialog: {
+    styleOverrides: {
+      paper: {
+        width: 'calc(min(var(--max-screen-width), 100vw) - 32px)',
+        margin: '16px',
+      },
+    },
+  },
 };
 
 /** Shared typography config */
@@ -86,7 +94,7 @@ export const lightTheme = createTheme({
     desktopFrameShadow: '0 0 24px rgba(0, 0, 0, 0.15)',
     dynamicHeaderShadow: '0 8px 20px rgba(0, 0, 0, 0.24)',
     dynamicBottomBarShadow: '0 -8px 20px rgba(0, 0, 0, 0.24)',
-    roundChipBg: 'rgba(0, 0, 0, 0.55)',
+    roundChipBg: 'rgba(0, 0, 0, 0.3)',
     roundChipText: '#FFFFFF',
   },
   typography,

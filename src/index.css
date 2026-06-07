@@ -1,7 +1,9 @@
 /* Global resets — MUI CssBaseline handles most of this,
    but we add a few extras for mobile feel */
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -17,10 +19,13 @@ body {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
+
+  --max-screen-width: 430px;
 }
 
 /* Allow text selection in input fields */
-input, textarea {
+input,
+textarea {
   -webkit-user-select: text;
   user-select: text;
 }

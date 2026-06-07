@@ -312,20 +312,13 @@ const RoundEditorDialog = ({
       open={open}
       onClose={onClose}
       slots={{ transition: SlideUp }}
-      sx={{
-        "& .MuiDialog-paper": {
-          maxWidth: 480,
-          mx: "auto",
-          bgcolor: "background.default",
-          pb: 2,
-        },
-      }}
     >
       <AppBar
         sx={{
           position: "relative",
           borderBottom: "none",
           pt: "env(safe-area-inset-top)",
+          pb: "env(safe-area-inset-bottom)",
         }}
         color="default"
         elevation={0}

@@ -110,7 +110,7 @@ const SearchDialog = ({
     (mode === "tag" && selectedTag !== null);
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+    <Dialog open={open} onClose={onClose}>
       <DialogTitle>{t("home.searchTitle")}</DialogTitle>
       <DialogContent>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>

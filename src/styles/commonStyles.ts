@@ -133,14 +133,14 @@ export const appFrame: SxProps<Theme> = (theme) => ({
   flexDirection: "column",
   height: "100%",
   width: "100%",
-  maxWidth: 400,
+  maxWidth: "var(--max-screen-width)",
   mx: "auto",
   bgcolor: "background.default",
   borderLeft: "none",
   borderRight: "none",
   boxShadow: "none",
   position: "relative",
-  "@media (min-width: 400px)": {
+  "@media (min-width: 430px)": {
     borderLeft: "1px solid",
     borderRight: "1px solid",
     borderColor: "divider",
