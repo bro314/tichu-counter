@@ -219,7 +219,7 @@ const RoundCard = ({ round, roundNumber, playerAvatars, isPlayer, onEditRound, l
                 justifyContent: "space-between",
                 border: 1,
                 borderColor: "divider",
-                borderRadius: `${shape.borderRadius}px`,
+                borderRadius: `${shape.smallRadius}px`,
                 gap: 0,
               }}
             >

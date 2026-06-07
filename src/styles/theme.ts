@@ -16,6 +16,8 @@ declare module '@mui/material/styles' {
     dynamicBottomBarShadow: string;
     roundChipBg: string;
     roundChipText: string;
+    team1: string;
+    team2: string;
   }
 
   interface PaletteOptions {
@@ -31,6 +33,8 @@ declare module '@mui/material/styles' {
     dynamicBottomBarShadow?: string;
     roundChipBg?: string;
     roundChipText?: string;
+    team1?: string;
+    team2?: string;
   }
 }
 
@@ -101,6 +105,8 @@ export const lightTheme = createTheme({
     dynamicBottomBarShadow: '0 -8px 20px rgba(0, 0, 0, 0.24)',
     roundChipBg: 'rgba(0, 0, 0, 0.3)',
     roundChipText: '#FFFFFF',
+    team1: '#1B4F72',
+    team2: '#EC1C24',
   },
   typography,
   shape: { borderRadius: shape.borderRadius },
@@ -137,6 +143,8 @@ export const darkTheme = createTheme({
     dynamicBottomBarShadow: '0 -8px 24px rgba(0, 0, 0, 0.8)',
     roundChipBg: 'rgba(255, 255, 255, 0.55)',
     roundChipText: '#121212',
+    team1: '#5dade2',
+    team2: '#ff6f61',
   },
   typography,
   shape: { borderRadius: shape.borderRadius },

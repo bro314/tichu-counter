@@ -105,8 +105,7 @@ const ScoreProgressDialog = ({
       t2.push(cum2);
     }
 
-    const t2Plotted = t2.map((s) => 1000 - s);
-    const allPlotted = [...t1, ...t2Plotted];
+    const allPlotted = [...t1, ...t2];
     const minVal = Math.min(0, ...allPlotted);
     const maxVal = Math.max(1000, ...allPlotted);
     const annots = computeAnnotations(rounds, loggedInIndex);
@@ -148,20 +147,19 @@ const ScoreProgressDialog = ({
     .map((score, i) => `${toX(i)},${toY(score)}`)
     .join(" ");
 
-  // Team 2: descends from 1000 toward 0 (top to bottom)
-  // Plotted as 1000 - score, so it starts at 1000 reference line
+  // Team 2: climbs from 0 toward 1000 (bottom to top)
   const team2Line = team2Points
-    .map((score, i) => `${toX(i)},${toY(1000 - score)}`)
+    .map((score, i) => `${toX(i)},${toY(score)}`)
     .join(" ");
 
   // Neutral line colors — subtle but visible in both modes
   const isDark = theme.palette.mode === "dark";
-  const lineColor1 = isDark ? "rgba(255,255,255,0.55)" : "rgba(0,0,0,0.35)";
-  const lineColor2 = isDark ? "rgba(255,255,255,0.55)" : "rgba(0,0,0,0.35)";
+  const lineColor1 = theme.palette.team1;
+  const lineColor2 = theme.palette.team2;
   const gridColor = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)";
   const boundaryGridColor = isDark ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.18)";
-  const fillColor1 = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.03)";
-  const fillColor2 = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.03)";
+  const fillColor1 = theme.palette.team1;
+  const fillColor2 = theme.palette.team2;
 
   // Grid lines at 100 intervals, covering full plotted range
   const gridLines = useMemo(() => {
@@ -186,10 +184,10 @@ const ScoreProgressDialog = ({
     team1Points.map((score, i) => `${toX(i)},${toY(score)}`).join(" ") +
     ` ${toX(totalPoints - 1)},${toY(minPlotted)} ${toX(0)},${toY(minPlotted)}`;
 
-  // Team 2 area: from top edge down to the line
+  // Team 2 area: from bottom edge up to the line
   const team2Area =
-    team2Points.map((score, i) => `${toX(i)},${toY(1000 - score)}`).join(" ") +
-    ` ${toX(totalPoints - 1)},${toY(maxPlotted)} ${toX(0)},${toY(maxPlotted)}`;
+    team2Points.map((score, i) => `${toX(i)},${toY(score)}`).join(" ") +
+    ` ${toX(totalPoints - 1)},${toY(minPlotted)} ${toX(0)},${toY(minPlotted)}`;
 
   // Separate annotations by team
   const team1Annotations = annotations.filter((a) => a.team === 1);
@@ -267,11 +265,13 @@ const ScoreProgressDialog = ({
           }}
         >
           {/* Team 2 Player Block */}
-          <TeamPlayerBlock
-            player1={permutedPlayers[2]}
-            player2={permutedPlayers[3]}
-            align="left"
-          />
+          <Box sx={{ borderTop: `3px solid ${theme.palette.team2}`, pt: 1, width: "100%" }}>
+            <TeamPlayerBlock
+              player1={permutedPlayers[2]}
+              player2={permutedPlayers[3]}
+              align="left"
+            />
+          </Box>
 
           <svg
             viewBox={`0 0 ${svgWidth} ${totalSvgHeight}`}
@@ -335,8 +335,8 @@ const ScoreProgressDialog = ({
 
 
               {/* Area fills */}
-              <polygon points={team1Area} fill={fillColor1} />
-              <polygon points={team2Area} fill={fillColor2} />
+              <polygon points={team1Area} fill={fillColor1} fillOpacity={isDark ? 0.08 : 0.04} />
+              <polygon points={team2Area} fill={fillColor2} fillOpacity={isDark ? 0.08 : 0.04} />
 
               {/* Team 1 line (climbs from bottom) */}
               <polyline
@@ -348,7 +348,7 @@ const ScoreProgressDialog = ({
                 strokeLinejoin="round"
               />
 
-              {/* Team 2 line (descends from top) */}
+              {/* Team 2 line (climbs from bottom) */}
               <polyline
                 points={team2Line}
                 fill="none"
@@ -356,7 +356,6 @@ const ScoreProgressDialog = ({
                 strokeWidth={2.5}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeDasharray="6 3"
               />
 
               {/* Data point dots — Team 1 */}
@@ -375,7 +374,7 @@ const ScoreProgressDialog = ({
                 <circle
                   key={`d2-${i}`}
                   cx={toX(i)}
-                  cy={toY(1000 - score)}
+                  cy={toY(score)}
                   r={3}
                   fill={lineColor2}
                 />
@@ -422,11 +421,13 @@ const ScoreProgressDialog = ({
           </svg>
 
           {/* Team 1 Player Block */}
-          <TeamPlayerBlock
-            player1={permutedPlayers[0]}
-            player2={permutedPlayers[1]}
-            align="left"
-          />
+          <Box sx={{ borderBottom: `3px solid ${theme.palette.team1}`, pb: 1, width: "100%" }}>
+            <TeamPlayerBlock
+              player1={permutedPlayers[0]}
+              player2={permutedPlayers[1]}
+              align="left"
+            />
+          </Box>
         </Box>
       </Box>
 
