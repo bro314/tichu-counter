@@ -121,12 +121,14 @@ const RoundEditorDialog = ({
 
   const toggleTichu = (playerNum: number) => {
     const isSelecting = !tichuCalls.includes(playerNum);
-    if (isSelecting && finishedFirst === 0) {
-      setFinishedFirst(playerNum);
+    if (isSelecting) {
       const isTeam1 = playerNum <= 2;
-      setOneTwoVictory((prevOneTwo) =>
-        prevOneTwo === (isTeam1 ? 2 : 1) ? 0 : prevOneTwo,
-      );
+      const otherTeam = isTeam1 ? 2 : 1;
+      const otherTeamOneTwo = oneTwoVictory === otherTeam;
+
+      if (!otherTeamOneTwo && finishedFirst === 0) {
+        setFinishedFirst(playerNum);
+      }
     }
     setTichuCalls((prev) =>
       prev.includes(playerNum)
@@ -139,12 +141,14 @@ const RoundEditorDialog = ({
 
   const toggleGrandTichu = (playerNum: number) => {
     const isSelecting = !grandTichuCalls.includes(playerNum);
-    if (isSelecting && finishedFirst === 0) {
-      setFinishedFirst(playerNum);
+    if (isSelecting) {
       const isTeam1 = playerNum <= 2;
-      setOneTwoVictory((prevOneTwo) =>
-        prevOneTwo === (isTeam1 ? 2 : 1) ? 0 : prevOneTwo,
-      );
+      const otherTeam = isTeam1 ? 2 : 1;
+      const otherTeamOneTwo = oneTwoVictory === otherTeam;
+
+      if (!otherTeamOneTwo && finishedFirst === 0) {
+        setFinishedFirst(playerNum);
+      }
     }
     setGrandTichuCalls((prev) =>
       prev.includes(playerNum)
