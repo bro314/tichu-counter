@@ -110,7 +110,7 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
         justifyContent: "center",
         minHeight: "100%",
         px: 3,
-        width: 400,
+        minWidth: 360,
         mx: "auto",
         color: "text.primary",
       }}
