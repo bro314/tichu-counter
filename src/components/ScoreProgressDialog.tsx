@@ -230,6 +230,7 @@ const ScoreProgressDialog = ({
           alignItems: "center",
           justifyContent: "space-between",
           p: 1,
+          pt: "calc(16px + env(safe-area-inset-top))",
           borderBottom: 1,
           borderColor: "divider",
           bgcolor: "background.default",
@@ -435,6 +436,7 @@ const ScoreProgressDialog = ({
       <Box
         sx={{
           p: 2,
+          pb: "calc(16px + env(safe-area-inset-bottom))",
           borderTop: 1,
           borderColor: "divider",
           bgcolor: "background.default",
