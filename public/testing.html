@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dragon's Count - Testphase</title>
+
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #1a1a1a;
+      --card-bg: rgba(26, 26, 26, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-primary: #fff8e1;
+      --text-secondary: #8b949e;
+      --team-blue: #5dade2;
+      --team-red: #EC1C24;
+      --gradient-brand: linear-gradient(135deg, #1B4F72 0%, #EC1C24 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(27, 79, 114, 0.25) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(236, 28, 36, 0.15) 0px, transparent 50%);
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 4rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 720px;
+      animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 2rem;
+    }
+
+    .logo-container {
+      display: inline-flex;
+      align-items: center;
+      justifyContent: center;
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      margin-bottom: 1.25rem;
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff 30%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      line-height: 1.5;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--team-blue);
+      margin-bottom: 1rem;
+      letter-spacing: -0.3px;
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.85rem 1.5rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--gradient-brand);
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 4px 15px rgba(236, 28, 36, 0.2);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(236, 28, 36, 0.3);
+      text-decoration: none;
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-primary);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+      text-decoration: none;
+    }
+
+    .highlight-block {
+      background: rgba(255, 255, 255, 0.02);
+      border-left: 4px solid var(--team-red);
+      border-radius: 4px 16px 16px 4px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .highlight-block h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .highlight-block p {
+      margin-bottom: 0;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    a {
+      color: var(--team-blue);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    a:hover {
+      color: #90caf9;
+      text-decoration: underline;
+    }
+
+    .signature {
+      margin-top: 3rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 1.5rem;
+    }
+
+    .signature p {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <div class="logo-container">
+          <img src="app-icon.png" alt="Dragon's Count Logo"
+            style="width: 100%; height: 100%; border-radius: 16px; object-fit: cover;" />
+        </div>
+        <h1>Dragon's Count Testphase</h1>
+        <p class="subtitle">Danke für's Mitmachen! Hier sind alle Infos, die ihr zum Testen braucht.</p>
+      </div>
+
+      <section>
+        <h2>Die Apps</h2>
+        <p>
+          Dragon's Count gibt es sowohl direkt im Web als auch als Smartphone-App für Android und iOS. Nutzt gerne die
+          folgenden Links:
+        </p>
+        <div class="button-group">
+          <a href="https://dragons-count.de/" target="_blank" class="btn btn-primary">
+            💻 Web App öffnen (dragons-count.de)
+          </a>
+          <a href="https://apps.apple.com/de/app/dragons-count/id6772716812" target="_blank" class="btn btn-outline">
+            🍏 Für iOS (App Store)
+          </a>
+          <a href="https://play.google.com/apps/internaltest/4701570159806712335" target="_blank"
+            class="btn btn-outline">
+            🤖 Für Android (Google Play Store)
+          </a>
+        </div>
+      </section>
+
+      <section>
+        <div class="highlight-block">
+          <h3>Wichtig für Android-Tester!</h3>
+          <p>
+            Für Android brauche ich insbesondere Hilfe beim Testen, da Google vorschreibt, dass eine App erst nach einer
+            Testphase mit <strong>12 Leuten über 14 Tage hinweg</strong> im Play Store für jedermann freigegeben werden
+            darf.
+          </p>
+          <p style="margin-top: 0.75rem;">
+            Hierzu muss ich eure Google-Play-Store-E-Mail-Adresse freischalten. Schreibt mir bitte einfach kurz per
+            <strong>Signal</strong>, <strong>WhatsApp</strong> oder an <a
+              href="mailto:ben.rohlfs@gmail.com">ben.rohlfs@gmail.com</a>. Dann trage ich euch sofort ein!
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Fahrplan & Zukunft</h2>
+        <p>
+          Bis zur SoAk habe ich mir noch vorgenommen, ausführliche Statistiken hinzuzufügen und die Option einzubauen,
+          das SoAk-Tichu-Turnier direkt über die App abzuwickeln.
+        </p>
+      </section>
+
+      <section>
+        <h2>Open Source</h2>
+        <p>
+          Die App ist komplett Open Source. Ihr könnt den Code einsehen, Fehler melden oder euch aktiv an der
+          Entwicklung beteiligen:
+        </p>
+        <a href="https://github.com/bro314/tichu-counter" target="_blank" class="btn btn-outline" style="width: 100%;">
+          📦 GitHub Repository öffnen
+        </a>
+      </section>
+
+      <div class="signature">
+        <p>Bitte schreibt mir sehr gerne euer Feedback, Fragen und auch die kleinsten Verbesserungsvorschläge!</p>
+        <p style="margin-top: 0.5rem; font-weight: bold; color: var(--team-blue);">Ben</p>
+      </div>
+    </div>
+
+    <footer>
+      Dragon's Count &copy; 2026. All rights reserved.
+    </footer>
+  </div>
+
+</body>
+
+</html>
