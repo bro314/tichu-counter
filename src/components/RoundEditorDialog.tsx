@@ -205,8 +205,21 @@ const RoundEditorDialog = ({
       (tichuCalls.length > 0 || grandTichuCalls.length > 0) &&
       finishedFirst === 0
     ) {
-      setValidationError(t("game.validationFirstRequired"));
-      return false;
+      // If a 1-2 victory is set, calls from the losing team obviously failed
+      // and don't need finishedFirst. Only require it if a call was made by
+      // a player on the winning team (or if there is no double victory).
+      const allCalls = [...tichuCalls, ...grandTichuCalls];
+      const hasCallFromWinningTeam =
+        oneTwoVictory === 0 ||
+        allCalls.some((pn) => {
+          const callTeam = pn <= 2 ? 1 : 2;
+          return callTeam === oneTwoVictory;
+        });
+
+      if (hasCallFromWinningTeam) {
+        setValidationError(t("game.validationFirstRequired"));
+        return false;
+      }
     }
     return true;
   };
