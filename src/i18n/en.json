@@ -66,7 +66,10 @@
     "syncBannerOfflineOps": "Offline. Waiting for connection to sync.",
     "syncBannerOnlineOps": "Syncing {{count}} pending operations ...",
     "scoreProgress": "Graph",
-    "scoreProgressClose": "Close"
+    "scoreProgressClose": "Close",
+    "bomb": "Bomb",
+    "bombCount_one": "{{count}} Bomb",
+    "bombCount_other": "{{count}} Bombs"
   },
   "newGame": {
     "title": "New Game",

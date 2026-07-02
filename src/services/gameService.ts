@@ -36,6 +36,7 @@ function docToGame(id: string, data: Record<string, unknown>): Game {
       grandTichuCalls: (r.grandTichuCalls as number[]) || [],
       oneTwoVictory: r.oneTwoVictory as number,
       finishedFirst: r.finishedFirst as number,
+      bombs: r.bombs != null ? (r.bombs as number[]) : undefined,
       note: (r.note as string) || undefined,
       createdAt: (r.createdAt as Timestamp)?.toDate() || new Date(),
     })) || [],

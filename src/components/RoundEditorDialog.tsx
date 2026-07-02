@@ -66,6 +66,9 @@ const RoundEditorDialog = ({
   const [team1CardPoints, setTeam1CardPoints] = useState(50);
   const [roundNote, setRoundNote] = useState("");
   const [validationError, setValidationError] = useState<string | null>(null);
+  // Bomb counting: undefined = not tracked (legacy), Map = tracked
+  const [bombCounts, setBombCounts] = useState<Map<number, number> | undefined>(undefined);
+  const bombsTracked = bombCounts !== undefined;
 
   // Sync / prefill state when dialog opens or editingRound changes
   useEffect(() => {
@@ -78,6 +81,16 @@ const RoundEditorDialog = ({
         setTeam1CardPoints(editingRound.team1CardPoints);
         setRoundNote(editingRound.note || "");
         setValidationError(null);
+        // Legacy rounds (bombs undefined) → don't allow bomb counting
+        if (editingRound.bombs != null) {
+          const counts = new Map<number, number>();
+          for (const pn of editingRound.bombs) {
+            counts.set(pn, (counts.get(pn) || 0) + 1);
+          }
+          setBombCounts(counts);
+        } else {
+          setBombCounts(undefined);
+        }
       } else {
         setTichuCalls([]);
         setGrandTichuCalls([]);
@@ -86,6 +99,7 @@ const RoundEditorDialog = ({
         setTeam1CardPoints(50);
         setRoundNote("");
         setValidationError(null);
+        setBombCounts(new Map()); // New rounds always track bombs
       }
     }
   }, [open, editingRound]);
@@ -187,16 +201,49 @@ const RoundEditorDialog = ({
     });
   };
 
-  const buildRoundData = (): Omit<Round, "id" | "createdAt"> => ({
-    roundNumber: editingRound ? editingRound.roundNumber : rounds.length + 1,
-    team1CardPoints: oneTwoVictory > 0 ? 0 : team1CardPoints,
-    team2CardPoints: oneTwoVictory > 0 ? 0 : 100 - team1CardPoints,
-    tichuCalls,
-    grandTichuCalls,
-    oneTwoVictory,
-    finishedFirst,
-    note: roundNote.trim() || undefined,
-  });
+  const cycleBombs = (playerNum: number) => {
+    setBombCounts((prev) => {
+      if (!prev) return prev;
+      const next = new Map(prev);
+      const current = next.get(playerNum) || 0;
+      if (current >= 3) {
+        next.delete(playerNum);
+      } else {
+        next.set(playerNum, current + 1);
+      }
+      return next;
+    });
+  };
+
+  const getBombLabel = (playerNum: number): string => {
+    const count = bombCounts?.get(playerNum) || 0;
+    if (count === 0) return t("game.bomb");
+    return t("game.bombCount", { count });
+  };
+
+  const buildRoundData = (): Omit<Round, "id" | "createdAt"> => {
+    // Convert bomb counts map to flat array
+    let bombs: number[] | undefined;
+    if (bombCounts !== undefined) {
+      bombs = [];
+      for (const [pn, count] of bombCounts) {
+        for (let i = 0; i < count; i++) {
+          bombs.push(pn);
+        }
+      }
+    }
+    return {
+      roundNumber: editingRound ? editingRound.roundNumber : rounds.length + 1,
+      team1CardPoints: oneTwoVictory > 0 ? 0 : team1CardPoints,
+      team2CardPoints: oneTwoVictory > 0 ? 0 : 100 - team1CardPoints,
+      tichuCalls,
+      grandTichuCalls,
+      oneTwoVictory,
+      finishedFirst,
+      bombs,
+      note: roundNote.trim() || undefined,
+    };
+  };
 
   const previewScore = calculateRoundScore(buildRoundData() as Round);
 
@@ -271,53 +318,72 @@ const RoundEditorDialog = ({
           )}
         </Box>
         <Box
-          sx={{ display: "flex", justifyContent: "space-between", gap: 0.5 }}
+          sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}
         >
-          <Chip
-            label={t("game.first")}
-            color={finishedFirst === pn ? "success" : "default"}
-            variant={finishedFirst === pn ? "filled" : "outlined"}
-            onClick={() => toggleFinishedFirst(pn)}
-            sx={{
-              flex: 1,
-              minWidth: 44,
-              "& .MuiChip-label": { px: 0.5 },
-            }}
-          />
-          <Chip
-            label={t("game.tichu")}
-            color={
-              tichuCalls.includes(pn)
-                ? finishedFirst === pn
-                  ? "success"
-                  : "error"
-                : "default"
-            }
-            variant={tichuCalls.includes(pn) ? "filled" : "outlined"}
-            onClick={() => toggleTichu(pn)}
-            sx={{
-              flex: 1,
-              minWidth: 44,
-              "& .MuiChip-label": { px: 0.5 },
-            }}
-          />
-          <Chip
-            label={t("game.grandTichu")}
-            color={
-              grandTichuCalls.includes(pn)
-                ? finishedFirst === pn
-                  ? "success"
-                  : "error"
-                : "default"
-            }
-            variant={grandTichuCalls.includes(pn) ? "filled" : "outlined"}
-            onClick={() => toggleGrandTichu(pn)}
-            sx={{
-              flex: 1,
-              minWidth: 44,
-              "& .MuiChip-label": { px: 0.5 },
-            }}
-          />
+          {/* Row 1: 1st + Bomb */}
+          <Box sx={{ display: "flex", gap: 0.5 }}>
+            <Chip
+              label={t("game.first")}
+              color={finishedFirst === pn ? "success" : "default"}
+              variant={finishedFirst === pn ? "filled" : "outlined"}
+              onClick={() => toggleFinishedFirst(pn)}
+              sx={{
+                flex: 1,
+                minWidth: 44,
+                "& .MuiChip-label": { px: 0.5 },
+              }}
+            />
+            {bombsTracked && (
+              <Chip
+                label={getBombLabel(pn)}
+                color={(bombCounts?.get(pn) || 0) > 0 ? "primary" : "default"}
+                variant={(bombCounts?.get(pn) || 0) > 0 ? "filled" : "outlined"}
+                onClick={() => cycleBombs(pn)}
+                sx={{
+                  flex: 1,
+                  minWidth: 44,
+                  "& .MuiChip-label": { px: 0.5 },
+                }}
+              />
+            )}
+          </Box>
+          {/* Row 2: Tichu + GT */}
+          <Box sx={{ display: "flex", gap: 0.5 }}>
+            <Chip
+              label={t("game.tichu")}
+              color={
+                tichuCalls.includes(pn)
+                  ? finishedFirst === pn
+                    ? "success"
+                    : "error"
+                  : "default"
+              }
+              variant={tichuCalls.includes(pn) ? "filled" : "outlined"}
+              onClick={() => toggleTichu(pn)}
+              sx={{
+                flex: 1,
+                minWidth: 44,
+                "& .MuiChip-label": { px: 0.5 },
+              }}
+            />
+            <Chip
+              label={t("game.grandTichu")}
+              color={
+                grandTichuCalls.includes(pn)
+                  ? finishedFirst === pn
+                    ? "success"
+                    : "error"
+                  : "default"
+              }
+              variant={grandTichuCalls.includes(pn) ? "filled" : "outlined"}
+              onClick={() => toggleGrandTichu(pn)}
+              sx={{
+                flex: 1,
+                minWidth: 44,
+                "& .MuiChip-label": { px: 0.5 },
+              }}
+            />
+          </Box>
         </Box>
       </Card>
     );

@@ -29,6 +29,7 @@ export interface Round {
   grandTichuCalls: number[];  // player indices (1-4) who called Grand Tichu
   oneTwoVictory: number;      // 0 = none, 1 = Team 1, 2 = Team 2
   finishedFirst: number;      // player index (1-4) who finished first
+  bombs?: number[];           // player indices (1-4), repeats allowed (0-3 per player); undefined = not tracked
   note?: string;              // optional round annotation
   createdAt: Date;
 }

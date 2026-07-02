@@ -66,7 +66,10 @@
     "syncBannerOfflineOps": "Offline. Warten auf Verbindung zur Synchronisierung.",
     "syncBannerOnlineOps": "Synchronisiere {{count}} ausstehende Änderungen ...",
     "scoreProgress": "Graph",
-    "scoreProgressClose": "Schließen"
+    "scoreProgressClose": "Schließen",
+    "bomb": "Bombe",
+    "bombCount_one": "{{count}} Bombe",
+    "bombCount_other": "{{count}} Bomben"
   },
   "newGame": {
     "title": "Neues Spiel",
