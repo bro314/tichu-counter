@@ -305,28 +305,7 @@ const NewGameDialog = ({
           return;
         }
 
-        // Validate duplicate names (registered and guest names, case-insensitive)
-        const finalNames: string[] = [];
-        // Player 1 name:
-        finalNames.push(player1 ? player1.displayName : (profile?.displayName || "You"));
-        // Players 2, 3, 4:
-        const selectedState = [player2, player3, player4];
-        for (let i = 1; i <= 3; i++) {
-          const p = updatedPlayers[i];
-          if (p.uid) {
-            const stateOpt = selectedState[i - 1];
-            finalNames.push(stateOpt?.displayName || "Player");
-          } else {
-            finalNames.push(p.guestName || "");
-          }
-        }
 
-        const cleanedNames = finalNames.map((n) => n.trim().toLowerCase());
-        const uniqueNames = new Set(cleanedNames);
-        if (uniqueNames.size !== cleanedNames.length) {
-          setError(t("newGame.errorDuplicatePlayer"));
-          return;
-        }
 
         setError(null);
         if (onUpdateGame) {
@@ -349,19 +328,7 @@ const NewGameDialog = ({
       return;
     }
 
-    // Validate duplicate typed guest/profile names (case-insensitive)
-    const names = [
-      profile?.displayName || "You",
-      player2 ? player2.displayName : p2.guestName,
-      player3 ? player3.displayName : p3.guestName,
-      player4 ? player4.displayName : p4.guestName,
-    ].map((n) => n?.trim().toLowerCase());
 
-    const uniqueNames = new Set(names);
-    if (uniqueNames.size !== names.length) {
-      setError(t("newGame.errorDuplicatePlayer"));
-      return;
-    }
 
     setError(null);
     if (onCreateGame) {
