@@ -134,16 +134,6 @@ const RoundEditorDialog = ({
     : originalPlayerAvatars;
 
   const toggleTichu = (playerNum: number) => {
-    const isSelecting = !tichuCalls.includes(playerNum);
-    if (isSelecting) {
-      const isTeam1 = playerNum <= 2;
-      const otherTeam = isTeam1 ? 2 : 1;
-      const otherTeamOneTwo = oneTwoVictory === otherTeam;
-
-      if (!otherTeamOneTwo && finishedFirst === 0) {
-        setFinishedFirst(playerNum);
-      }
-    }
     setTichuCalls((prev) =>
       prev.includes(playerNum)
         ? prev.filter((n) => n !== playerNum)
@@ -154,16 +144,6 @@ const RoundEditorDialog = ({
   };
 
   const toggleGrandTichu = (playerNum: number) => {
-    const isSelecting = !grandTichuCalls.includes(playerNum);
-    if (isSelecting) {
-      const isTeam1 = playerNum <= 2;
-      const otherTeam = isTeam1 ? 2 : 1;
-      const otherTeamOneTwo = oneTwoVictory === otherTeam;
-
-      if (!otherTeamOneTwo && finishedFirst === 0) {
-        setFinishedFirst(playerNum);
-      }
-    }
     setGrandTichuCalls((prev) =>
       prev.includes(playerNum)
         ? prev.filter((n) => n !== playerNum)
