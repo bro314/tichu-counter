@@ -58,6 +58,10 @@ const RoundEditorDialog = ({
   const { t, i18n } = useTranslation();
   const { user, profile } = useAuth();
 
+  const loggedInIndex = game.players.findIndex((player) => player.uid === user?.uid);
+  const leftTeam = loggedInIndex !== -1 && loggedInIndex >= 2 ? 2 : 1;
+  const rightTeam = loggedInIndex !== -1 && loggedInIndex >= 2 ? 1 : 2;
+
   // Internal editor states
   const [tichuCalls, setTichuCalls] = useState<number[]>([]);
   const [grandTichuCalls, setGrandTichuCalls] = useState<number[]>([]);
@@ -66,6 +70,23 @@ const RoundEditorDialog = ({
   const [team1CardPoints, setTeam1CardPoints] = useState(50);
   const [roundNote, setRoundNote] = useState("");
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  // States for card points text inputs and focus tracking
+  const [leftInputVal, setLeftInputVal] = useState<string>("50");
+  const [rightInputVal, setRightInputVal] = useState<string>("50");
+  const [leftFocused, setLeftFocused] = useState(false);
+  const [rightFocused, setRightFocused] = useState(false);
+
+  // Sync inputs with team1CardPoints when not focused
+  useEffect(() => {
+    if (!leftFocused && !rightFocused) {
+      const leftVal = leftTeam === 1 ? team1CardPoints : 100 - team1CardPoints;
+      const rightVal = leftTeam === 1 ? 100 - team1CardPoints : team1CardPoints;
+      setLeftInputVal(String(leftVal));
+      setRightInputVal(String(rightVal));
+    }
+  }, [team1CardPoints, leftTeam, leftFocused, rightFocused]);
+
   // Bomb counting: undefined = not tracked (legacy), Map = tracked
   const [bombCounts, setBombCounts] = useState<Map<number, number> | undefined>(undefined);
   const bombsTracked = bombCounts !== undefined;
@@ -121,10 +142,6 @@ const RoundEditorDialog = ({
     }
     return { displayName, avatar };
   };
-
-  const loggedInIndex = game.players.findIndex((player) => player.uid === user?.uid);
-  const leftTeam = loggedInIndex !== -1 && loggedInIndex >= 2 ? 2 : 1;
-  const rightTeam = loggedInIndex !== -1 && loggedInIndex >= 2 ? 1 : 2;
 
   const originalPlayerAvatars = game.players.map(
     (slot) => getPlayerDetails(slot).avatar,
@@ -227,7 +244,32 @@ const RoundEditorDialog = ({
 
   const previewScore = calculateRoundScore(buildRoundData() as Round);
 
+  const handleLeftBlur = () => {
+    const val = parseInt(leftInputVal, 10);
+    if (isNaN(val) || val < -25 || val > 125 || val % 5 !== 0) {
+      setValidationError(t("game.validationCardPointsInvalid"));
+    } else {
+      setValidationError(null);
+      const newTeam1Points = leftTeam === 1 ? val : 100 - val;
+      setTeam1CardPoints(newTeam1Points);
+    }
+  };
+
+  const handleRightBlur = () => {
+    const val = parseInt(rightInputVal, 10);
+    if (isNaN(val) || val < -25 || val > 125 || val % 5 !== 0) {
+      setValidationError(t("game.validationCardPointsInvalid"));
+    } else {
+      setValidationError(null);
+      const newTeam1Points = leftTeam === 1 ? 100 - val : val;
+      setTeam1CardPoints(newTeam1Points);
+    }
+  };
+
   const validate = (): boolean => {
+    if (validationError) {
+      return false;
+    }
     if (
       (tichuCalls.length > 0 || grandTichuCalls.length > 0) &&
       finishedFirst === 0
@@ -470,31 +512,68 @@ const RoundEditorDialog = ({
           )}
           {oneTwoVictory === 0 && (
             <Card elevation={2} sx={{ p: 1, display: "block" }}>
-              <Typography
-                variant="caption"
+              <Box
                 sx={{
-                  mb: 0.5,
-                  display: "block",
-                  textAlign: "center",
-                  ...sx.avatarListFont as any,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  mb: 1.5,
+                  px: 1,
                 }}
               >
-                {t("game.cardPoints")}
-              </Typography>
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1 }}
-              >
+                <TextField
+                  value={leftInputVal}
+                  onChange={(e) => setLeftInputVal(e.target.value)}
+                  onFocus={(e) => {
+                    setLeftFocused(true);
+                    e.target.select();
+                  }}
+                  onBlur={() => {
+                    setLeftFocused(false);
+                    handleLeftBlur();
+                  }}
+                  size="small"
+                  variant="outlined"
+                  sx={{ width: 68 }}
+                  slotProps={{
+                    htmlInput: {
+                      style: { textAlign: "center", padding: "4px 8px" },
+                      inputMode: "numeric",
+                    }
+                  }}
+                />
                 <Typography
-                  variant="body2"
+                  variant="caption"
                   sx={{
-                    ...(sx.scoreFont as any),
-                    minWidth: 32,
-                    textAlign: "right",
-                    ...(sx.avatarListFont as any),
+                    textAlign: "center",
+                    ...sx.avatarListFont as any,
                   }}
                 >
-                  {leftTeam === 1 ? team1CardPoints : 100 - team1CardPoints}
+                  {t("game.cardPoints")}
                 </Typography>
+                <TextField
+                  value={rightInputVal}
+                  onChange={(e) => setRightInputVal(e.target.value)}
+                  onFocus={(e) => {
+                    setRightFocused(true);
+                    e.target.select();
+                  }}
+                  onBlur={() => {
+                    setRightFocused(false);
+                    handleRightBlur();
+                  }}
+                  size="small"
+                  variant="outlined"
+                  sx={{ width: 68 }}
+                  slotProps={{
+                    htmlInput: {
+                      style: { textAlign: "center", padding: "4px 8px" },
+                      inputMode: "numeric",
+                    }
+                  }}
+                />
+              </Box>
+              <Box sx={{ px: 1 }}>
                 <Slider
                   id="card-points-slider"
                   value={leftTeam === 1 ? team1CardPoints : 100 - team1CardPoints}
@@ -503,23 +582,13 @@ const RoundEditorDialog = ({
                   max={125}
                   step={5}
                 />
-                <Typography
-                  variant="body2"
-                  sx={{
-                    ...(sx.scoreFont as any),
-                    minWidth: 32,
-                    ...(sx.avatarListFont as any),
-                  }}
-                >
-                  {leftTeam === 1 ? 100 - team1CardPoints : team1CardPoints}
-                </Typography>
               </Box>
             </Card>
           )}
         </Box>
-
+ 
         <Box sx={{ flex: 1 }} />
-
+ 
         {/* BOTTOM: Note, Preview, Save/Cancel */}
         <Box>
           <TextField
@@ -554,6 +623,7 @@ const RoundEditorDialog = ({
               variant="contained"
               size="large"
               onClick={handleSaveClick}
+              disabled={leftFocused || rightFocused}
               sx={{ flex: 1 }}
             >
               {t("common.save")}

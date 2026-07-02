@@ -49,6 +49,7 @@
     "gameNotFound": "Spiel nicht gefunden",
     "noteLabel": "Notiz",
     "validationFirstRequired": "Bitte markiere, wer zuerst fertig war, wenn Tichu oder Grand Tichu angesagt wurde.",
+    "validationCardPointsInvalid": "Kartenpunkte müssen zwischen -25 und 125 liegen und durch 5 teilbar sein.",
     "roundAdded": "Runde hinzugefügt",
     "roundDeleted": "Runde gelöscht",
     "roundUpdated": "Runde aktualisiert",

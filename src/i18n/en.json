@@ -49,6 +49,7 @@
     "gameNotFound": "Game not found",
     "noteLabel": "Note",
     "validationFirstRequired": "Please mark who finished first when Tichu or Grand Tichu is called.",
+    "validationCardPointsInvalid": "Card points must be between -25 and 125 and divisible by 5.",
     "roundAdded": "Round added",
     "roundDeleted": "Round deleted",
     "roundUpdated": "Round updated",
