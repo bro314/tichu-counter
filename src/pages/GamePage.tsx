@@ -24,6 +24,9 @@ import {
   deleteGame,
   updateGameMetadata,
 } from "../services/gameService";
+import { fetchTournament, handleKOGameFinished, fetchTeams } from "../services/tournamentService";
+import type { TournamentTeam } from "../types/tournament";
+import { findTeamForPlayers } from "../types/tournament";
 import {
   calculateTotals,
   checkWinner,
@@ -149,6 +152,9 @@ const GamePage = () => {
     Map<string, PlayerNameResolver>
   >(new Map());
 
+  const [isTournamentAdmin, setIsTournamentAdmin] = useState(false);
+  const [tournamentTeams, setTournamentTeams] = useState<TournamentTeam[]>([]);
+
   // Editor state
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingRound, setEditingRound] = useState<Round | null>(null); // null = new round
@@ -164,6 +170,7 @@ const GamePage = () => {
   });
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const hasCalledFinishedRef = useRef<string | null>(null);
   const [showTopShadow, setShowTopShadow] = useState(false);
   const [showBottomShadow, setShowBottomShadow] = useState(false);
 
@@ -264,6 +271,22 @@ const GamePage = () => {
       setServerRounds(r);
       // Fetch profiles for registered players in this game
       if (g) {
+        if (g.tournamentId && user) {
+          const tourney = await fetchTournament(g.tournamentId);
+          if (tourney) {
+            setIsTournamentAdmin(tourney.adminUids.includes(user.uid));
+          }
+          try {
+            const teams = await fetchTeams(g.tournamentId);
+            setTournamentTeams(teams);
+          } catch (err) {
+            console.error("Failed to load tournament teams:", err);
+          }
+        } else {
+          setIsTournamentAdmin(false);
+          setTournamentTeams([]);
+        }
+
         const uids = g.players.map((p) => p.uid).filter((uid): uid is string => uid !== null);
         const players = await fetchPlayers(uids);
         const profileMap = new Map<string, PlayerNameResolver>();
@@ -285,11 +308,22 @@ const GamePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [id, t, pendingOps]);
+  }, [id, t, pendingOps, user]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadGame();
   }, [loadGame]);
+
+  useEffect(() => {
+    if (game && game.tournamentId && (game.status === 'finished' || checkWinner(calculateTotals(rounds)) !== 0)) {
+      const winner = checkWinner(calculateTotals(rounds));
+      if ((winner === 1 || winner === 2) && hasCalledFinishedRef.current !== game.id) {
+        hasCalledFinishedRef.current = game.id;
+        handleKOGameFinished(game.tournamentId, game.id, winner);
+      }
+    }
+  }, [game, rounds]);
 
   const handleUpdateGame = async (
     isPrivate: boolean,
@@ -338,11 +372,15 @@ const GamePage = () => {
   const winner = checkWinner(totals);
   const isGameOver = winner !== 0 || game.status === "finished";
   const isPlayer = game.players.some((p) => p.uid === user?.uid);
+  const isWritable = isPlayer || isTournamentAdmin;
   const loggedInIndex = game ? game.players.findIndex((p) => p.uid === user?.uid) : -1;
   const resolvedPlayers = game.players.map(
     (slot) => getPlayerDetails(slot),
   );
   const playerAvatars = resolvedPlayers.map((p) => p.avatar);
+
+  const team1 = game ? findTeamForPlayers(tournamentTeams, [game.players[0], game.players[1]]) : undefined;
+  const team2 = game ? findTeamForPlayers(tournamentTeams, [game.players[2], game.players[3]]) : undefined;
 
   // --- Editor logic ---
   const openNewRound = async () => {
@@ -516,7 +554,7 @@ const GamePage = () => {
                     round={round}
                     roundNumber={roundNumber}
                     playerAvatars={playerAvatars}
-                    isPlayer={isPlayer}
+                    isPlayer={isWritable}
                     onEditRound={openEditRound}
                     loggedInIndex={loggedInIndex}
                     syncStatus={roundSyncStatus}
@@ -550,12 +588,15 @@ const GamePage = () => {
           score={totals}
           playerProfileMap={playerProfiles}
           syncStatus={getGameSyncStatus(game.id)}
+          team1Name={team1?.name}
+          team2Name={team2?.name}
+          winnerTeam={winner === 1 || winner === 2 ? winner : null}
           onClick={loadGame}
         />
       </Box>
 
       {/* Bottom action block */}
-      {isPlayer && (
+      {isWritable && (
         <Box
           sx={{
             p: 1,

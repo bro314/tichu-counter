@@ -14,7 +14,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 import * as sx from "../styles/commonStyles";
-import { shape } from "../styles/tokens";
+import { shape, fonts } from "../styles/tokens";
 import type { Game, PlayerSlot } from "../types/game";
 import type { PlayerNameResolver } from "../utils/playerName";
 import { DateFormatter } from "../utils/date";
@@ -27,9 +27,21 @@ interface GameCardProps {
   playerProfileMap: Map<string, PlayerNameResolver>;
   onClick?: () => void;
   syncStatus?: 'saving' | 'offline';
+  team1Name?: string;
+  team2Name?: string;
+  winnerTeam?: 1 | 2 | null;
 }
 
-const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCardProps) => {
+const GameCard = ({
+  game,
+  score,
+  playerProfileMap,
+  onClick,
+  syncStatus,
+  team1Name,
+  team2Name,
+  winnerTeam,
+}: GameCardProps) => {
   const { t, i18n } = useTranslation();
   const { user, profile } = useAuth();
 
@@ -111,8 +123,60 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
   const formatDateOnly = (date: Date) => DateFormatter.formatDateOnly(date, i18n.language);
   const formatTimeOnly = (date: Date) => DateFormatter.formatTimeOnly(date);
 
+  const noteText = [game.note, game.tournamentLabel ? `(${game.tournamentLabel})` : '']
+    .filter(Boolean)
+    .join(' ');
+
   const cardContent = (
     <CardContent sx={{ py: 1, px: 1, "&:last-child": { pb: 1.5 } }}>
+
+      {/* Team Names Row (optional) */}
+      {(team1Name || team2Name) && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 1,
+            mb: 1,
+            px: 0.5,
+          }}
+        >
+          <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 0.5, minWidth: 0 }}>
+            {winnerTeam === 1 && <EmojiEventsIcon sx={{ fontSize: '1rem', color: 'success.main' }} />}
+            <Typography
+              variant="subtitle2"
+              sx={{
+                fontWeight: winnerTeam === 1 ? 'bold' : 'normal',
+                color: winnerTeam === 1 ? 'success.main' : 'text.primary',
+                fontFamily: fonts.display,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {team1Name}
+            </Typography>
+          </Box>
+          <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0.5, minWidth: 0 }}>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                fontWeight: winnerTeam === 2 ? 'bold' : 'normal',
+                color: winnerTeam === 2 ? 'success.main' : 'text.primary',
+                fontFamily: fonts.display,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                textAlign: 'right',
+              }}
+            >
+              {team2Name}
+            </Typography>
+            {winnerTeam === 2 && <EmojiEventsIcon sx={{ fontSize: '1rem', color: 'success.main' }} />}
+          </Box>
+        </Box>
+      )}
 
       {/* Teams display without the score */}
       <Box
@@ -314,7 +378,7 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
       </Box>
 
       {/* Note Row */}
-      {game.note && (
+      {noteText && (
         <Box
           sx={{
             display: "flex",
@@ -327,7 +391,7 @@ const GameCard = ({ game, score, playerProfileMap, onClick, syncStatus }: GameCa
             variant="caption"
             sx={{ ...sx.metaText, fontStyle: "italic", textAlign: "left" }}
           >
-            {game.note}
+            {noteText}
           </Typography>
         </Box>
       )}

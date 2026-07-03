@@ -27,6 +27,8 @@ function docToGame(id: string, data: Record<string, unknown>): Game {
     isPrivate: data.isPrivate as boolean | undefined,
     tag: data.tag as string | undefined,
     note: data.note as string | undefined,
+    tournamentId: data.tournamentId as string | undefined,
+    tournamentLabel: data.tournamentLabel as string | undefined,
     rounds: (data.rounds as Array<Record<string, unknown>>)?.map((r) => ({
       id: r.id as string,
       roundNumber: r.roundNumber as number,
@@ -65,12 +67,14 @@ export async function createGame(
   isPrivate?: boolean,
   tag?: string,
   note?: string,
+  tournamentId?: string,
+  tournamentLabel?: string,
 ): Promise<string> {
   const playerUids = players
     .map((p) => p.uid)
     .filter((uid): uid is string => uid !== null);
 
-  const docRef = await addDoc(collection(db, 'games'), {
+  const gameData: Record<string, any> = {
     createdBy,
     createdAt: Timestamp.now(),
     status: 'active',
@@ -80,7 +84,12 @@ export async function createGame(
     tag: tag?.trim() || null,
     note: note?.trim() || null,
     rounds: [],
-  });
+  };
+
+  if (tournamentId) gameData.tournamentId = tournamentId;
+  if (tournamentLabel) gameData.tournamentLabel = tournamentLabel;
+
+  const docRef = await addDoc(collection(db, 'games'), gameData);
 
   // Centralized Tags: add tag to metadata document if present
   if (tag?.trim()) {
@@ -334,5 +343,15 @@ export async function fetchAllTags(): Promise<string[]> {
   if (!snap.exists()) return [];
   const tags = snap.data().tags as string[] || [];
   return tags.sort((a, b) => a.localeCompare(b));
+}
+
+/** Fetch all games belonging to a tournament */
+export async function fetchGamesByTournament(tournamentId: string): Promise<Game[]> {
+  const q = query(
+    collection(db, 'games'),
+    where('tournamentId', '==', tournamentId)
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => docToGame(d.id, d.data()));
 }
 

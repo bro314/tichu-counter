@@ -30,6 +30,13 @@ service cloud.firestore {
       return isGameParticipant(gameData);
     }
 
+    // Helper: Check if user is a tournament admin for a game's tournament
+    function isTournamentAdmin(gameData) {
+      return isAuthenticated()
+        && gameData.get('tournamentId', '') != ''
+        && get(/databases/$(database)/documents/tournaments/$(gameData.tournamentId)).data.adminUids.hasAny([request.auth.uid]);
+    }
+
     // 1. Users collection:
     // - Any logged-in player can search/read player list to start a game.
     // - Only the owner can edit, create, or delete their profile.
@@ -46,19 +53,57 @@ service cloud.firestore {
 
     // 2. Games collection:
     // - Any logged-in user can create a game, provided they mark themselves as creator.
-    // - Only game participants can write/edit/delete. All authenticated users can read if non-private.
+    // - Only game participants (or tournament admins) can write/edit/delete.
+    // - All authenticated users can read if non-private.
     match /games/{gameId} {
       allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
       allow read: if canReadGame(resource.data);
-      allow update: if canWriteGame(resource.data);
+      allow update: if canWriteGame(resource.data) || isTournamentAdmin(resource.data);
       allow delete: if canWriteGame(resource.data);
 
       // 3. Rounds nested subcollection:
-      // - Only game participants can write/add/edit. All authenticated users can read if game is non-private.
+      // - Only game participants or tournament admins can write/add/edit. All authenticated users can read if game is non-private.
       match /rounds/{roundId} {
         allow read: if canReadGame(get(/databases/$(database)/documents/games/$(gameId)).data);
-        allow write: if canWriteGame(get(/databases/$(database)/documents/games/$(gameId)).data);
+        allow write: if canWriteGame(get(/databases/$(database)/documents/games/$(gameId)).data)
+          || isTournamentAdmin(get(/databases/$(database)/documents/games/$(gameId)).data);
+      }
+    }
+
+    // 4. Tournaments collection:
+    // - Any authenticated user can read tournaments (public info).
+    // - Only authenticated users can create (must include self in adminUids).
+    // - Only admins can update/delete.
+    match /tournaments/{tournamentId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.adminUids.hasAny([request.auth.uid]);
+      allow update: if isAuthenticated() && resource.data.adminUids.hasAny([request.auth.uid]);
+      allow delete: if isAuthenticated() && resource.data.adminUids.hasAny([request.auth.uid]);
+
+      // Teams subcollection
+      match /teams/{teamId} {
+        allow read: if isAuthenticated();
+        // Create: admin OR (self-register enabled AND user is player1)
+        allow create: if isAuthenticated() && (
+          get(/databases/$(database)/documents/tournaments/$(tournamentId)).data.adminUids.hasAny([request.auth.uid])
+          || (
+            get(/databases/$(database)/documents/tournaments/$(tournamentId)).data.selfRegister == true
+            && request.resource.data.player1.uid == request.auth.uid
+          )
+        );
+        // Update: admin OR player in team with account
+        allow update: if isAuthenticated() && (
+          get(/databases/$(database)/documents/tournaments/$(tournamentId)).data.adminUids.hasAny([request.auth.uid])
+          || resource.data.player1.uid == request.auth.uid
+          || resource.data.player2.uid == request.auth.uid
+        );
+        // Delete: admin OR player1 in team
+        allow delete: if isAuthenticated() && (
+          get(/databases/$(database)/documents/tournaments/$(tournamentId)).data.adminUids.hasAny([request.auth.uid])
+          || resource.data.player1.uid == request.auth.uid
+        );
       }
     }
   }
 }
+

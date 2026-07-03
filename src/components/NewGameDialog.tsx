@@ -251,7 +251,10 @@ const NewGameDialog = ({
     fallbackN: number,
   ): PlayerSlot => {
     if (selected) {
-      return { uid: selected.uid, guestName: null };
+      const expectedText = `${selected.avatar} ${selected.displayName}`;
+      if (inputText.trim() === expectedText || inputText.trim() === selected.displayName) {
+        return { uid: selected.uid, guestName: null };
+      }
     }
     const name = inputText.trim();
     return {

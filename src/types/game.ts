@@ -17,6 +17,10 @@ export interface Game {
   tag?: string;
   note?: string;
   rounds?: Round[];
+  /** Tournament reference (technical, not user-visible) */
+  tournamentId?: string;
+  /** Tournament label, e.g. "Gruppe A", "Quarterfinal" (visible on GameCard) */
+  tournamentLabel?: string;
 }
 
 /** A single round of scoring */

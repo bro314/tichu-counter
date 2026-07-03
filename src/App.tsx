@@ -11,6 +11,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import HomeIcon from '@mui/icons-material/Home';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SettingsIcon from '@mui/icons-material/Settings';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from './contexts/AuthContext';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
@@ -18,6 +19,10 @@ import { darkTheme } from './styles/theme';
 import HomePage from './pages/HomePage';
 import GamePage from './pages/GamePage';
 import SettingsPage from './pages/SettingsPage';
+import TournamentListPage from './pages/TournamentListPage';
+import TournamentPage from './pages/TournamentPage';
+import GroupDetailPage from './pages/GroupDetailPage';
+import KORoundDetailPage from './pages/KORoundDetailPage';
 import AuthPage from './pages/onboarding/AuthPage';
 import ProfileSetupPage from './pages/onboarding/ProfileSetupPage';
 import { appFrame, desktopOuter } from './styles/commonStyles';
@@ -69,7 +74,8 @@ function AppShell() {
 
   // Derive tab index from current pathname
   const getTabIndex = useCallback(() => {
-    if (location.pathname.startsWith('/settings')) return 2;
+    if (location.pathname.startsWith('/settings')) return 3;
+    if (location.pathname.startsWith('/tournament')) return 2;
     if (location.pathname.startsWith('/game')) return 1;
     return 0;
   }, [location.pathname]);
@@ -102,7 +108,7 @@ function AppShell() {
       // Navigate to last visited game
       navigate(`/game/${lastGameId}`);
     } else {
-      navigate(['/', '/game', '/settings'][newValue]);
+      navigate(['/', '/game', '/tournaments', '/settings'][newValue]);
     }
   };
 
@@ -130,6 +136,10 @@ function AppShell() {
           <Route path="/" element={<HomePage />} />
           <Route path="/game" element={<GamePage />} />
           <Route path="/game/:id" element={<GamePage />} />
+          <Route path="/tournaments" element={<TournamentListPage />} />
+          <Route path="/tournament/:id" element={<TournamentPage />} />
+          <Route path="/tournament/:id/group/:groupName" element={<GroupDetailPage />} />
+          <Route path="/tournament/:id/round/:roundIndex" element={<KORoundDetailPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
@@ -158,6 +168,11 @@ function AppShell() {
           id="nav-game"
           label={t('nav.game')}
           icon={<PlayArrowIcon />}
+        />
+        <BottomNavigationAction
+          id="nav-tournaments"
+          label={t('nav.tournaments')}
+          icon={<EmojiEventsIcon />}
         />
         <BottomNavigationAction
           id="nav-settings"
@@ -229,7 +244,7 @@ function App() {
   } else {
     // Fully authenticated and onboarded → show main app
     const path = window.location.pathname;
-    if (!Capacitor.isNativePlatform() && !path.startsWith('/game') && path !== '/') {
+    if (!Capacitor.isNativePlatform() && !path.startsWith('/game') && !path.startsWith('/tournament') && !path.startsWith('/settings') && path !== '/') {
       window.history.replaceState({}, '', '/');
     }
     content = <AppShell />;

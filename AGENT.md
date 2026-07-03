@@ -167,4 +167,26 @@ Future agents should be aware of these requirements and changes to maintain cons
 - **Email**: `ben@test.de`
 - **Password**: `testben`
 
+## Tournament Feature
+The tournament layer organizes teams and automates match scheduling for Group and KO (single-elimination) formats.
+
+### Core Data Models
+- **`Tournament`**: Represents the tournament container. Tracks `status` (`preparation`, `creation`, `execution`, `finished`), format (`group` | `ko`), admin UIDs, and structure settings (`groupCount`, `groups`, `bracket`).
+- **`TournamentTeam`**: Subcollection of a tournament, representing a registered pair of players (either user accounts or guests) with a team name unique within the tournament.
+- **`KOBracket` & `TournamentGroup`**: Represent the matchups and groups.
+
+### Navigation and Routing
+- A 4th tab "Tournaments" is added to the bottom navigation.
+- **`/tournaments`** → list of all tournaments with status indicators.
+- **`/tournament/:id`** → main tournament page dynamically rendering based on phase:
+  - `preparation`: Admin/self-registration of teams and player selection.
+  - `creation`: Admin-only setup (number of groups, seeding, bracket generation and preview).
+  - `execution` / `finished`: Renders group lists or KO round brackets.
+- **`/tournament/:id/group/:groupName`** and **`/tournament/:id/round/:roundIndex`** → detail pages containing games and ranking tables.
+
+### Rules and Logic
+- **Admin Write Access**: Tournament creators and admins have full write access to the tournament's games and rounds, even if they are not players in those games.
+- **KO Game Advancement**: On Game completion, the client triggers `handleKOGameFinished` in `tournamentService.ts`, which automatically advances the winning team to the next round in the bracket and schedules the next match when both opponents are ready.
+- **QR Code Sharing**: In `EditTournamentDialog.tsx`, a local client-side QR Code is generated using `qrcode.react` pointing to the tournament's production URL (`https://dragons-count.de/tournament/:id`).
+
 Always maintain the premium feel, use defined tokens in `commonStyles.ts`, consume colors exclusively from the MUI theme palette (never hardcode mode-dependent colors inline), and respect the responsive mobile-first constraints (e.g., `--max-screen-width` CSS custom property on the app frame).
