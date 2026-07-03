@@ -351,6 +351,35 @@ export async function startKOTournament(
         }
       }
     }
+
+    // Create games for any Round 2 matches that are now fully determined (e.g. from byes)
+    for (let i = 0; i < round2.matches.length; i++) {
+      const match = round2.matches[i];
+      if (match.team1Id && match.team2Id && !match.gameId) {
+        const team1 = teamMap.get(match.team1Id);
+        const team2 = teamMap.get(match.team2Id);
+        if (team1 && team2) {
+          const players: [PlayerSlot, PlayerSlot, PlayerSlot, PlayerSlot] = [
+            team1.player1,
+            team1.player2,
+            team2.player1,
+            team2.player2,
+          ];
+
+          const gameId = await createGame(
+            adminUid,
+            players,
+            false,
+            undefined,
+            undefined,
+            tournamentId,
+            round2.name,
+          );
+
+          round2.matches[i] = { ...match, gameId };
+        }
+      }
+    }
     bracket.rounds[1] = round2;
   }
 
