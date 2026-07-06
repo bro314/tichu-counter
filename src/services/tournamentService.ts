@@ -492,7 +492,7 @@ export interface GroupRankingEntry {
 
 /**
  * Compute the ranking for a group.
- * Sort by: wins (desc) → head-to-head → point differential (desc).
+ * Sort by: wins (desc) → point differential (desc) → head-to-head.
  */
 export async function computeGroupRanking(
   tournamentId: string,
@@ -561,17 +561,18 @@ export async function computeGroupRanking(
     }
   }
 
-  // Sort: wins desc → head-to-head → point differential desc
+  // Sort: wins desc → point differential desc → head-to-head
   const entries = Array.from(stats.values());
   entries.sort((a, b) => {
     // 1. Wins
     if (b.wins !== a.wins) return b.wins - a.wins;
-    // 2. Head-to-head
+    // 2. Point differential
+    if (b.pointDifferential !== a.pointDifferential) return b.pointDifferential - a.pointDifferential;
+    // 3. Head-to-head
     const aBeatsB = headToHead.get(`${a.teamId}-${b.teamId}`);
     if (aBeatsB === true) return -1;
     if (aBeatsB === false) return 1;
-    // 3. Point differential
-    return b.pointDifferential - a.pointDifferential;
+    return 0;
   });
 
   return entries;
