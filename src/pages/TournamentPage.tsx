@@ -21,7 +21,7 @@ import { fetchTournament, fetchTeams, advancePhase, updateTournament, startGroup
 import { fetchGamesByTournament } from '../services/gameService';
 import { fetchPlayers } from '../services/playerService';
 import type { PlayerNameResolver } from '../utils/playerName';
-import { generateGroupAssignments, generateKOBracket } from '../types/tournament';
+import { generateGroupAssignments, generateKOBracket, generateKOBracketFromOrder } from '../types/tournament';
 import type { Tournament, TournamentTeam } from '../types/tournament';
 import type { Game } from '../types/game';
 import TeamCard from '../components/tournament/TeamCard';
@@ -29,6 +29,7 @@ import CreateTeamDialog from '../components/tournament/CreateTeamDialog';
 import EditTeamDialog from '../components/tournament/EditTeamDialog';
 import EditTournamentDialog from '../components/tournament/EditTournamentDialog';
 import ImportTeamsDialog from '../components/tournament/ImportTeamsDialog';
+import ManualBracketDialog from '../components/tournament/ManualBracketDialog';
 import GroupPreview from '../components/tournament/GroupPreview';
 import BracketPreview from '../components/tournament/BracketPreview';
 import PullToRefresh from '../components/PullToRefresh';
@@ -54,6 +55,7 @@ export default function TournamentPage() {
   const [selectedTeam, setSelectedTeam] = useState<TournamentTeam | null>(null);
   const [editTournamentOpen, setEditTournamentOpen] = useState(false);
   const [importTeamsOpen, setImportTeamsOpen] = useState(false);
+  const [manualBracketOpen, setManualBracketOpen] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showTopShadow, setShowTopShadow] = useState(false);
@@ -221,6 +223,19 @@ export default function TournamentPage() {
       await loadData();
     } catch (err) {
       console.error('Failed to generate bracket:', err);
+    }
+  };
+
+  const handleSaveManualBracket = async (orderedSlots: (string | null)[]) => {
+    if (!isAdmin || !id) return;
+    try {
+      const generatedBracket = generateKOBracketFromOrder(orderedSlots);
+      await updateTournament(id, {
+        bracket: generatedBracket,
+      });
+      await loadData();
+    } catch (err) {
+      console.error('Failed to save manual bracket:', err);
     }
   };
 
@@ -411,9 +426,14 @@ export default function TournamentPage() {
                     </Box>
                   ) : (
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      <Button variant="outlined" onClick={handleGenerateKO}>
-                        {t('tournament.generate')}
-                      </Button>
+                      <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Button variant="outlined" onClick={handleGenerateKO} sx={{ flex: 1 }}>
+                          {t('tournament.generate')}
+                        </Button>
+                        <Button variant="outlined" onClick={() => setManualBracketOpen(true)} sx={{ flex: 1 }}>
+                          {t('tournament.manualBracket')}
+                        </Button>
+                      </Box>
 
                       {tournament.bracket && tournament.bracket.rounds && tournament.bracket.rounds.length > 0 && (
                         <Box>
@@ -616,6 +636,14 @@ export default function TournamentPage() {
           setImportTeamsOpen(false);
           loadData();
         }}
+      />
+
+      <ManualBracketDialog
+        open={manualBracketOpen}
+        onClose={() => setManualBracketOpen(false)}
+        teams={teams}
+        currentBracket={tournament.bracket || null}
+        onSave={handleSaveManualBracket}
       />
     </Box>
   );

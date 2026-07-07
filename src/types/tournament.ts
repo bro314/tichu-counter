@@ -202,6 +202,81 @@ export function generateKOBracket(teamIds: string[]): KOBracket {
   return { rounds };
 }
 
+/**
+ * Generate a single-elimination KO bracket with manual matchups.
+ * orderedSlots length must be a power of 2. elements are either teamId (string) or null (bye).
+ */
+export function generateKOBracketFromOrder(orderedSlots: (string | null)[]): KOBracket {
+  const totalSlots = orderedSlots.length;
+  const round1Matches: KOMatch[] = [];
+
+  for (let i = 0; i < totalSlots; i += 2) {
+    const left = orderedSlots[i];
+    const right = orderedSlots[i + 1];
+
+    if (left !== null && right !== null) {
+      round1Matches.push({
+        team1Id: left,
+        team2Id: right,
+        gameId: null,
+        isBye: false,
+      });
+    } else if (left !== null && right === null) {
+      round1Matches.push({
+        team1Id: left,
+        team2Id: null,
+        gameId: null,
+        isBye: true,
+        winnerId: left,
+      });
+    } else if (left === null && right !== null) {
+      round1Matches.push({
+        team1Id: right,
+        team2Id: null,
+        gameId: null,
+        isBye: true,
+        winnerId: right,
+      });
+    } else {
+      round1Matches.push({
+        team1Id: null,
+        team2Id: null,
+        gameId: null,
+        isBye: true,
+      });
+    }
+  }
+
+  const rounds: KORound[] = [];
+  rounds.push({
+    name: getKORoundName(totalSlots),
+    matches: round1Matches,
+  });
+
+  let currentMatchCount = round1Matches.length;
+  let currentTeamCount = totalSlots;
+  while (currentTeamCount > 2) {
+    currentTeamCount = currentTeamCount / 2;
+    currentMatchCount = Math.ceil(currentMatchCount / 2);
+    const nextRoundMatches: KOMatch[] = [];
+    for (let i = 0; i < currentMatchCount; i++) {
+      nextRoundMatches.push({
+        team1Id: null,
+        team2Id: null,
+        gameId: null,
+        isBye: false,
+      });
+    }
+    rounds.push({
+      name: getKORoundName(currentTeamCount),
+      matches: nextRoundMatches,
+    });
+  }
+
+  return { rounds };
+}
+
+
 // ─── Player and Team matching helpers ────────────────────────
 
 export function matchPlayer(p1: PlayerSlot, p2: PlayerSlot): boolean {

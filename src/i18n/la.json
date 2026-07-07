@@ -213,6 +213,9 @@
     "advanceToFinished": "Finire Certamen",
     "finishConfirm": "Esne certus te velle signare hoc certamen ut finitum?",
     "generate": "(Re-)generare",
+    "manualBracket": "Tabula manualis",
+    "manualBracketTitle": "Ordinare tabulam manu",
+    "manualBracketDesc": "Tracta et depone vel utere bullis sursum/deorsum ad factiones ordinandas. Factiones in paribus ludent: 1 contra 2, 3 contra 4, etc.",
     "preview": "Praevisus",
     "creationInProgress": "Certamen constituitur ab administratoribus."
   }
