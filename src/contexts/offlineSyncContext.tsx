@@ -155,7 +155,7 @@ export const OfflineSyncProvider: React.FC<{ children: React.ReactNode }> = ({ c
               cleanRound.createdAt = Timestamp.fromMillis(op.createdAt);
 
               const updatedRounds = [...serverRounds, cleanRound];
-              const totals = calculateTotals(updatedRounds);
+              const totals = calculateTotals(updatedRounds, gameSnap.data());
               const winner = checkWinner(totals);
               const status = winner !== 0 ? 'finished' : 'active';
 
@@ -183,7 +183,7 @@ export const OfflineSyncProvider: React.FC<{ children: React.ReactNode }> = ({ c
               return r;
             });
 
-            const totals = calculateTotals(updatedRounds);
+            const totals = calculateTotals(updatedRounds, gameSnap.data());
             const winner = checkWinner(totals);
             const status = winner !== 0 ? 'finished' : 'active';
 
@@ -201,7 +201,7 @@ export const OfflineSyncProvider: React.FC<{ children: React.ReactNode }> = ({ c
             const serverRounds = gameSnap.data().rounds || [];
             const updatedRounds = serverRounds.filter((r: any) => r.id !== op.roundId);
 
-            const totals = calculateTotals(updatedRounds);
+            const totals = calculateTotals(updatedRounds, gameSnap.data());
             const winner = checkWinner(totals);
             const status = winner !== 0 ? 'finished' : 'active';
 

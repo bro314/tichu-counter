@@ -539,7 +539,7 @@ export async function computeGroupRanking(
     if (!team1Id || !team2Id) continue;
     if (!stats.has(team1Id) || !stats.has(team2Id)) continue;
 
-    const totals = calculateTotals(game.rounds || []);
+    const totals = calculateTotals(game.rounds || [], game);
     const winner = checkWinner(totals);
 
     const entry1 = stats.get(team1Id)!;

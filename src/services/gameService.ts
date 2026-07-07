@@ -11,6 +11,7 @@ import {
   Timestamp,
   setDoc,
   arrayUnion,
+  deleteField,
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import type { Game, Round, PlayerSlot } from '../types/game';
@@ -29,6 +30,9 @@ function docToGame(id: string, data: Record<string, unknown>): Game {
     note: data.note as string | undefined,
     tournamentId: data.tournamentId as string | undefined,
     tournamentLabel: data.tournamentLabel as string | undefined,
+    isManualResult: data.isManualResult as boolean | undefined,
+    manualTeam1Score: data.manualTeam1Score as number | undefined,
+    manualTeam2Score: data.manualTeam2Score as number | undefined,
     rounds: (data.rounds as Array<Record<string, unknown>>)?.map((r) => ({
       id: r.id as string,
       roundNumber: r.roundNumber as number,
@@ -353,5 +357,31 @@ export async function fetchGamesByTournament(tournamentId: string): Promise<Game
   );
   const snap = await getDocs(q);
   return snap.docs.map((d) => docToGame(d.id, d.data()));
+}
+
+/** Enter a manual game result as a whole */
+export async function enterManualResult(
+  gameId: string,
+  team1Score: number,
+  team2Score: number,
+): Promise<void> {
+  const gameRef = doc(db, 'games', gameId);
+  await updateDoc(gameRef, {
+    status: 'finished',
+    isManualResult: true,
+    manualTeam1Score: team1Score,
+    manualTeam2Score: team2Score,
+  });
+}
+
+/** Delete/reset a manually entered game result */
+export async function deleteManualResult(gameId: string): Promise<void> {
+  const gameRef = doc(db, 'games', gameId);
+  await updateDoc(gameRef, {
+    status: 'active',
+    isManualResult: deleteField(),
+    manualTeam1Score: deleteField(),
+    manualTeam2Score: deleteField(),
+  });
 }
 

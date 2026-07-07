@@ -48,7 +48,7 @@ const HomePage = () => {
   const scores = useMemo(() => {
     const scoreMap: Record<string, RoundScore> = {};
     for (const g of games) {
-      scoreMap[g.id] = calculateTotals(g.rounds || []);
+      scoreMap[g.id] = calculateTotals(g.rounds || [], g);
     }
     return scoreMap;
   }, [games]);

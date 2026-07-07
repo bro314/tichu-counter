@@ -12,6 +12,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import TextField from "@mui/material/TextField";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -23,6 +24,8 @@ import {
   fetchRounds,
   deleteGame,
   updateGameMetadata,
+  enterManualResult,
+  deleteManualResult,
 } from "../services/gameService";
 import { fetchTournament, handleKOGameFinished, fetchTeams } from "../services/tournamentService";
 import type { TournamentTeam } from "../types/tournament";
@@ -158,6 +161,13 @@ const GamePage = () => {
   // Editor state
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingRound, setEditingRound] = useState<Round | null>(null); // null = new round
+
+  // Manual result dialog state
+  const [manualResultDialogOpen, setManualResultDialogOpen] = useState(false);
+  const [manualTeam1Score, setManualTeam1Score] = useState("");
+  const [manualTeam2Score, setManualTeam2Score] = useState("");
+  const [manualScoreError, setManualScoreError] = useState<string | null>(null);
+  const [deleteScoreDialogOpen, setDeleteScoreDialogOpen] = useState(false);
 
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -316,8 +326,8 @@ const GamePage = () => {
   }, [loadGame]);
 
   useEffect(() => {
-    if (game && game.tournamentId && (game.status === 'finished' || checkWinner(calculateTotals(rounds)) !== 0)) {
-      const winner = checkWinner(calculateTotals(rounds));
+    if (game && game.tournamentId && (game.status === 'finished' || checkWinner(calculateTotals(rounds, game)) !== 0)) {
+      const winner = checkWinner(calculateTotals(rounds, game));
       if ((winner === 1 || winner === 2) && hasCalledFinishedRef.current !== game.id) {
         hasCalledFinishedRef.current = game.id;
         handleKOGameFinished(game.tournamentId, game.id, winner);
@@ -354,6 +364,68 @@ const GamePage = () => {
     }
   };
 
+  const handleSaveManualResult = async () => {
+    if (!game) return;
+    setManualScoreError(null);
+
+    const s1 = manualTeam1Score.trim();
+    const s2 = manualTeam2Score.trim();
+
+    if (!/^\d+$/.test(s1) || !/^\d+$/.test(s2)) {
+      setManualScoreError(t("game.validationManualScoreInvalid"));
+      return;
+    }
+
+    const score1 = parseInt(s1, 10);
+    const score2 = parseInt(s2, 10);
+
+    if (score1 % 5 !== 0 || score2 % 5 !== 0 || (score1 < 1000 && score2 < 1000) || (score1 + score2) % 100 !== 0) {
+      setManualScoreError(t("game.validationManualScoreInvalid"));
+      return;
+    }
+
+    try {
+      await enterManualResult(game.id, score1, score2);
+      setManualResultDialogOpen(false);
+      setManualTeam1Score("");
+      setManualTeam2Score("");
+      await loadGame(true);
+      setSnackbar({
+        open: true,
+        message: t("game.manualScoreSaved"),
+        severity: "success",
+      });
+    } catch (err) {
+      console.error("Failed to save manual result:", err);
+      setSnackbar({
+        open: true,
+        message: t("game.errorSaveManualScore"),
+        severity: "error",
+      });
+    }
+  };
+
+  const handleDeleteManualResult = async () => {
+    if (!game) return;
+    try {
+      await deleteManualResult(game.id);
+      setDeleteScoreDialogOpen(false);
+      await loadGame(true);
+      setSnackbar({
+        open: true,
+        message: t("game.manualScoreDeleted"),
+        severity: "success",
+      });
+    } catch (err) {
+      console.error("Failed to delete manual result:", err);
+      setSnackbar({
+        open: true,
+        message: t("game.errorDeleteManualScore"),
+        severity: "error",
+      });
+    }
+  };
+
   if (!id) return <NoGameFallback />;
   if (loading)
     return (
@@ -368,7 +440,7 @@ const GamePage = () => {
       </Box>
     );
 
-  const totals = calculateTotals(rounds);
+  const totals = calculateTotals(rounds, game);
   const winner = checkWinner(totals);
   const isGameOver = winner !== 0 || game.status === "finished";
   const isPlayer = game.players.some((p) => p.uid === user?.uid);
@@ -695,6 +767,50 @@ const GamePage = () => {
         </Box>
       )}
 
+      {!!game.tournamentId && isTournamentAdmin && rounds.length === 0 && (
+        <Box
+          sx={{
+            p: 1,
+            pt: 0,
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+            bgcolor: "background.default",
+            flexShrink: 0,
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
+          {!game.isManualResult ? (
+            <Button
+              id="enter-game-result-btn"
+              variant="outlined"
+              size="large"
+              onClick={() => {
+                setManualTeam1Score("");
+                setManualTeam2Score("");
+                setManualScoreError(null);
+                setManualResultDialogOpen(true);
+              }}
+              sx={{ flex: 1 }}
+            >
+              {t("game.enterGameResult")}
+            </Button>
+          ) : (
+            <Button
+              id="delete-game-score-btn"
+              variant="outlined"
+              color="error"
+              size="large"
+              onClick={() => setDeleteScoreDialogOpen(true)}
+              sx={{ flex: 1 }}
+            >
+              {t("game.deleteGameScore")}
+            </Button>
+          )}
+        </Box>
+      )}
+
       <ScoreProgressDialog
         open={chartOpen}
         onClose={() => setChartOpen(false)}
@@ -766,6 +882,70 @@ const GamePage = () => {
         game={game}
         onUpdateGame={handleUpdateGame}
       />
+
+      {/* Enter Manual Result Dialog */}
+      <Dialog
+        open={manualResultDialogOpen}
+        onClose={() => setManualResultDialogOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>{t("game.enterManualResultTitle")}</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+            <TextField
+              label={team1?.name || t("game.team1")}
+              type="number"
+              value={manualTeam1Score}
+              onChange={(e) => setManualTeam1Score(e.target.value)}
+              fullWidth
+              variant="outlined"
+            />
+            <TextField
+              label={team2?.name || t("game.team2")}
+              type="number"
+              value={manualTeam2Score}
+              onChange={(e) => setManualTeam2Score(e.target.value)}
+              fullWidth
+              variant="outlined"
+            />
+            {manualScoreError && (
+              <Typography color="error" variant="body2">
+                {manualScoreError}
+              </Typography>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setManualResultDialogOpen(false)}>
+            {t("common.cancel")}
+          </Button>
+          <Button variant="contained" onClick={handleSaveManualResult}>
+            {t("common.save")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Manual Result Confirmation Dialog */}
+      <Dialog
+        open={deleteScoreDialogOpen}
+        onClose={() => setDeleteScoreDialogOpen(false)}
+      >
+        <DialogTitle>{t("game.deleteManualResultTitle")}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary">
+            {t("game.deleteManualResultConfirm")}
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setDeleteScoreDialogOpen(false)}>
+            {t("common.cancel")}
+          </Button>
+          <Button variant="contained" color="error" onClick={handleDeleteManualResult}>
+            {t("common.delete")}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Snackbar
         open={snackbar.open}

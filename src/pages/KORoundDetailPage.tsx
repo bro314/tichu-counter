@@ -181,7 +181,7 @@ export default function KORoundDetailPage() {
               if (match.gameId) {
                 const game = games.find(g => g.id === match.gameId);
                 if (game) {
-                  const totals = calculateTotals(game.rounds || []);
+                  const totals = calculateTotals(game.rounds || [], game);
                   const winner = checkWinner(totals);
                   return (
                     <GameCard

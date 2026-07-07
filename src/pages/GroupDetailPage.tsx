@@ -201,7 +201,7 @@ export default function GroupDetailPage() {
               games.map((game) => {
                 const team1 = findTeamForPlayers(teams, [game.players[0], game.players[1]]);
                 const team2 = findTeamForPlayers(teams, [game.players[2], game.players[3]]);
-                const totals = calculateTotals(game.rounds || []);
+                const totals = calculateTotals(game.rounds || [], game);
                 const winner = checkWinner(totals);
 
                 return (

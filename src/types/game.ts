@@ -21,6 +21,9 @@ export interface Game {
   tournamentId?: string;
   /** Tournament label, e.g. "Gruppe A", "Quarterfinal" (visible on GameCard) */
   tournamentLabel?: string;
+  isManualResult?: boolean;
+  manualTeam1Score?: number;
+  manualTeam2Score?: number;
 }
 
 /** A single round of scoring */
@@ -94,7 +97,16 @@ export function calculateRoundScore(round: Round): RoundScore {
  * Calculate running totals from a list of rounds.
  * Returns the cumulative score after all rounds.
  */
-export function calculateTotals(rounds: Round[]): RoundScore {
+export function calculateTotals(
+  rounds: Round[],
+  game?: Pick<Game, 'isManualResult' | 'manualTeam1Score' | 'manualTeam2Score'>
+): RoundScore {
+  if (game?.isManualResult) {
+    return {
+      team1: game.manualTeam1Score || 0,
+      team2: game.manualTeam2Score || 0,
+    };
+  }
   let team1 = 0;
   let team2 = 0;
   for (const round of rounds) {
