@@ -127,11 +127,17 @@ const GameCard = ({
     .filter(Boolean)
     .join(' ');
 
+  const displayTeam1Name = loggedInIndex >= 2 ? team2Name : team1Name;
+  const displayTeam2Name = loggedInIndex >= 2 ? team1Name : team2Name;
+  const displayWinnerTeam = loggedInIndex >= 2
+    ? (winnerTeam === 1 ? 2 : winnerTeam === 2 ? 1 : null)
+    : winnerTeam;
+
   const cardContent = (
     <CardContent sx={{ py: 1, px: 1, "&:last-child": { pb: 1.5 } }}>
 
       {/* Team Names Row (optional) */}
-      {(team1Name || team2Name) && (
+      {(displayTeam1Name || displayTeam2Name) && (
         <Box
           sx={{
             display: "flex",
@@ -143,27 +149,27 @@ const GameCard = ({
           }}
         >
           <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 0.5, minWidth: 0 }}>
-            {winnerTeam === 1 && <EmojiEventsIcon sx={{ fontSize: '1rem', color: 'success.main' }} />}
+            {displayWinnerTeam === 1 && <EmojiEventsIcon sx={{ fontSize: '1rem', color: 'success.main' }} />}
             <Typography
               variant="subtitle2"
               sx={{
-                fontWeight: winnerTeam === 1 ? 'bold' : 'normal',
-                color: winnerTeam === 1 ? 'success.main' : 'text.primary',
+                fontWeight: displayWinnerTeam === 1 ? 'bold' : 'normal',
+                color: displayWinnerTeam === 1 ? 'success.main' : 'text.primary',
                 fontFamily: fonts.display,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
               }}
             >
-              {team1Name}
+              {displayTeam1Name}
             </Typography>
           </Box>
           <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0.5, minWidth: 0 }}>
             <Typography
               variant="subtitle2"
               sx={{
-                fontWeight: winnerTeam === 2 ? 'bold' : 'normal',
-                color: winnerTeam === 2 ? 'success.main' : 'text.primary',
+                fontWeight: displayWinnerTeam === 2 ? 'bold' : 'normal',
+                color: displayWinnerTeam === 2 ? 'success.main' : 'text.primary',
                 fontFamily: fonts.display,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -171,9 +177,9 @@ const GameCard = ({
                 textAlign: 'right',
               }}
             >
-              {team2Name}
+              {displayTeam2Name}
             </Typography>
-            {winnerTeam === 2 && <EmojiEventsIcon sx={{ fontSize: '1rem', color: 'success.main' }} />}
+            {displayWinnerTeam === 2 && <EmojiEventsIcon sx={{ fontSize: '1rem', color: 'success.main' }} />}
           </Box>
         </Box>
       )}
