@@ -217,9 +217,9 @@ export default function CreateTeamDialog({
             onChange(newVal);
           }
         }}
-        onInputChange={(_, newInput, reason) => {
+        onInputChange={(_, newInput) => {
           if (disabled) return;
-          if (reason !== 'reset') onInputChange(newInput);
+          onInputChange(newInput);
         }}
         getOptionLabel={(option) => {
           if (typeof option === 'string') return option;
