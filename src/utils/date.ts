@@ -1,6 +1,12 @@
 export class DateFormatter {
   static formatDateOnly(date: Date, language: string): string {
-    const locale = language?.startsWith("de") ? "de-DE" : "en-US";
+    const locale = language?.startsWith("de")
+      ? "de-DE"
+      : language?.startsWith("fr")
+      ? "fr-FR"
+      : language?.startsWith("la")
+      ? "la-VA"
+      : "en-US";
     return new Intl.DateTimeFormat(locale, {
       month: "short",
       day: "numeric",

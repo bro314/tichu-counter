@@ -150,6 +150,30 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
         >
           🇩🇪
         </IconButton>
+        <IconButton
+          id="lang-btn-fr"
+          onClick={() => handleLanguageChange("fr")}
+          sx={{
+            ...sx.lgEmojiFont,
+            color: 'text.primary',
+            borderColor: i18n.language === "fr" ? "primary.main" : "divider",
+            bgcolor: i18n.language === "fr" ? "action.selected" : "background.paper",
+          }}
+        >
+          🇫🇷
+        </IconButton>
+        <IconButton
+          id="lang-btn-la"
+          onClick={() => handleLanguageChange("la")}
+          sx={{
+            ...sx.lgEmojiFont,
+            color: 'text.primary',
+            borderColor: i18n.language === "la" ? "primary.main" : "divider",
+            bgcolor: i18n.language === "la" ? "action.selected" : "background.paper",
+          }}
+        >
+          🏛️
+        </IconButton>
       </Box>
       {/* Header */}
       <Box
