@@ -136,6 +136,10 @@ const GamePage = () => {
 
   const handleDeleteGame = async () => {
     if (!game) return;
+    if (game.tournamentId && !isTournamentAdmin) {
+      console.error("Not authorized to delete a tournament game");
+      return;
+    }
     try {
       await deleteGame(game.id);
       setDeleteDialogOpen(false);
@@ -711,19 +715,21 @@ const GamePage = () => {
                   <EditIcon />
                 </IconButton>
               )}
-              <IconButton
-                id="delete-game-btn"
-                onClick={confirmDeleteGame}
-                sx={{
-                  flexShrink: 0,
-                  color: "error.main",
-                  "&:hover": {
-                    color: "error.dark",
-                  },
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
+              {(!game.tournamentId || isTournamentAdmin) && (
+                <IconButton
+                  id="delete-game-btn"
+                  onClick={confirmDeleteGame}
+                  sx={{
+                    flexShrink: 0,
+                    color: "error.main",
+                    "&:hover": {
+                      color: "error.dark",
+                    },
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              )}
             </>
           ) : (
             <>
@@ -751,17 +757,19 @@ const GamePage = () => {
                   {t("common.edit")}
                 </Button>
               )}
-              <Button
-                id="delete-game-btn"
-                variant="outlined"
-                color="error"
-                size="large"
-                startIcon={<DeleteIcon />}
-                onClick={confirmDeleteGame}
-                sx={{ flex: 1 }}
-              >
-                {t("common.delete")}
-              </Button>
+              {(!game.tournamentId || isTournamentAdmin) && (
+                <Button
+                  id="delete-game-btn"
+                  variant="outlined"
+                  color="error"
+                  size="large"
+                  startIcon={<DeleteIcon />}
+                  onClick={confirmDeleteGame}
+                  sx={{ flex: 1 }}
+                >
+                  {t("common.delete")}
+                </Button>
+              )}
             </>
           )}
         </Box>
