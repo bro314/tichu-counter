@@ -210,6 +210,7 @@
     "qrCode": "Codex QR",
     "advanceToCreation": "Incipere Constitutionem",
     "advanceToExecution": "Incipere Certamen",
+    "goBackToPreparation": "Redire ad praeparationem",
     "advanceToFinished": "Finire Certamen",
     "finishConfirm": "Esne certus te velle signare hoc certamen ut finitum?",
     "generate": "(Re-)generare",

@@ -210,6 +210,7 @@
     "qrCode": "Code QR",
     "advanceToCreation": "Démarrer la configuration",
     "advanceToExecution": "Démarrer le tournoi",
+    "goBackToPreparation": "Retour à la préparation",
     "advanceToFinished": "Terminer le tournoi",
     "finishConfirm": "Êtes-vous sûr de vouloir marquer ce tournoi comme terminé ?",
     "generate": "(Ré-)générer",

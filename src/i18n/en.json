@@ -210,6 +210,7 @@
     "qrCode": "QR Code",
     "advanceToCreation": "Start Setup",
     "advanceToExecution": "Start Tournament",
+    "goBackToPreparation": "Back to Preparation",
     "advanceToFinished": "Finish Tournament",
     "finishConfirm": "Are you sure you want to mark this tournament as finished?",
     "generate": "(Re-)generate",

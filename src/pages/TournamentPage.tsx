@@ -255,6 +255,16 @@ export default function TournamentPage() {
     }
   };
 
+  const handleGoBackToPreparation = async () => {
+    if (!isAdmin || !id) return;
+    try {
+      await advancePhase(id, 'preparation');
+      await loadData();
+    } catch (err) {
+      console.error('Failed to go back to preparation:', err);
+    }
+  };
+
   const handleFinishTournament = async () => {
     if (!isAdmin || !id) return;
     if (!window.confirm(t('tournament.finishConfirm'))) return;
@@ -554,20 +564,30 @@ export default function TournamentPage() {
           )}
           {tournament.status === 'creation' && (
             <Box sx={sx.dynamicBottomBar(showBottomShadow)}>
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                onClick={handleStartTournament}
-                disabled={
-                  tournament.format === 'group'
-                    ? !tournament.groups || tournament.groups.length === 0
-                    : !tournament.bracket || !tournament.bracket.rounds || tournament.bracket.rounds.length === 0
-                }
-                startIcon={<PlayArrowIcon />}
-              >
-                {t('tournament.advanceToExecution')}
-              </Button>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={handleStartTournament}
+                  disabled={
+                    tournament.format === 'group'
+                      ? !tournament.groups || tournament.groups.length === 0
+                      : !tournament.bracket || !tournament.bracket.rounds || tournament.bracket.rounds.length === 0
+                  }
+                  startIcon={<PlayArrowIcon />}
+                >
+                  {t('tournament.advanceToExecution')}
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  fullWidth
+                  onClick={handleGoBackToPreparation}
+                >
+                  {t('tournament.goBackToPreparation')}
+                </Button>
+              </Box>
             </Box>
           )}
           {tournament.status === 'execution' && (
